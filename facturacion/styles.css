@@ -33,27 +33,29 @@ body {
   background: radial-gradient(circle at 4% 0%, #eae1ff 0, transparent 25rem),
               radial-gradient(circle at 100% 80%, #ffe6ef 0, transparent 29rem),
               var(--bg);
-  overflow-x: hidden; /* Evita desplazamiento horizontal accidental */
+  overflow-x: hidden;
 }
 
 button, 
-input {
+input,
+select {
   font: inherit;
 }
 
-/* Base general accesible para botones */
 button {
   border: 0;
   cursor: pointer;
   user-select: none;
   font-family: inherit;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  -webkit-tap-highlight-color: transparent; /* Quita el recuadro gris al tocar en móviles */
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible {
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 img {
@@ -64,23 +66,6 @@ img {
 .container {
   width: min(1180px, calc(100% - 32px));
   margin: auto;
-}
-
-/* Estilos para botones adicionales del Header (Ver historial / Iniciar factura) */
-#historial, 
-#inifactura {
-  padding: 8px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 10px;
-  background: var(--lilac);
-  color: var(--primary-dark);
-}
-
-#historial:hover, 
-#inifactura:hover {
-  background: var(--primary);
-  color: #fff;
 }
 
 /* ==========================================
@@ -101,6 +86,7 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -142,6 +128,38 @@ img {
   border-radius: 99px;
   font-size: 12px;
   font-weight: 700;
+}
+
+/* Botones superior del Header */
+#historial, 
+#inifactura {
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 12px;
+  transition: .2s ease;
+}
+
+#historial {
+  background: var(--lilac);
+  color: var(--primary-dark);
+  border: 1px solid rgba(106, 75, 195, 0.15);
+}
+
+#historial:hover {
+  background: #e2d9ff;
+  transform: translateY(-1px);
+}
+
+#inifactura {
+  background: linear-gradient(135deg, #8565e1, var(--primary-dark));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(92, 59, 175, 0.2);
+}
+
+#inifactura:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 /* ==========================================
@@ -440,6 +458,9 @@ h2 {
 .invoice {
   position: sticky;
   top: 99px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .invoice__card {
@@ -489,7 +510,7 @@ h2 {
 }
 
 .invoice__items {
-  max-height: 420px;
+  max-height: 320px;
   overflow-y: auto;
 }
 
@@ -528,12 +549,11 @@ h2 {
   font-size: 12px;
 }
 
-/* Botón Eliminar Item */
 .button-remove {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   color: var(--danger);
   border-radius: 10px;
   background: var(--rose);
@@ -553,40 +573,10 @@ h2 {
   transform: scale(0.94);
 }
 
-.empty-invoice {
-  display: grid;
-  min-height: 220px;
-  place-content: center;
-  padding: 25px;
-  text-align: center;
-}
-
-.empty-invoice > span {
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 14px;
-  border-radius: 22px;
-  background: var(--lilac);
-  font-size: 32px;
-}
-
-.empty-invoice h3 {
-  font-size: 17px;
-}
-
-.empty-invoice p {
-  max-width: 220px;
-  margin-top: 7px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.45;
-}
-
 .totals {
-  padding: 17px 20px 20px;
+  padding: 17px 20px;
   background: #fcfbfe;
+  border-bottom: 1px solid var(--line);
 }
 
 .totals > div {
@@ -599,10 +589,10 @@ h2 {
 
 .totals__final {
   margin-top: 8px;
-  padding-top: 15px !important;
+  padding-top: 12px !important;
   color: var(--ink) !important;
   border-top: 1px solid var(--line);
-  font-size: 17px !important;
+  font-size: 16px !important;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -610,6 +600,148 @@ h2 {
 .totals__final strong {
   color: var(--primary-dark);
   font-size: 20px;
+}
+
+/* ==========================================
+   FORMULARIO Y ACCIONES DE FACTURA (#botonesFactura)
+   ========================================== */
+#botonesFactura {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--paper);
+}
+
+#botonesFactura label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.trabajador .input-text,
+#mtdpago {
+  width: 100%;
+  padding: 11px 14px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  font-size: 13px;
+}
+
+.trabajador .input-text:focus,
+#mtdpago:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(106, 75, 195, 0.12);
+}
+
+#btnGenerarFactura,
+#btnimprimirFactura,
+#btncancelarFactura {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: capitalize;
+  min-height: 44px;
+}
+
+#btnGenerarFactura {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(106, 75, 195, 0.28);
+}
+
+#btnGenerarFactura:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 22px rgba(106, 75, 195, 0.38);
+}
+
+#btnimprimirFactura {
+  background: var(--lilac);
+  color: var(--primary-dark);
+  border: 1px solid rgba(106, 75, 195, 0.18);
+}
+
+#btnimprimirFactura:hover {
+  background: #e2d9ff;
+  transform: translateY(-1px);
+}
+
+#btncancelarFactura {
+  background: var(--rose);
+  color: var(--danger);
+  border: 1px solid rgba(199, 70, 104, 0.2);
+}
+
+#btncancelarFactura:hover {
+  background: #ffd8e5;
+  transform: translateY(-1px);
+}
+
+#btnGenerarFactura:active,
+#btnimprimirFactura:active,
+#btncancelarFactura:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================
+   CÁLCULO DE CAMBIO & CONFIRMACIÓN
+   ========================================== */
+.cambio {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.cambio label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.cambio .input-text {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  outline: none;
+}
+
+.cambio .input-text:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(106, 75, 195, 0.12);
+}
+
+/* Mensaje de confirmación de venta */
+aside.invoice > div:last-child {
+  padding: 12px 16px;
+  text-align: center;
+  background: #e8f7f2;
+  border: 1px solid rgba(35, 121, 95, 0.2);
+  border-radius: 14px;
+}
+
+aside.invoice > div:last-child p {
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
 /* ==========================================
@@ -655,12 +787,12 @@ h2 {
 }
 
 /* ==========================================
-   RESPONSIVE MEDIA QUERIES (OPTIMIZACIÓN MÓVIL)
+   RESPONSIVE MEDIA QUERIES (MÓVIL Y TABLET)
    ========================================== */
 @media (max-width: 960px) {
   .layout {
     grid-template-columns: 1fr;
-    padding-top: 30px;
+    padding-top: 28px;
   }
   
   .invoice {
@@ -678,13 +810,18 @@ h2 {
   }
 
   .header__content {
-    flex-wrap: wrap;
     padding: 12px 0;
-    min-height: auto;
+    gap: 12px;
   }
 
   .tax-badge {
     display: none;
+  }
+
+  #historial, 
+  #inifactura {
+    flex: 1;
+    text-align: center;
   }
 
   h1 {
@@ -701,7 +838,6 @@ h2 {
     display: none;
   }
 
-  /* Tarjetas de producto a una sola columna en pantallas móviles */
   .products-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -711,7 +847,6 @@ h2 {
     height: 190px;
   }
 
-  /* Ajuste de controles táctiles en tarjetas */
   .product-card__bottom {
     flex-direction: column;
     align-items: stretch;
@@ -731,10 +866,9 @@ h2 {
 
   .button-add {
     width: 100%;
-    min-height: 44px; /* Tamaño táctil recomendado */
+    min-height: 44px;
   }
 
-  /* Vista de tabla en Factura convertida a tarjetas en móvil */
   .invoice__labels {
     display: none;
   }
@@ -773,15 +907,11 @@ h2 {
 @media (max-width: 400px) {
   .header__content {
     justify-content: center;
-    text-align: center;
   }
 
   .brand {
     flex-direction: column;
+    text-align: center;
     gap: 6px;
-  }
-
-  .brand strong {
-    font-size: 18px;
   }
 }
