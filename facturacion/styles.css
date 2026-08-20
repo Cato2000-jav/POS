@@ -1,24 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+/* =========================================================
+   PAPEL Y LUNA
+   Estilos generales
+   ========================================================= */
 
 :root {
-  --ink: #272237;
-  --muted: #746e82;
-  --paper: #fffefe;
-  --bg: #f8f6fc;
-  --primary: #6a4bc3;
-  --primary-dark: #4d319e;
-  --lilac: #eee9ff;
-  --line: #e8e1f1;
-  --rose: #ffeff5;
-  --danger: #c74668;
-  --success: #23795f;
-  --shadow: 0 12px 32px rgba(52, 35, 93, .11);
-  --radius: 22px;
+  --bg: #f8f5ff;
+  --surface: #ffffff;
+  --surface-soft: #f4efff;
+  --surface-pink: #fff3f8;
+
+  --primary: #6f4bd8;
+  --primary-dark: #5237b4;
+  --primary-light: #ece6ff;
+
+  --text: #2d2838;
+  --text-soft: #746f80;
+
+  --border: #ded8e8;
+  --success-bg: #e8f7f1;
+  --success-text: #317c63;
+
+  --danger-bg: #fff0f4;
+  --danger-text: #c54868;
+
+  --shadow-sm: 0 6px 18px rgba(72, 47, 125, 0.08);
+  --shadow-md: 0 14px 36px rgba(72, 47, 125, 0.12);
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+
+  --transition: 0.2s ease;
 }
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
 
 * {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
 }
 
 html {
@@ -28,71 +51,81 @@ html {
 body {
   min-width: 320px;
   min-height: 100vh;
-  color: var(--ink);
-  font-family: 'DM Sans', Arial, sans-serif;
-  background: radial-gradient(circle at 4% 0%, #eae1ff 0, transparent 25rem),
-              radial-gradient(circle at 100% 80%, #ffe6ef 0, transparent 29rem),
-              var(--bg);
-  overflow-x: hidden;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: var(--text);
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8f5ff 0%,
+      #fff7fb 100%
+    );
+
+  line-height: 1.5;
 }
 
-button, 
+button,
 input,
 select {
   font: inherit;
 }
 
 button {
-  border: 0;
+  border: none;
   cursor: pointer;
-  user-select: none;
-  font-family: inherit;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
 }
 
 img {
-  display: block;
   max-width: 100%;
 }
 
 .container {
   width: min(1180px, calc(100% - 32px));
-  margin: auto;
+  margin-inline: auto;
 }
 
-/* ==========================================
+
+/* =========================================================
    HEADER
-   ========================================== */
+   ========================================================= */
+
 .header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  border-bottom: 1px solid rgba(232, 225, 241, .8);
-  background: rgba(248, 246, 252, .85);
-  backdrop-filter: blur(14px);
+  z-index: 50;
+
+  width: 100%;
+
+  background:
+    rgba(248, 245, 255, 0.96);
+
+  border-bottom:
+    1px solid var(--border);
+
+  backdrop-filter:
+    blur(12px);
 }
 
 .header__content {
-  min-height: 78px;
+  min-height: 74px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+
+  gap: 18px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
+
   color: inherit;
   text-decoration: none;
 }
@@ -100,741 +133,1065 @@ img {
 .brand__icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  color: #fff;
+
+  width: 46px;
+  height: 46px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8a63eb,
+      #5534b5
+    );
+
   border-radius: 14px;
-  background: linear-gradient(135deg, #8d70e8, var(--primary-dark));
-  box-shadow: 0 7px 16px rgba(92, 59, 175, .26);
-  font-size: 27px;
-  flex-shrink: 0;
+
+  box-shadow:
+    0 8px 20px rgba(87, 54, 183, 0.25);
+
+  font-size: 26px;
 }
 
 .brand strong {
   display: block;
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
+
+  font-size: 18px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 }
 
 .brand small {
-  color: var(--muted);
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--text-soft);
+
   font-size: 12px;
 }
 
 .tax-badge {
-  padding: 8px 13px;
+  padding: 8px 14px;
+
   color: var(--primary-dark);
-  background: var(--lilac);
-  border-radius: 99px;
+
+  background: var(--primary-light);
+
+  border-radius: 999px;
+
   font-size: 12px;
   font-weight: 700;
+
+  white-space: nowrap;
 }
 
-#historial, 
+
+/* =========================================================
+   BOTONES HEADER
+   ========================================================= */
+
+#historial,
 #inifactura {
-  min-height: 44px;
-  padding: 9px 16px;
+  min-height: 42px;
+
+  padding: 10px 18px;
+
+  border-radius: 12px;
+
   font-size: 13px;
   font-weight: 700;
-  border-radius: 12px;
-  transition: .2s ease;
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
 }
 
 #historial {
-  background: var(--lilac);
   color: var(--primary-dark);
-  border: 1px solid rgba(106, 75, 195, 0.15);
+
+  background: #f1ecff;
+
+  border:
+    1px solid #ddd3f7;
 }
 
 #historial:hover {
-  background: #e2d9ff;
-  transform: translateY(-1px);
+  background: #e8e0ff;
 }
 
 #inifactura {
-  background: linear-gradient(135deg, #8565e1, var(--primary-dark));
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(92, 59, 175, 0.2);
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8058e3,
+      #5334b5
+    );
+
+  box-shadow:
+    0 7px 18px rgba(83, 52, 181, 0.22);
 }
 
 #inifactura:hover {
   transform: translateY(-1px);
-  filter: brightness(1.06);
 }
 
-/* ==========================================
-   LAYOUT PRINCIPAL (FACTURACIÓN ARRIBA)
-   ========================================== */
+
+/* =========================================================
+   LAYOUT PRINCIPAL
+   IMPORTANTE:
+   factura arriba y catálogo debajo
+   ========================================================= */
+
 .layout {
   display: flex;
   flex-direction: column;
-  gap: 35px;
-  padding: 35px 0 55px;
+
+  gap: 28px;
+
+  padding-top: 24px;
+  padding-bottom: 40px;
 }
+
+
+/* =========================================================
+   FACTURA
+   ========================================================= */
+
+/*
+  La factura ocupa la parte superior,
+  pero NO todo el ancho.
+*/
 
 .invoice {
   order: -1;
-  position: sticky;
-  top: 92px;
-  z-index: 5;
-}
 
-.catalog {
-  order: 1;
-}
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 22px;
-  margin-bottom: 23px;
-}
-
-.eyebrow {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--primary);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-}
-
-h1, h2 {
-  font-family: 'Playfair Display', serif;
-  line-height: 1.14;
-}
-
-h1 {
-  font-size: 34px;
-}
-
-h2 {
-  font-size: 23px;
-}
-
-.section-heading p {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.counter {
-  min-width: 83px;
-  padding: 10px;
-  text-align: center;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  box-shadow: var(--shadow);
-}
-
-.counter strong {
-  display: block;
-  color: var(--primary);
-  font-size: 24px;
-}
-
-.counter span {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-/* ==========================================
-   SEARCH & PRODUCTS
-   ========================================== */
-.search {
-  position: relative;
-  display: block;
-  margin-bottom: 25px;
-}
-
-.search span {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  color: var(--primary);
-  transform: translateY(-54%);
-  font-size: 27px;
-}
-
-.search input {
   width: 100%;
-  min-height: 48px;
-  padding: 15px 17px 15px 48px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  outline: 0;
-  background: var(--paper);
-  box-shadow: var(--shadow);
-  transition: .2s;
-}
 
-.search input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(106, 75, 195, .12), var(--shadow);
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 19px;
-}
-
-.product-card {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
-  box-shadow: var(--shadow);
-  transition: transform .22s, box-shadow .22s;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 19px 38px rgba(52, 35, 93, .16);
-}
-
-.product-card__image {
-  position: relative;
-  height: 175px;
-  overflow: hidden;
-  background: var(--lilac);
-}
-
-.product-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .35s;
-}
-
-.product-card:hover img {
-  transform: scale(1.05);
-}
-
-.product-card__image span {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  padding: 6px 10px;
-  color: var(--primary-dark);
-  border-radius: 99px;
-  background: rgba(255, 255, 255, .91);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.product-card__body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 17px;
-}
-
-.product-card h3 {
-  font-size: 17px;
-}
-
-.product-card__body > p {
-  margin-top: 7px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.48;
-}
-
-.product-card__bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 11px;
-  margin-top: auto;
-  padding-top: 18px;
-}
-
-.product-card__bottom strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--primary-dark);
-  font-size: 18px;
-}
-
-.product-card label {
-  display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
+
+  gap: 16px;
 }
 
-.product-card input {
-  width: 54px;
-  min-height: 40px;
-  padding: 6px 4px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  text-align: center;
-  outline-color: var(--primary);
-}
 
-/* Botón Agregar Producto con feedback activo */
-.button-add {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 18px;
-  min-height: 44px;
-  color: #ffffff;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7c5ce4 0%, var(--primary-dark) 100%);
-  box-shadow: 0 4px 12px rgba(106, 75, 195, 0.25), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  overflow: hidden;
-}
+/*
+  La tarjeta principal tiene ancho limitado.
+  Esto evita que se vea gigantesca.
+*/
 
-.button-add span {
-  font-size: 18px;
-  line-height: 1;
-  transition: transform 0.2s ease;
-}
-
-.button-add:active {
-  transform: scale(0.96);
-}
-
-/* ==========================================
-   FACTURA / CARRITO (FORMATO LISTA VERTICAL)
-   ========================================== */
 .invoice__card {
+  width: min(100%, 920px);
+
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
-  box-shadow: 0 20px 43px rgba(52, 35, 93, .15);
+
+  background: var(--surface);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
 }
+
+
+/* =========================================================
+   ENCABEZADO DE FACTURA
+   ========================================================= */
 
 .invoice__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px;
-  background: #fcfbfe;
-  border-bottom: 1px solid var(--line);
+
+  gap: 16px;
+
+  padding: 20px 24px;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--primary);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1.5px;
+}
+
+.invoice__header h2 {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 26px;
 }
 
 .invoice__count {
   display: grid;
   place-items: center;
-  min-width: 39px;
-  height: 39px;
-  padding: 0 9px;
-  color: #fff;
-  border-radius: 12px;
+
+  min-width: 42px;
+  height: 42px;
+
+  padding-inline: 10px;
+
+  color: white;
+
   background: var(--primary);
-  font-weight: 700;
+
+  border-radius: 12px;
+
+  font-weight: 800;
 }
+
+
+/* =========================================================
+   ETIQUETAS TABLA FACTURA
+   ========================================================= */
 
 .invoice__labels {
-  display: none;
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    70px
+    100px
+    40px;
+
+  gap: 8px;
+
+  padding: 10px 20px;
+
+  color: var(--text-soft);
+
+  background: #faf9fd;
+
+  border-bottom:
+    1px solid var(--border);
+
+  font-size: 11px;
+  font-weight: 700;
 }
+
+
+/* =========================================================
+   ITEMS FACTURA
+   ========================================================= */
 
 .invoice__items {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  min-height: 100px;
+
   max-height: 280px;
+
   overflow-y: auto;
-  padding: 16px;
+
+  background: var(--surface);
 }
 
-.invoice-row {
+
+/*
+  Si app.js crea filas con una clase similar
+  a invoice__row, este estilo ayuda.
+*/
+
+.invoice__row {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) auto auto auto;
+
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    70px
+    100px
+    40px;
+
+  gap: 8px;
+
   align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+
+  padding: 12px 20px;
+
+  border-bottom:
+    1px solid var(--border);
 }
 
-.invoice-row__name {
-  min-width: 0;
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  min-height: 120px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 18px 20px;
 }
 
-.invoice-row__name strong {
-  display: block;
-  overflow: hidden;
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.empty-state h3 {
+  font-size: 18px;
 }
 
-.invoice-row__name small {
-  color: var(--muted);
-  font-size: 11px;
+.empty-state p {
+  margin-top: 4px;
+
+  color: var(--text-soft);
+
+  font-size: 14px;
 }
 
-.invoice-row__quantity {
-  width: 56px;
-  min-height: 40px;
-  padding: 6px 4px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  text-align: center;
-  background: var(--paper);
-  outline-color: var(--primary);
-}
 
-.invoice-row__subtotal {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--primary-dark);
-}
-
-.button-remove {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  color: var(--danger);
-  border-radius: 10px;
-  background: var(--rose);
-  border: 1px solid rgba(199, 70, 104, 0.12);
-  font-size: 16px;
-}
-
-.button-remove:active {
-  transform: scale(0.92);
-}
+/* =========================================================
+   TOTALES
+   ========================================================= */
 
 .totals {
-  padding: 16px 20px;
-  background: #fcfbfe;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  padding: 16px 22px;
+
+  background: #faf9fd;
+
+  border-top:
+    1px solid var(--border);
 }
 
-.totals > div {
+.total-line {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0;
-  color: var(--muted);
-  font-size: 13px;
+
+  gap: 16px;
+
+  padding: 4px 0;
+
+  font-size: 14px;
 }
 
-.totals__final {
-  margin-top: 6px;
-  padding-top: 10px !important;
-  color: var(--ink) !important;
-  border-top: 1px solid var(--line);
-  font-size: 16px !important;
-  font-weight: 700;
-  text-transform: uppercase;
+.total-line--grand {
+  margin-top: 8px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid var(--border);
+
+  font-weight: 800;
 }
 
-.totals__final strong {
-  color: var(--primary-dark);
-  font-size: 19px;
-}
 
-/* ==========================================
-   FORMULARIO Y ACCIONES DE FACTURA (#botonesFactura)
-   ========================================== */
+/* =========================================================
+   FORMULARIO DE FACTURA
+   ========================================================= */
+
 #botonesFactura {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
   gap: 14px;
+
   padding: 20px;
-  background: var(--paper);
+
+  border-top:
+    1px solid var(--border);
+
+  background: #fff;
 }
 
 .trabajador {
-  grid-column: span 2;
+  grid-column:
+    1 / -1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
 }
 
-#botonesFactura label {
-  display: block;
+#botonesFactura > label {
+  display: flex;
+  align-items: center;
+
   font-size: 12px;
   font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 6px;
 }
 
-.trabajador .input-text,
+.input-text,
 #mtdpago {
   width: 100%;
+
   min-height: 44px;
-  padding: 11px 14px;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--line);
+
+  padding:
+    10px
+    14px;
+
+  border:
+    1px solid var(--border);
+
   border-radius: 12px;
+
+  background: #faf8ff;
+
   outline: none;
-  font-size: 13px;
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
 }
 
-.trabajador .input-text:focus,
+.input-text:focus,
 #mtdpago:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(106, 75, 195, 0.12);
+  border-color:
+    #b7a5ef;
+
+  box-shadow:
+    0 0 0 3px rgba(111, 75, 216, 0.10);
 }
 
+
+/* =========================================================
+   BOTONES FACTURA
+   ========================================================= */
+
+#btnimprimirFactura,
+#btncancelarFactura,
 #btnGenerarFactura {
-  grid-column: span 2;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(106, 75, 195, 0.28);
+  min-height: 44px;
+
+  padding:
+    10px
+    16px;
+
+  border-radius:
+    12px;
+
+  font-size:
+    13px;
+
+  font-weight:
+    800;
+
+  transition:
+    transform var(--transition),
+    background var(--transition);
 }
 
 #btnimprimirFactura {
-  background: var(--lilac);
-  color: var(--primary-dark);
-  border: 1px solid rgba(106, 75, 195, 0.18);
+  color:
+    var(--primary-dark);
+
+  background:
+    #eee9ff;
+
+  border:
+    1px solid #d8cef4;
 }
 
 #btncancelarFactura {
-  background: var(--rose);
-  color: var(--danger);
-  border: 1px solid rgba(199, 70, 104, 0.2);
+  color:
+    var(--danger-text);
+
+  background:
+    var(--danger-bg);
+
+  border:
+    1px solid #f0ccd6;
 }
 
-#btnGenerarFactura,
-#btnimprimirFactura,
-#btncancelarFactura {
-  width: 100%;
-  min-height: 44px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 13px;
+#btnGenerarFactura {
+  grid-column:
+    1 / -1;
+
+  color:
+    white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #754edb,
+      #5334b4
+    );
+
+  box-shadow:
+    0 8px 20px rgba(83, 52, 180, 0.20);
 }
 
-#btnGenerarFactura:active,
-#btnimprimirFactura:active,
-#btncancelarFactura:active {
-  transform: scale(0.98);
+#btnGenerarFactura:hover,
+#btnimprimirFactura:hover,
+#btncancelarFactura:hover {
+  transform:
+    translateY(-1px);
 }
 
-/* ==========================================
-   CÁLCULO DE CAMBIO & CONFIRMACIÓN
-   ========================================== */
+
+/* =========================================================
+   CAMBIO
+   ========================================================= */
+
 .cambio {
+  width: min(100%, 920px);
+
   display: flex;
   flex-direction: column;
+
   gap: 10px;
+
   padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
-  box-shadow: var(--shadow);
-  margin-top: 14px;
+
+  background: var(--surface);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
 }
 
 .cambio label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--muted);
 }
 
-.cambio .input-text {
-  width: 100%;
-  min-height: 44px;
-  padding: 11px 14px;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--bg);
-  outline: none;
+
+/* =========================================================
+   VENTA CONFIRMADA
+   ========================================================= */
+
+.invoice > div:last-child {
+  width: min(100%, 920px);
 }
 
-aside.invoice > div:last-child {
-  margin-top: 14px;
-  padding: 12px 16px;
+.invoice > div:last-child p {
+  padding: 12px;
+
   text-align: center;
-  background: #e8f7f2;
-  border: 1px solid rgba(35, 121, 95, 0.2);
+
+  color: var(--success-text);
+
+  background: var(--success-bg);
+
+  border:
+    1px solid #c9e5d9;
+
+  border-radius:
+    12px;
+
+  font-weight:
+    700;
+
+  font-size:
+    13px;
+}
+
+
+/* =========================================================
+   CATÁLOGO
+   ========================================================= */
+
+.catalog {
+  width: 100%;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.section-heading h1 {
+  font-size: 30px;
+}
+
+.section-heading p {
+  margin-top: 7px;
+
+  color: var(--text-soft);
+}
+
+.counter {
+  min-width: 78px;
+
+  padding: 10px;
+
+  text-align: center;
+
+  background: white;
+
   border-radius: 14px;
+
+  box-shadow: var(--shadow-sm);
 }
 
-aside.invoice > div:last-child p {
-  color: var(--success);
-  font-size: 13px;
-  font-weight: 700;
+.counter strong,
+.counter span {
+  display: block;
 }
 
-/* ==========================================
-   TOAST & FOOTER
-   ========================================== */
+.counter strong {
+  color: var(--primary);
+
+  font-size: 22px;
+}
+
+.counter span {
+  color: var(--text-soft);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.search {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  margin-bottom: 22px;
+
+  padding:
+    0
+    14px;
+
+  background:
+    var(--surface);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 14px;
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+.search input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 46px;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+}
+
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+
+.products-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
 .toast {
   position: fixed;
+
   right: 20px;
   bottom: 20px;
-  z-index: 20;
-  max-width: calc(100% - 40px);
-  min-height: 44px;
-  padding: 13px 17px;
-  color: #fff;
-  border-radius: 13px;
-  background: var(--ink);
-  box-shadow: var(--shadow);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(18px);
-  transition: .24s;
-  font-size: 13px;
+
+  z-index: 100;
+
+  max-width:
+    calc(100% - 40px);
+
+  padding:
+    12px
+    16px;
+
+  border-radius:
+    12px;
+
+  color:
+    white;
+
+  background:
+    #302943;
+
+  box-shadow:
+    var(--shadow-md);
 }
 
-.toast--visible {
-  opacity: 1;
-  transform: none;
-}
 
-.toast--success {
-  background: var(--success);
-}
-
-.toast--error {
-  background: var(--danger);
-}
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
 .footer {
-  padding: 24px 18px;
-  color: var(--muted);
-  border-top: 1px solid var(--line);
-  text-align: center;
-  font-size: 12px;
+  padding:
+    22px
+    16px;
+
+  text-align:
+    center;
+
+  color:
+    var(--text-soft);
+
+  border-top:
+    1px solid var(--border);
+
+  font-size:
+    12px;
 }
 
-/* ==========================================
-   RESPONSIVE MEDIA QUERIES (OPTIMIZACIÓN MÓVIL Y iOS)
-   ========================================== */
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
 @media (max-width: 900px) {
+
   .products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
   }
+
 }
 
-@media (max-width: 640px) {
-  .container {
-    width: calc(100% - 16px); /* Márgenes laterales más estrechos para aprovechar pantalla */
+
+/* =========================================================
+   CELULAR
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+  /*
+    HEADER MÓVIL
+  */
+
+  .header {
+    position: static;
   }
 
   .header__content {
+    min-height: auto;
+
+    padding:
+      14px
+      0;
+
     flex-direction: column;
+
     align-items: stretch;
-    padding: 12px 0;
+
+    gap: 12px;
   }
 
   .brand {
     justify-content: center;
-  }
 
-  .header__content > div:nth-child(2) {
-    display: flex;
-    gap: 8px;
-    width: 100%;
-  }
-
-  #historial, 
-  #inifactura {
-    flex: 1;
     text-align: center;
+  }
+
+  .brand__icon {
+    width: 44px;
+    height: 44px;
   }
 
   .tax-badge {
     display: none;
   }
 
-  .products-grid {
-    grid-template-columns: 1fr;
+  #historial,
+  #inifactura {
+    width: 100%;
+
+    min-height: 46px;
   }
 
-  .product-card__bottom {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+
+  /*
+    LAYOUT
+  */
+
+  .container {
+    width:
+      calc(100% - 20px);
   }
 
-  .product-card__bottom > div {
-    display: flex;
-    justify-content: space-between;
+  .layout {
+    gap: 20px;
+
+    padding-top: 18px;
+  }
+
+
+  /*
+    FACTURA
+    Sigue arriba,
+    pero NO ocupa toda la pantalla.
+  */
+
+  .invoice {
     align-items: center;
   }
 
-  .button-add {
-    width: 100%;
+  .invoice__card,
+  .cambio,
+  .invoice > div:last-child {
+    width: min(100%, 460px);
   }
 
-  .invoice-row {
-    grid-template-columns: 1fr auto auto;
+  .invoice__card {
+    border-radius:
+      20px;
+  }
+
+  .invoice__header {
+    padding:
+      18px
+      18px;
+  }
+
+  .invoice__header h2 {
+    font-size:
+      23px;
+  }
+
+  .invoice__count {
+    min-width:
+      42px;
+
+    height:
+      42px;
+  }
+
+
+  /*
+    Oculta encabezados de tabla
+    para ahorrar espacio.
+  */
+
+  .invoice__labels {
+    display: none;
+  }
+
+  .invoice__items {
+    max-height:
+      210px;
+  }
+
+  .invoice__row {
+    grid-template-columns:
+      minmax(0, 1fr)
+      64px
+      38px;
+
     grid-template-areas:
-      'name quantity remove'
-      'subtotal subtotal remove';
-    gap: 10px;
-    padding: 12px;
+      "producto cantidad eliminar"
+      "subtotal subtotal subtotal";
+
+    padding:
+      12px
+      16px;
   }
 
-  .invoice-row__name {
-    grid-area: name;
+
+  /*
+    EMPTY STATE
+    más compacto.
+  */
+
+  .empty-state {
+    min-height:
+      110px;
+
+    padding:
+      16px
+      18px;
   }
 
-  .invoice-row__quantity {
-    grid-area: quantity;
+  .empty-state h3 {
+    font-size:
+      17px;
   }
 
-  .invoice-row__subtotal {
-    grid-area: subtotal;
-    font-size: 14px;
+  .empty-state p {
+    font-size:
+      13px;
   }
 
-  .button-remove {
-    grid-area: remove;
-    align-self: center;
-    width: 42px;
-    height: 42px;
-  }
+
+  /*
+    FORMULARIO
+  */
 
   #botonesFactura {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
+
+    gap:
+      11px;
+
+    padding:
+      16px;
   }
 
   .trabajador,
   #btnGenerarFactura {
-    grid-column: span 1;
+    grid-column:
+      auto;
   }
 
-  /* PREVENCIÓN DE ZOOM AUTOMÁTICO EN iOS: Fuentes >= 16px en inputs móviles */
-  input,
-  select,
-  .trabajador .input-text,
-  #mtdpago,
-  .cambio .input-text {
-    font-size: 16px !important;
+  #botonesFactura > label {
+    margin-top:
+      2px;
   }
+
+  #btnimprimirFactura,
+  #btncancelarFactura,
+  #btnGenerarFactura {
+    width:
+      100%;
+  }
+
+
+  /*
+    CAMBIO
+  */
+
+  .cambio {
+    padding:
+      16px;
+  }
+
+
+  /*
+    CATÁLOGO
+  */
+
+  .section-heading {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .section-heading h1 {
+    font-size:
+      25px;
+  }
+
+  .counter {
+    display:
+      none;
+  }
+
+  .products-grid {
+    grid-template-columns:
+      1fr;
+  }
+
 }
 
+
+/* =========================================================
+   CELULARES PEQUEÑOS 320px - 400px
+   ========================================================= */
+
 @media (max-width: 400px) {
-  .brand {
-    flex-direction: column;
-    text-align: center;
-    gap: 6px;
+
+  .container {
+    width:
+      calc(100% - 14px);
   }
 
-  .header__content > div:nth-child(2) {
-    flex-direction: column;
+  .invoice__card,
+  .cambio,
+  .invoice > div:last-child {
+    width:
+      100%;
   }
+
+  .invoice__header {
+    padding:
+      16px;
+  }
+
+  .invoice__header h2 {
+    font-size:
+      21px;
+  }
+
+  .brand strong {
+    font-size:
+      17px;
+  }
+
+  .brand small {
+    font-size:
+      11px;
+  }
+
+  #historial,
+  #inifactura {
+    min-height:
+      44px;
+
+    padding:
+      9px
+      12px;
+  }
+
+  .input-text,
+  #mtdpago {
+    min-height:
+      42px;
+  }
+
+  .invoice__items {
+    max-height:
+      180px;
+  }
+
 }
