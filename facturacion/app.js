@@ -17,13 +17,11 @@ const estado = {
     terminoBusqueda:
         ""
 };
-
 /*
 =========================================================
 ELEMENTOS DEL DOM
 =========================================================
 */
-
 const catalogoProductos =
     document.querySelector(
         "#catalogoProductos"
