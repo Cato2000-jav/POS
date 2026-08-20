@@ -132,8 +132,9 @@ img {
 
 #historial, 
 #inifactura {
+  min-height: 44px;
   padding: 9px 16px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 12px;
   transition: .2s ease;
@@ -171,7 +172,6 @@ img {
   padding: 35px 0 55px;
 }
 
-/* Coloca la sección de factura en la parte superior */
 .invoice {
   order: -1;
   position: sticky;
@@ -261,6 +261,7 @@ h2 {
 
 .search input {
   width: 100%;
+  min-height: 48px;
   padding: 15px 17px 15px 48px;
   color: var(--ink);
   border: 1px solid var(--line);
@@ -374,6 +375,7 @@ h2 {
 
 .product-card input {
   width: 54px;
+  min-height: 40px;
   padding: 6px 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -381,7 +383,7 @@ h2 {
   outline-color: var(--primary);
 }
 
-/* Botón Agregar Producto */
+/* Botón Agregar Producto con feedback activo */
 .button-add {
   position: relative;
   display: inline-flex;
@@ -389,7 +391,7 @@ h2 {
   justify-content: center;
   gap: 8px;
   padding: 11px 18px;
-  min-height: 42px;
+  min-height: 44px;
   color: #ffffff;
   border-radius: 12px;
   background: linear-gradient(135deg, #7c5ce4 0%, var(--primary-dark) 100%);
@@ -407,34 +409,8 @@ h2 {
   transition: transform 0.2s ease;
 }
 
-.button-add::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.button-add:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(106, 75, 195, 0.35), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.button-add:hover::before {
-  left: 100%;
-}
-
-.button-add:hover span {
-  transform: scale(1.15) rotate(90deg);
-}
-
 .button-add:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 8px rgba(106, 75, 195, 0.2);
+  transform: scale(0.96);
 }
 
 /* ==========================================
@@ -469,7 +445,6 @@ h2 {
   font-weight: 700;
 }
 
-/* Ocultamos las etiquetas de tabla antiguas para usar lista limpia */
 .invoice__labels {
   display: none;
 }
@@ -483,7 +458,6 @@ h2 {
   padding: 16px;
 }
 
-/* Estilo de elementos de factura en forma de lista vertical */
 .invoice-row {
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) auto auto auto;
@@ -514,6 +488,7 @@ h2 {
 
 .invoice-row__quantity {
   width: 56px;
+  min-height: 40px;
   padding: 6px 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -531,8 +506,8 @@ h2 {
 .button-remove {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   color: var(--danger);
   border-radius: 10px;
   background: var(--rose);
@@ -540,11 +515,8 @@ h2 {
   font-size: 16px;
 }
 
-.button-remove:hover {
-  color: #fff;
-  background: var(--danger);
-  border-color: var(--danger);
-  transform: scale(1.08);
+.button-remove:active {
+  transform: scale(0.92);
 }
 
 .totals {
@@ -603,6 +575,7 @@ h2 {
 .trabajador .input-text,
 #mtdpago {
   width: 100%;
+  min-height: 44px;
   padding: 11px 14px;
   color: var(--ink);
   background: var(--bg);
@@ -641,17 +614,17 @@ h2 {
 #btnimprimirFactura,
 #btncancelarFactura {
   width: 100%;
+  min-height: 44px;
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 700;
   font-size: 13px;
-  min-height: 44px;
 }
 
-#btnGenerarFactura:hover,
-#btnimprimirFactura:hover,
-#btncancelarFactura:hover {
-  transform: translateY(-1px);
+#btnGenerarFactura:active,
+#btnimprimirFactura:active,
+#btncancelarFactura:active {
+  transform: scale(0.98);
 }
 
 /* ==========================================
@@ -677,6 +650,7 @@ h2 {
 
 .cambio .input-text {
   width: 100%;
+  min-height: 44px;
   padding: 11px 14px;
   font-size: 15px;
   font-weight: 700;
@@ -687,7 +661,6 @@ h2 {
   outline: none;
 }
 
-/* Mensaje de confirmación de venta */
 aside.invoice > div:last-child {
   margin-top: 14px;
   padding: 12px 16px;
@@ -712,6 +685,7 @@ aside.invoice > div:last-child p {
   bottom: 20px;
   z-index: 20;
   max-width: calc(100% - 40px);
+  min-height: 44px;
   padding: 13px 17px;
   color: #fff;
   border-radius: 13px;
@@ -746,11 +720,63 @@ aside.invoice > div:last-child p {
 }
 
 /* ==========================================
-   RESPONSIVE MEDIA QUERIES (MÓVIL)
+   RESPONSIVE MEDIA QUERIES (OPTIMIZACIÓN MÓVIL Y iOS)
    ========================================== */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    width: calc(100% - 16px); /* Márgenes laterales más estrechos para aprovechar pantalla */
+  }
+
+  .header__content {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 0;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .header__content > div:nth-child(2) {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  #historial, 
+  #inifactura {
+    flex: 1;
+    text-align: center;
+  }
+
+  .tax-badge {
+    display: none;
+  }
+
   .products-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-card__bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .product-card__bottom > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .button-add {
+    width: 100%;
   }
 
   .invoice-row {
@@ -758,7 +784,8 @@ aside.invoice > div:last-child p {
     grid-template-areas:
       'name quantity remove'
       'subtotal subtotal remove';
-    gap: 8px;
+    gap: 10px;
+    padding: 12px;
   }
 
   .invoice-row__name {
@@ -771,11 +798,14 @@ aside.invoice > div:last-child p {
 
   .invoice-row__subtotal {
     grid-area: subtotal;
+    font-size: 14px;
   }
 
   .button-remove {
     grid-area: remove;
     align-self: center;
+    width: 42px;
+    height: 42px;
   }
 
   #botonesFactura {
@@ -785,5 +815,26 @@ aside.invoice > div:last-child p {
   .trabajador,
   #btnGenerarFactura {
     grid-column: span 1;
+  }
+
+  /* PREVENCIÓN DE ZOOM AUTOMÁTICO EN iOS: Fuentes >= 16px en inputs móviles */
+  input,
+  select,
+  .trabajador .input-text,
+  #mtdpago,
+  .cambio .input-text {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .header__content > div:nth-child(2) {
+    flex-direction: column;
   }
 }
