@@ -923,232 +923,124 @@ const calcularTotales = () => {
     };
 
 };
-
-
-
 /*
 =========================================================
 RENDERIZAR TOTALES
 =========================================================
 */
-
 const renderTotales = () => {
-
-
     const {
-
-        subtotalGeneral,
-
-        iva,
-
-        total
-
+        subtotalGeneral, iva, total
     } = calcularTotales();
-
-
-
     totalesFactura.innerHTML = `
-
-
         <div class="total-linea">
-
             <span>
                 Subtotal
             </span>
-
             <strong>
-
                 ${
-                    formatoMoneda
-                        .format(
+                    formatoMoneda.format(
                             subtotalGeneral
                         )
                 }
-
             </strong>
-
         </div>
-
-
         <div class="total-linea">
-
             <span>
                 IVA (19%)
             </span>
-
             <strong>
 
                 ${
-                    formatoMoneda
-                        .format(
+                    formatoMoneda.format(
                             iva
                         )
                 }
-
             </strong>
-
         </div>
 
-
         <div
-            class="
-                total-linea
-                total-final
-            "
-        >
-
+            class="total-linea total-final">
             <span>
                 TOTAL
             </span>
-
             <strong>
 
                 ${
-                    formatoMoneda
-                        .format(
+                    formatoMoneda.format(
                             total
                         )
                 }
-
             </strong>
-
-        </div>
-
-    `;
+        </div> `;
 
 };
-
-
-
 /*
 =========================================================
 RENDERIZAR FACTURA
 =========================================================
 */
-
 const renderFactura = () => {
-
 
     facturaItems.innerHTML =
         "";
 
-
     contadorFactura.textContent =
-        estado
-            .facturaActual
-            .length;
-
-
-
+        estado.facturaActual.length;
     /*
     ESTADO VACÍO
     */
-
     if (
-
-        estado
-            .facturaActual
-            .length
-        ===
-        0
-
+        estado.facturaActual.length === 0
     ) {
-
-
         const emptyState =
             document.createElement(
                 "div"
             );
 
-
         emptyState.className =
             "empty-state";
-
-
         emptyState.innerHTML = `
-
-
             <div>
-
-
                 <div class="empty-icon">
-
                     🧾
-
                 </div>
-
-
                 <h3>
-
                     No hay productos
                     en la factura
-
                 </h3>
-
-
                 <p>
-
                     Selecciona un producto
                     del catálogo para comenzar.
-
                 </p>
-
-
-            </div>
-
-        `;
-
-
-
-        facturaItems
-            .appendChild(
+            </div>`;
+        facturaItems.appendChild(
                 emptyState
             );
-
-
         renderTotales();
-
-
         return;
-
     }
-
-
-
     /*
     map() genera una versión más completa
     de cada producto de la factura.
     */
-
     const detalleFactura =
-
         estado
             .facturaActual
             .map(
 
                 (item) => {
-
-
                     const producto =
-
                         estado
                             .productosDisponibles
                             .find(
-
                                 (producto) =>
-
-                                    producto.id
-                                    ===
-                                    item.id
-
+                                    producto.id === item.id
                             );
-
                     return {
-
                         ...producto,
                         cantidad: item.cantidad,
                         subtotal: producto.precio * item.cantidad
-
                     };
 
                 }
@@ -1177,9 +1069,7 @@ const renderFactura = () => {
                 "factura-fila";
             fila.innerHTML = `
 
-                <div
-                    class="nombre-producto"
-                >
+                <div class="nombre-producto">
 
                     <strong>
                         ${nombre}
@@ -1198,21 +1088,14 @@ const renderFactura = () => {
 
                 <input
                     type="number"
-                    class="
-                        cantidad-factura
-                    "
+                    class="cantidad-factura"
                     min="1"
                     step="1"
                     value="${cantidad}"
-                    data-id="${id}"
-
-                >
+                    data-id="${id}" >
 
                 <span
-                    class="
-                        subtotal-producto
-                    "
-                >
+                    class="subtotal-producto">
 
                     ${
                         formatoMoneda
@@ -1223,73 +1106,38 @@ const renderFactura = () => {
 
                 </span>
 
-                <button
+                <button class=" btn-eliminar "data-id="${id}"title=" Eliminar producto "> × </button> `;
 
-                    class="
-                        btn-eliminar
-                    "
-
-                    data-id="${id}"
-
-                    title="
-                        Eliminar producto
-                    "
-
-                >
-
-                    ×
-
-                </button>
-
-            `;
-
-            facturaItems
-                .appendChild(
-                    fila
-                );
+            facturaItems.appendChild(fila);
 
         }
 
     );
-
     /*
     EVENTOS DE CAMBIO DE CANTIDAD
     */
-
     const inputsCantidad =
-
         document.querySelectorAll(
             ".cantidad-factura"
         );
 
     inputsCantidad.forEach(
-
         (input) => {
-
             input.addEventListener(
-
                 "change",
-
                 (evento) => {
-
-
                     const idProducto =
-
                         Number(
-
                             evento
                                 .currentTarget
                                 .dataset
                                 .id
-
                         );
-
                     actualizarCantidad(
                         idProducto,
                         evento
                             .currentTarget
                             .value
-
                     );
 
                 }
@@ -1299,40 +1147,26 @@ const renderFactura = () => {
         }
 
     );
-
     /*
     EVENTOS ELIMINAR
     */
-
     const botonesEliminar =
-
         document.querySelectorAll(
             ".btn-eliminar"
         );
 
     botonesEliminar.forEach(
-
         (boton) => {
-
             boton.addEventListener(
-
                 "click",
-
                 (evento) => {
-
-
                     const idProducto =
-
                         Number(
-
                             evento
                                 .currentTarget
                                 .dataset
                                 .id
-
                         );
-
-
                     eliminarProducto(
                         idProducto
                     );
@@ -1344,61 +1178,40 @@ const renderFactura = () => {
         }
 
     );
-
     renderTotales();
-
 };
-
 /*
 =========================================================
 FUNCIÓN BUSCADOR
 =========================================================
 */
-
 const buscarProductos = (
     texto
 ) => {
-
     /*
     Primero actualizamos el estado.
     */
-
-    estado.terminoBusqueda =
-        texto;
-
+    estado.terminoBusqueda = texto;
     /*
     Después actualizamos el DOM.
     */
-
     renderProductos();
-
 };
-
 /*
 =========================================================
 EVENTO DEL BUSCADOR
 =========================================================
 */
-
 buscador.addEventListener(
-
     "input",
-
     (evento) => {
-
-
         buscarProductos(
-
             evento.target.value
-
         );
 
     }
 
 );
-
-
-
 /*
 =========================================================
 RENDER INICIAL
