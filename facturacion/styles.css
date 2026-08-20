@@ -33,6 +33,7 @@ body {
   background: radial-gradient(circle at 4% 0%, #eae1ff 0, transparent 25rem),
               radial-gradient(circle at 100% 80%, #ffe6ef 0, transparent 29rem),
               var(--bg);
+  overflow-x: hidden; /* Evita desplazamiento horizontal accidental */
 }
 
 button, 
@@ -40,13 +41,14 @@ input {
   font: inherit;
 }
 
-/* Base general para todos los botones */
+/* Base general accesible para botones */
 button {
   border: 0;
   cursor: pointer;
   user-select: none;
   font-family: inherit;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent; /* Quita el recuadro gris al tocar en móviles */
 }
 
 button:focus-visible {
@@ -60,8 +62,25 @@ img {
 }
 
 .container {
-  width: min(1180px, calc(100% - 36px));
+  width: min(1180px, calc(100% - 32px));
   margin: auto;
+}
+
+/* Estilos para botones adicionales del Header (Ver historial / Iniciar factura) */
+#historial, 
+#inifactura {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+  background: var(--lilac);
+  color: var(--primary-dark);
+}
+
+#historial:hover, 
+#inifactura:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 /* ==========================================
@@ -102,6 +121,7 @@ img {
   background: linear-gradient(135deg, #8d70e8, var(--primary-dark));
   box-shadow: 0 7px 16px rgba(92, 59, 175, .26);
   font-size: 27px;
+  flex-shrink: 0;
 }
 
 .brand strong {
@@ -301,7 +321,7 @@ h2 {
 
 .product-card__bottom {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 11px;
   margin-top: auto;
@@ -310,7 +330,7 @@ h2 {
 
 .product-card__bottom strong {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: var(--primary-dark);
   font-size: 18px;
 }
@@ -340,7 +360,8 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
+  padding: 11px 18px;
+  min-height: 42px;
   color: #ffffff;
   border-radius: 12px;
   background: linear-gradient(135deg, #7c5ce4 0%, var(--primary-dark) 100%);
@@ -469,7 +490,7 @@ h2 {
 
 .invoice__items {
   max-height: 420px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .invoice-row {
@@ -511,8 +532,8 @@ h2 {
 .button-remove {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   color: var(--danger);
   border-radius: 10px;
   background: var(--rose);
@@ -526,17 +547,15 @@ h2 {
   background: var(--danger);
   border-color: var(--danger);
   transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(199, 70, 104, 0.28);
 }
 
 .button-remove:active {
   transform: scale(0.94);
-  box-shadow: none;
 }
 
 .empty-invoice {
   display: grid;
-  min-height: 260px;
+  min-height: 220px;
   place-content: center;
   padding: 25px;
   text-align: center;
@@ -636,11 +655,12 @@ h2 {
 }
 
 /* ==========================================
-   RESPONSIVE MEDIA QUERIES
+   RESPONSIVE MEDIA QUERIES (OPTIMIZACIÓN MÓVIL)
    ========================================== */
 @media (max-width: 960px) {
   .layout {
     grid-template-columns: 1fr;
+    padding-top: 30px;
   }
   
   .invoice {
@@ -652,89 +672,116 @@ h2 {
   }
 }
 
-@media (max-width: 620px) {
+@media (max-width: 640px) {
   .container {
     width: calc(100% - 24px);
   }
-  
+
   .header__content {
-    min-height: 68px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    min-height: auto;
   }
-  
+
   .tax-badge {
     display: none;
   }
-  
-  .layout {
-    padding-top: 28px;
-    gap: 26px;
-  }
-  
+
   h1 {
-    font-size: 29px;
+    font-size: 26px;
   }
-  
+
   .section-heading {
-    align-items: start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
-  
+
   .counter {
     display: none;
   }
-  
+
+  /* Tarjetas de producto a una sola columna en pantallas móviles */
   .products-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
-  
-  .product-card__image {
-    height: 210px;
-  }
-  
-  .invoice__labels {
-    display: none;
-  }
-  
-  .invoice-row {
-    grid-template-columns: minmax(0, 1fr) 58px 31px;
-    grid-template-areas:
-      'name quantity remove'
-      'subtotal subtotal subtotal';
-  }
-  
-  .invoice-row__name {
-    grid-area: name;
-  }
-  
-  .invoice-row__quantity {
-    grid-area: quantity;
-  }
-  
-  .invoice-row__subtotal {
-    grid-area: subtotal;
-    margin-top: 2px;
-    color: var(--primary-dark);
-  }
-  
-  .button-remove {
-    grid-area: remove;
-  }
-}
 
-@media (max-width: 380px) {
-  .brand strong {
-    font-size: 18px;
+  .product-card__image {
+    height: 190px;
   }
-  
+
+  /* Ajuste de controles táctiles en tarjetas */
   .product-card__bottom {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
-  
-  .product-card label {
+
+  .product-card__bottom > div {
+    display: flex;
     justify-content: space-between;
+    align-items: center;
   }
-  
+
+  .product-card input {
+    height: 38px;
+    font-size: 14px;
+  }
+
   .button-add {
+    width: 100%;
+    min-height: 44px; /* Tamaño táctil recomendado */
+  }
+
+  /* Vista de tabla en Factura convertida a tarjetas en móvil */
+  .invoice__labels {
+    display: none;
+  }
+
+  .invoice-row {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      'name quantity remove'
+      'subtotal subtotal remove';
+    gap: 10px;
+    padding: 14px 16px;
+  }
+
+  .invoice-row__name {
+    grid-area: name;
+  }
+
+  .invoice-row__quantity {
+    grid-area: quantity;
+    height: 36px;
+  }
+
+  .invoice-row__subtotal {
+    grid-area: subtotal;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+
+  .button-remove {
+    grid-area: remove;
+    align-self: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .header__content {
     justify-content: center;
+    text-align: center;
+  }
+
+  .brand {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .brand strong {
+    font-size: 18px;
   }
 }
