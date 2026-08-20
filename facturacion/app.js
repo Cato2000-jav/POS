@@ -827,3 +827,4 @@ RENDER INICIAL
 */
 renderProductos();
 renderFactura();
+
