@@ -40,6 +40,7 @@ input {
   font: inherit;
 }
 
+/* Base general para todos los botones */
 button {
   border: 0;
   cursor: pointer;
@@ -332,28 +333,59 @@ h2 {
   outline-color: var(--primary);
 }
 
+/* Botón Agregar Producto */
 .button-add {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 11px 13px;
-  color: #fff;
-  border-radius: 11px;
-  background: linear-gradient(135deg, #8565e1, var(--primary-dark));
-  box-shadow: 0 7px 14px rgba(87, 52, 175, .18);
-  font-size: 12px;
-  font-weight: 700;
-  transition: .2s;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  color: #ffffff;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c5ce4 0%, var(--primary-dark) 100%);
+  box-shadow: 0 4px 12px rgba(106, 75, 195, 0.25), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  overflow: hidden;
 }
 
 .button-add span {
-  font-size: 17px;
-  line-height: 10px;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.button-add::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
 .button-add:hover {
   transform: translateY(-2px);
-  filter: brightness(1.04);
+  box-shadow: 0 8px 20px rgba(106, 75, 195, 0.35), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.button-add:hover::before {
+  left: 100%;
+}
+
+.button-add:hover span {
+  transform: scale(1.15) rotate(90deg);
+}
+
+.button-add:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 8px rgba(106, 75, 195, 0.2);
 }
 
 .empty-catalog {
@@ -475,21 +507,31 @@ h2 {
   font-size: 12px;
 }
 
+/* Botón Eliminar Item */
 .button-remove {
   display: grid;
   place-items: center;
-  width: 31px;
-  height: 31px;
+  width: 32px;
+  height: 32px;
   color: var(--danger);
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--rose);
-  font-size: 21px;
-  transition: .2s;
+  border: 1px solid rgba(199, 70, 104, 0.12);
+  font-size: 18px;
+  line-height: 1;
 }
 
 .button-remove:hover {
-  background: #ffd8e5;
-  transform: scale(1.06);
+  color: #fff;
+  background: var(--danger);
+  border-color: var(--danger);
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(199, 70, 104, 0.28);
+}
+
+.button-remove:active {
+  transform: scale(0.94);
+  box-shadow: none;
 }
 
 .empty-invoice {
