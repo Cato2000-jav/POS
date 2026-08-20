@@ -130,7 +130,6 @@ img {
   font-weight: 700;
 }
 
-/* Botones superior del Header */
 #historial, 
 #inifactura {
   padding: 9px 16px;
@@ -163,14 +162,25 @@ img {
 }
 
 /* ==========================================
-   LAYOUT & SECTIONS
+   LAYOUT PRINCIPAL (FACTURACIÓN ARRIBA)
    ========================================== */
 .layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.62fr) minmax(330px, .78fr);
-  align-items: start;
-  gap: 31px;
-  padding: 42px 0 55px;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  padding: 35px 0 55px;
+}
+
+/* Coloca la sección de factura en la parte superior */
+.invoice {
+  order: -1;
+  position: sticky;
+  top: 92px;
+  z-index: 5;
+}
+
+.catalog {
+  order: 1;
 }
 
 .section-heading {
@@ -268,7 +278,7 @@ h2 {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 19px;
 }
 
@@ -291,7 +301,7 @@ h2 {
 
 .product-card__image {
   position: relative;
-  height: 188px;
+  height: 175px;
   overflow: hidden;
   background: var(--lilac);
 }
@@ -427,42 +437,9 @@ h2 {
   box-shadow: 0 2px 8px rgba(106, 75, 195, 0.2);
 }
 
-.empty-catalog {
-  grid-column: 1 / -1;
-  padding: 44px 20px;
-  text-align: center;
-  border: 2px dashed var(--line);
-  border-radius: var(--radius);
-  color: var(--muted);
-}
-
-.empty-catalog span {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--primary);
-  font-size: 37px;
-}
-
-.empty-catalog h3 {
-  color: var(--ink);
-}
-
-.empty-catalog p {
-  margin-top: 5px;
-  font-size: 13px;
-}
-
 /* ==========================================
-   INVOICE / CART
+   FACTURA / CARRITO (FORMATO LISTA VERTICAL)
    ========================================== */
-.invoice {
-  position: sticky;
-  top: 99px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
 .invoice__card {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -476,6 +453,8 @@ h2 {
   align-items: center;
   justify-content: space-between;
   padding: 22px;
+  background: #fcfbfe;
+  border-bottom: 1px solid var(--line);
 }
 
 .invoice__count {
@@ -490,33 +469,30 @@ h2 {
   font-weight: 700;
 }
 
-.invoice__labels, 
-.invoice-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) 58px 86px 32px;
-  align-items: center;
-  gap: 8px;
-}
-
+/* Ocultamos las etiquetas de tabla antiguas para usar lista limpia */
 .invoice__labels {
-  padding: 10px 20px;
-  color: var(--muted);
-  border-block: 1px solid var(--line);
-  background: #fcfbfe;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .05em;
-  text-transform: uppercase;
+  display: none;
 }
 
 .invoice__items {
-  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
   overflow-y: auto;
+  padding: 16px;
 }
 
+/* Estilo de elementos de factura en forma de lista vertical */
 .invoice-row {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
 }
 
 .invoice-row__name {
@@ -533,20 +509,23 @@ h2 {
 
 .invoice-row__name small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .invoice-row__quantity {
-  width: 57px;
-  padding: 7px 3px;
+  width: 56px;
+  padding: 6px 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
   text-align: center;
+  background: var(--paper);
   outline-color: var(--primary);
 }
 
 .invoice-row__subtotal {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-dark);
 }
 
 .button-remove {
@@ -558,8 +537,7 @@ h2 {
   border-radius: 10px;
   background: var(--rose);
   border: 1px solid rgba(199, 70, 104, 0.12);
-  font-size: 18px;
-  line-height: 1;
+  font-size: 16px;
 }
 
 .button-remove:hover {
@@ -569,27 +547,24 @@ h2 {
   transform: scale(1.08);
 }
 
-.button-remove:active {
-  transform: scale(0.94);
-}
-
 .totals {
-  padding: 17px 20px;
+  padding: 16px 20px;
   background: #fcfbfe;
+  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 
 .totals > div {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: 5px 0;
   color: var(--muted);
   font-size: 13px;
 }
 
 .totals__final {
-  margin-top: 8px;
-  padding-top: 12px !important;
+  margin-top: 6px;
+  padding-top: 10px !important;
   color: var(--ink) !important;
   border-top: 1px solid var(--line);
   font-size: 16px !important;
@@ -599,18 +574,22 @@ h2 {
 
 .totals__final strong {
   color: var(--primary-dark);
-  font-size: 20px;
+  font-size: 19px;
 }
 
 /* ==========================================
    FORMULARIO Y ACCIONES DE FACTURA (#botonesFactura)
    ========================================== */
 #botonesFactura {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
   padding: 20px;
   background: var(--paper);
+}
+
+.trabajador {
+  grid-column: span 2;
 }
 
 #botonesFactura label {
@@ -630,7 +609,6 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 12px;
   outline: none;
-  transition: border-color .2s, box-shadow .2s;
   font-size: 13px;
 }
 
@@ -638,6 +616,25 @@ h2 {
 #mtdpago:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(106, 75, 195, 0.12);
+}
+
+#btnGenerarFactura {
+  grid-column: span 2;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(106, 75, 195, 0.28);
+}
+
+#btnimprimirFactura {
+  background: var(--lilac);
+  color: var(--primary-dark);
+  border: 1px solid rgba(106, 75, 195, 0.18);
+}
+
+#btncancelarFactura {
+  background: var(--rose);
+  color: var(--danger);
+  border: 1px solid rgba(199, 70, 104, 0.2);
 }
 
 #btnGenerarFactura,
@@ -648,47 +645,13 @@ h2 {
   border-radius: 12px;
   font-weight: 700;
   font-size: 13px;
-  text-transform: capitalize;
   min-height: 44px;
 }
 
-#btnGenerarFactura {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(106, 75, 195, 0.28);
-}
-
-#btnGenerarFactura:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 22px rgba(106, 75, 195, 0.38);
-}
-
-#btnimprimirFactura {
-  background: var(--lilac);
-  color: var(--primary-dark);
-  border: 1px solid rgba(106, 75, 195, 0.18);
-}
-
-#btnimprimirFactura:hover {
-  background: #e2d9ff;
-  transform: translateY(-1px);
-}
-
-#btncancelarFactura {
-  background: var(--rose);
-  color: var(--danger);
-  border: 1px solid rgba(199, 70, 104, 0.2);
-}
-
+#btnGenerarFactura:hover,
+#btnimprimirFactura:hover,
 #btncancelarFactura:hover {
-  background: #ffd8e5;
   transform: translateY(-1px);
-}
-
-#btnGenerarFactura:active,
-#btnimprimirFactura:active,
-#btncancelarFactura:active {
-  transform: translateY(0) scale(0.98);
 }
 
 /* ==========================================
@@ -703,6 +666,7 @@ h2 {
   border-radius: var(--radius);
   background: var(--paper);
   box-shadow: var(--shadow);
+  margin-top: 14px;
 }
 
 .cambio label {
@@ -723,13 +687,9 @@ h2 {
   outline: none;
 }
 
-.cambio .input-text:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(106, 75, 195, 0.12);
-}
-
 /* Mensaje de confirmación de venta */
 aside.invoice > div:last-child {
+  margin-top: 14px;
   padding: 12px 16px;
   text-align: center;
   background: #e8f7f2;
@@ -741,7 +701,6 @@ aside.invoice > div:last-child p {
   color: var(--success);
   font-size: 13px;
   font-weight: 700;
-  text-transform: capitalize;
 }
 
 /* ==========================================
@@ -787,90 +746,11 @@ aside.invoice > div:last-child p {
 }
 
 /* ==========================================
-   RESPONSIVE MEDIA QUERIES (MÓVIL Y TABLET)
+   RESPONSIVE MEDIA QUERIES (MÓVIL)
    ========================================== */
-@media (max-width: 960px) {
-  .layout {
-    grid-template-columns: 1fr;
-    padding-top: 28px;
-  }
-  
-  .invoice {
-    position: static;
-  }
-  
-  .invoice__items {
-    max-height: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .container {
-    width: calc(100% - 24px);
-  }
-
-  .header__content {
-    padding: 12px 0;
-    gap: 12px;
-  }
-
-  .tax-badge {
-    display: none;
-  }
-
-  #historial, 
-  #inifactura {
-    flex: 1;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 26px;
-  }
-
-  .section-heading {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .counter {
-    display: none;
-  }
-
+@media (max-width: 768px) {
   .products-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .product-card__image {
-    height: 190px;
-  }
-
-  .product-card__bottom {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .product-card__bottom > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .product-card input {
-    height: 38px;
-    font-size: 14px;
-  }
-
-  .button-add {
-    width: 100%;
-    min-height: 44px;
-  }
-
-  .invoice__labels {
-    display: none;
   }
 
   .invoice-row {
@@ -878,8 +758,7 @@ aside.invoice > div:last-child p {
     grid-template-areas:
       'name quantity remove'
       'subtotal subtotal remove';
-    gap: 10px;
-    padding: 14px 16px;
+    gap: 8px;
   }
 
   .invoice-row__name {
@@ -888,30 +767,23 @@ aside.invoice > div:last-child p {
 
   .invoice-row__quantity {
     grid-area: quantity;
-    height: 36px;
   }
 
   .invoice-row__subtotal {
     grid-area: subtotal;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--primary-dark);
   }
 
   .button-remove {
     grid-area: remove;
     align-self: center;
   }
-}
 
-@media (max-width: 400px) {
-  .header__content {
-    justify-content: center;
+  #botonesFactura {
+    grid-template-columns: 1fr;
   }
 
-  .brand {
-    flex-direction: column;
-    text-align: center;
-    gap: 6px;
+  .trabajador,
+  #btnGenerarFactura {
+    grid-column: span 1;
   }
 }
