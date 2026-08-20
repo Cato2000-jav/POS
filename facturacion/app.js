@@ -8,7 +8,6 @@ Nunca utilizamos el HTML como fuente de información.
 Primero modificamos el estado y después volvemos
 a renderizar.
 */
-
 const estado = {
     productosDisponibles:
         [...productos],
