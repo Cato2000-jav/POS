@@ -51,6 +51,26 @@
         <!-- Las filas se crean dinámicamente desde app.js. -->
         <div id="facturaItems" class="invoice__items" aria-live="polite"></div>
         <div id="totalesFactura" class="totals"></div>
+        <div id="botonesFactura" >
+          <div class="trabajador">
+            <label for="trabajador">Nombre del trabajador:</label>
+            <input type="text" id="trabajador" name="Trabajador" required class="input-text">
+          </div>
+          <label for="mtdpago">Elige el metodo de pago:</label>
+          <select id="mtdpago" name="mtdpago">
+              <option value="efectivo">Efectivo</option>
+              <option value="tarjeta">Tarjeta de crédito</option>
+              <option value="transferencia">Transferencia bancaria</option>
+          </select>
+          <button id="btnimprimirFactura" class="btn btn--secondary" type="button">imprimir factura</button>
+          <button id="btncancelarFactura" class="btn btn--primary" type="button">cancelar factura</button>
+          <button id="btnGenerarFactura" class="btn btn--primary" type="button">generar factura</button>
+        </div>
+        
+      </div>
+      <div class="cambio">
+        <label for="trabajador">introdusca :</label>
+        <input type="text" id="trabajador" name="Trabajador" required class="input-text">
       </div>
     </aside>
   </main>
