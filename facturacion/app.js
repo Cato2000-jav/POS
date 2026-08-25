@@ -14,7 +14,9 @@ const estado = {
 
     terminoBusqueda: "",
 
-    ultimaVenta: null
+    ultimaVenta: null,
+
+    facturaIniciada: false
 };
 
 
@@ -32,6 +34,16 @@ const catalogoProductos =
 const facturaItems =
     document.querySelector(
         "#facturaItems"
+    );
+
+const panelFactura =
+    document.querySelector(
+        "#panelFactura"
+    );
+
+const contenidoPrincipal =
+    document.querySelector(
+        ".layout"
     );
 
 const totalesFactura =
@@ -486,6 +498,17 @@ const agregarProducto = (
     idProducto,
     cantidad
 ) => {
+
+    if (!estado.facturaIniciada) {
+
+        mostrarToast(
+            "Primero pulsa “Iniciar factura” para comenzar una venta.",
+            "error"
+        );
+
+        return;
+
+    }
 
     const producto =
         estado
@@ -1418,6 +1441,16 @@ const iniciarFactura = () => {
         }
     }
 
+
+    estado.facturaIniciada =
+        true;
+
+    panelFactura.hidden =
+        false;
+
+    contenidoPrincipal.classList.remove(
+        "factura-no-iniciada"
+    );
 
     estado.facturaActual =
         [];
