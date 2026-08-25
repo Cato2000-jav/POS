@@ -261,6 +261,7 @@ const registrarVenta = (
                 )
     };
 
+    
 
     historialActual.unshift(
         nuevaVenta

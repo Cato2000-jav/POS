@@ -480,6 +480,7 @@ h1 { font-size: clamp(25px, 3vw, 34px); }
         grid-area: eliminar;
     }
 
+    
     .product-bottom {
         align-items: stretch;
         flex-direction: column;

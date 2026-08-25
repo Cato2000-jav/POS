@@ -24,6 +24,7 @@ ELEMENTOS DEL DOM
 =========================================================
 */
 
+
 const catalogoProductos =
     document.querySelector(
         "#catalogoProductos"
