@@ -185,6 +185,21 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
         translateY(-1px);
 }
 
+.btn-imprimir-historial:hover {
+    background: #ffe1ec;
+}
+
+.btn-eliminar-venta:hover {
+    background: #ffdfe5;
+}
+
+.btn-ver-detalle:focus-visible,
+.btn-imprimir-historial:focus-visible,
+.btn-eliminar-venta:focus-visible {
+    outline: 3px solid #bba9f5;
+    outline-offset: 2px;
+}
+
 
 /* Móvil */
 
