@@ -450,6 +450,14 @@ const crearFilaVenta = (
                 Imprimir
             </button>
 
+            <button
+                class="btn-eliminar-venta"
+                data-id="${venta.id}"
+                type="button"
+            >
+                Borrar
+            </button>
+
         </td>
     `;
 
@@ -491,6 +499,24 @@ const crearFilaVenta = (
         () => {
 
             imprimirVentaHistorica(
+                venta.id
+            );
+
+        }
+    );
+
+
+    const botonEliminar =
+        fila.querySelector(
+            ".btn-eliminar-venta"
+        );
+
+
+    botonEliminar.addEventListener(
+        "click",
+        () => {
+
+            eliminarVentaHistorica(
                 venta.id
             );
 
@@ -1045,6 +1071,89 @@ const mostrarNotificacion = (
 
         },
         1800
+    );
+};
+
+
+/*
+=========================================================
+ELIMINAR UNA VENTA
+=========================================================
+*/
+
+const eliminarVentaHistorica = (
+    idVenta
+) => {
+
+    const historial =
+        obtenerHistorial();
+
+
+    const venta =
+        historial.find(
+            (registro) =>
+                String(
+                    registro.id
+                )
+                ===
+                String(
+                    idVenta
+                )
+        );
+
+
+    if (!venta) {
+
+        mostrarNotificacion(
+            "No se encontró la factura que deseas borrar."
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        window.confirm(
+            `¿Deseas borrar la factura #${venta.id}?`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const historialActualizado =
+        historial.filter(
+            (registro) =>
+                String(
+                    registro.id
+                )
+                !==
+                String(
+                    idVenta
+                )
+        );
+
+
+    if (!guardarHistorial(historialActualizado)) {
+
+        mostrarNotificacion(
+            "No fue posible borrar la factura."
+        );
+
+        return;
+
+    }
+
+
+    renderHistorial();
+
+    mostrarNotificacion(
+        "Factura eliminada correctamente."
     );
 };
 
