@@ -451,6 +451,14 @@ const crearFilaVenta = (
                 Imprimir
             </button>
 
+            <button
+                class="btn-eliminar-venta"
+                data-id="${venta.id}"
+                type="button"
+            >
+                Borrar
+            </button>
+
         </td>
     `;
 
@@ -492,6 +500,24 @@ const crearFilaVenta = (
         () => {
 
             imprimirVentaHistorica(
+                venta.id
+            );
+
+        }
+    );
+
+
+    const botonEliminar =
+        fila.querySelector(
+            ".btn-eliminar-venta"
+        );
+
+
+    botonEliminar.addEventListener(
+        "click",
+        () => {
+
+            eliminarVentaHistorica(
                 venta.id
             );
 
@@ -810,12 +836,51 @@ const imprimirVentaHistorica = (
                     font-size: 18px;
                 }
 
+                .acciones-impresion {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    margin-bottom: 24px;
+                }
+
+                .acciones-impresion button {
+                    padding: 9px 13px;
+                    border: 0;
+                    border-radius: 8px;
+                    background: #5237b4;
+                    color: #fff;
+                    cursor: pointer;
+                    font: inherit;
+                    font-weight: 700;
+                }
+
+                .acciones-impresion .cerrar {
+                    background: #eeeaf5;
+                    color: #3d3650;
+                }
+
+                @media print {
+                    .acciones-impresion {
+                        display: none;
+                    }
+                }
+
             </style>
 
         </head>
 
 
         <body>
+
+            <div class="acciones-impresion">
+                <button type="button" onclick="window.print()">
+                    Imprimir
+                </button>
+
+                <button class="cerrar" type="button" onclick="window.close()">
+                    Cerrar
+                </button>
+            </div>
 
             <h1>
                 PAPEL Y LUNA
@@ -943,8 +1008,6 @@ const imprimirVentaHistorica = (
     ventana.document.close();
 
     ventana.focus();
-
-    ventana.print();
 };
 
 
@@ -1009,6 +1072,89 @@ const mostrarNotificacion = (
 
         },
         1800
+    );
+};
+
+
+/*
+=========================================================
+ELIMINAR UNA VENTA
+=========================================================
+*/
+
+const eliminarVentaHistorica = (
+    idVenta
+) => {
+
+    const historial =
+        obtenerHistorial();
+
+
+    const venta =
+        historial.find(
+            (registro) =>
+                String(
+                    registro.id
+                )
+                ===
+                String(
+                    idVenta
+                )
+        );
+
+
+    if (!venta) {
+
+        mostrarNotificacion(
+            "No se encontró la factura que deseas borrar."
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        window.confirm(
+            `¿Deseas borrar la factura #${venta.id}?`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const historialActualizado =
+        historial.filter(
+            (registro) =>
+                String(
+                    registro.id
+                )
+                !==
+                String(
+                    idVenta
+                )
+        );
+
+
+    if (!guardarHistorial(historialActualizado)) {
+
+        mostrarNotificacion(
+            "No fue posible borrar la factura."
+        );
+
+        return;
+
+    }
+
+
+    renderHistorial();
+
+    mostrarNotificacion(
+        "Factura eliminada correctamente."
     );
 };
 
@@ -1080,6 +1226,33 @@ if (
         limpiarHistorial
     );
 }
+
+
+/*
+=========================================================
+SINCRONIZAR HISTORIAL ENTRE PESTAÑAS
+=========================================================
+*/
+
+window.addEventListener(
+    "storage",
+    (evento) => {
+
+        if (
+            evento.key
+            ===
+            CLAVE_HISTORIAL
+            ||
+            evento.key
+            ===
+            null
+        ) {
+
+            renderHistorial();
+
+        }
+    }
+);
 
 
 /*

@@ -114,7 +114,8 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
 }
 
 .btn-ver-detalle,
-.btn-imprimir-historial {
+.btn-imprimir-historial,
+.btn-eliminar-venta {
 
     margin:
         3px
@@ -167,8 +168,18 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
         #9b486b;
 }
 
+.btn-eliminar-venta {
+
+    background:
+        #fff0f2;
+
+    color:
+        #b12d4d;
+}
+
 .btn-ver-detalle:hover,
-.btn-imprimir-historial:hover {
+.btn-imprimir-historial:hover,
+.btn-eliminar-venta:hover {
 
     transform:
         translateY(-1px);
@@ -184,7 +195,8 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
     }
 
     .btn-ver-detalle,
-    .btn-imprimir-historial {
+    .btn-imprimir-historial,
+    .btn-eliminar-venta {
 
         display:
             block;

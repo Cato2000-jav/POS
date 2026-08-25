@@ -14,7 +14,9 @@ const estado = {
 
     terminoBusqueda: "",
 
-    ultimaVenta: null
+    ultimaVenta: null,
+
+    facturaIniciada: false
 };
 
 
@@ -33,6 +35,16 @@ const catalogoProductos =
 const facturaItems =
     document.querySelector(
         "#facturaItems"
+    );
+
+const panelFactura =
+    document.querySelector(
+        "#panelFactura"
+    );
+
+const contenidoPrincipal =
+    document.querySelector(
+        ".layout"
     );
 
 const totalesFactura =
@@ -487,6 +499,17 @@ const agregarProducto = (
     idProducto,
     cantidad
 ) => {
+
+    if (!estado.facturaIniciada) {
+
+        mostrarToast(
+            "Primero pulsa “Iniciar factura” para comenzar una venta.",
+            "error"
+        );
+
+        return;
+
+    }
 
     const producto =
         estado
@@ -1420,6 +1443,16 @@ const iniciarFactura = () => {
     }
 
 
+    estado.facturaIniciada =
+        true;
+
+    panelFactura.hidden =
+        false;
+
+    contenidoPrincipal.classList.remove(
+        "factura-no-iniciada"
+    );
+
     estado.facturaActual =
         [];
 
@@ -1714,6 +1747,21 @@ const generarFactura = () => {
     /*
     REGISTRAR EN HISTORIAL
     */
+
+    if (
+        typeof window.registrarVentaEnHistorial
+        !==
+        "function"
+    ) {
+
+        mostrarToast(
+            "No se pudo cargar el historial de facturas.",
+            "error"
+        );
+
+        return;
+
+    }
 
     const nuevaVenta =
         window
@@ -2050,7 +2098,34 @@ const imprimirFactura = () => {
                     color: #746f80;
                 }
 
+                .acciones-impresion {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    margin-bottom: 24px;
+                }
+
+                .acciones-impresion button {
+                    padding: 9px 13px;
+                    border: 0;
+                    border-radius: 8px;
+                    background: #5237b4;
+                    color: #fff;
+                    cursor: pointer;
+                    font: inherit;
+                    font-weight: 700;
+                }
+
+                .acciones-impresion .cerrar {
+                    background: #eeeaf5;
+                    color: #3d3650;
+                }
+
                 @media print {
+
+                    .acciones-impresion {
+                        display: none;
+                    }
 
                     body {
                         margin: 15px;
@@ -2064,6 +2139,16 @@ const imprimirFactura = () => {
 
 
         <body>
+
+            <div class="acciones-impresion">
+                <button type="button" onclick="window.print()">
+                    Imprimir
+                </button>
+
+                <button class="cerrar" type="button" onclick="window.close()">
+                    Cerrar
+                </button>
+            </div>
 
             <h1>
                 PAPEL Y LUNA
@@ -2237,10 +2322,6 @@ const imprimirFactura = () => {
 
     ventanaImpresion
         .focus();
-
-
-    ventanaImpresion
-        .print();
 };
 
 
