@@ -1229,6 +1229,33 @@ if (
 
 /*
 =========================================================
+SINCRONIZAR HISTORIAL ENTRE PESTAÑAS
+=========================================================
+*/
+
+window.addEventListener(
+    "storage",
+    (evento) => {
+
+        if (
+            evento.key
+            ===
+            CLAVE_HISTORIAL
+            ||
+            evento.key
+            ===
+            null
+        ) {
+
+            renderHistorial();
+
+        }
+    }
+);
+
+
+/*
+=========================================================
 EXPONER FUNCIÓN PARA APP.JS
 =========================================================
 */
