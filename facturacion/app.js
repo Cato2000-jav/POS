@@ -1747,6 +1747,21 @@ const generarFactura = () => {
     REGISTRAR EN HISTORIAL
     */
 
+    if (
+        typeof window.registrarVentaEnHistorial
+        !==
+        "function"
+    ) {
+
+        mostrarToast(
+            "No se pudo cargar el historial de facturas.",
+            "error"
+        );
+
+        return;
+
+    }
+
     const nuevaVenta =
         window
             .registrarVentaEnHistorial(
