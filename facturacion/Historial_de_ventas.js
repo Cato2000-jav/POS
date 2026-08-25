@@ -35,24 +35,10 @@ OBTENER HISTORIAL
 
 const obtenerHistorial = () => {
 
-    let historialGuardado;
-
-    try {
-
-        historialGuardado =
-            localStorage.getItem(
-                CLAVE_HISTORIAL
-            );
-
-    } catch (error) {
-
-        console.error(
-            "No fue posible acceder al historial:",
-            error
+    const historialGuardado =
+        localStorage.getItem(
+            CLAVE_HISTORIAL
         );
-
-        return [];
-    }
 
 
     if (!historialGuardado) {
@@ -1210,14 +1196,9 @@ const limpiarHistorial = () => {
     }
 
 
-    if (!guardarHistorial([])) {
-
-        mostrarNotificacion(
-            "No fue posible eliminar el historial."
-        );
-
-        return;
-    }
+    localStorage.removeItem(
+        CLAVE_HISTORIAL
+    );
 
 
     renderHistorial();
