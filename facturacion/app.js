@@ -916,6 +916,13 @@ const renderFactura = () => {
                             );
 
 
+                    if (!producto) {
+
+                        return null;
+
+                    }
+
+
                     return {
 
                         ...producto,
@@ -929,7 +936,8 @@ const renderFactura = () => {
                             item.cantidad
                     };
                 }
-            );
+            )
+            .filter(Boolean);
 
 
     detalleFactura.forEach(
@@ -1138,6 +1146,13 @@ const obtenerDetalleFactura = () => {
                         );
 
 
+                if (!producto) {
+
+                    return null;
+
+                }
+
+
                 return {
 
                     id:
@@ -1158,7 +1173,8 @@ const obtenerDetalleFactura = () => {
                         item.cantidad
                 };
             }
-        );
+        )
+        .filter(Boolean);
 };
 
 
@@ -1193,10 +1209,8 @@ const actualizarMetodoPago = () => {
         dineroRecibido.value =
             "";
 
-        resultadoCambio.innerHTML = `
-            No se requiere cálculo
-            de cambio para este método.
-        `;
+        resultadoCambio.textContent =
+            "No se requiere cálculo de cambio para este método.";
     }
 };
 
@@ -1735,6 +1749,18 @@ const generarFactura = () => {
                         valorCambio
                 }
             );
+
+
+    if (!nuevaVenta) {
+
+        mostrarToast(
+            "No fue posible guardar la venta. Revisa el almacenamiento del navegador.",
+            "error"
+        );
+
+        return;
+
+    }
 
 
     /*

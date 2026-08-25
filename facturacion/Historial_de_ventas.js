@@ -86,12 +86,26 @@ const guardarHistorial = (
     historial
 ) => {
 
-    localStorage.setItem(
-        CLAVE_HISTORIAL,
-        JSON.stringify(
-            historial
-        )
-    );
+    try {
+
+        localStorage.setItem(
+            CLAVE_HISTORIAL,
+            JSON.stringify(
+                historial
+            )
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "No fue posible guardar el historial:",
+            error
+        );
+
+        return false;
+    }
 };
 
 
@@ -183,7 +197,7 @@ const registrarVenta = (
     const nuevaVenta = {
 
         id:
-            Date.now(),
+            `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
 
         fecha:
             obtenerFechaActual(),
@@ -253,9 +267,11 @@ const registrarVenta = (
     );
 
 
-    guardarHistorial(
-        historialActual
-    );
+    if (!guardarHistorial(historialActual)) {
+
+        return null;
+
+    }
 
 
     /*
@@ -549,11 +565,11 @@ const verDetalleVenta = (
     const venta =
         historial.find(
             (venta) =>
-                Number(
+                String(
                     venta.id
                 )
                 ===
-                Number(
+                String(
                     idVenta
                 )
         );
@@ -646,11 +662,11 @@ const imprimirVentaHistorica = (
     const venta =
         historial.find(
             (venta) =>
-                Number(
+                String(
                     venta.id
                 )
                 ===
-                Number(
+                String(
                     idVenta
                 )
         );

@@ -1,7 +1,89 @@
 /* =========================================================
-   CORRECCIONES Y COMPLEMENTOS
-   FACTURACIÓN
+   BASE DE LA APLICACIÓN
 ========================================================= */
+
+:root {
+    --primary: #6847c7;
+    --primary-dark: #4d319f;
+    --surface: #ffffff;
+    --surface-soft: #f6f3ff;
+    --page: #f8f7fb;
+    --text: #2d2838;
+    --text-soft: #746f80;
+    --border: #e3dfea;
+    --danger-bg: #fff0f2;
+    --danger-text: #b12d4d;
+    --success-bg: #ebf8f1;
+    --success-text: #18724c;
+    --radius-md: 16px;
+    --shadow-sm: 0 2px 8px rgba(45, 40, 56, .06);
+    --shadow-md: 0 12px 24px rgba(45, 40, 56, .12);
+    --transition: 180ms ease;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    min-width: 320px;
+    margin: 0;
+    background: var(--page);
+    color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; border: 0; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #bba9f5; outline-offset: 2px; }
+
+.container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+.header { background: var(--surface); border-bottom: 1px solid var(--border); }
+.header__content { display: flex; align-items: center; gap: 14px; min-height: 76px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; margin-right: auto; }
+.brand__icon { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 12px; background: var(--surface-soft); color: var(--primary-dark); font-size: 25px; }
+.brand strong, .brand small { display: block; }
+.brand small { color: var(--text-soft); font-size: 11px; }
+.tax-badge { padding: 7px 10px; border-radius: 999px; background: var(--surface-soft); color: var(--primary-dark); font-size: 12px; font-weight: 700; }
+.header button { padding: 9px 12px; border-radius: 10px; background: var(--surface-soft); color: var(--primary-dark); font-size: 13px; font-weight: 700; }
+.header button:hover { background: #e9e2ff; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, 390px); gap: 28px; padding: 34px 0; align-items: start; }
+.section-heading { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }
+.eyebrow { display: block; margin-bottom: 5px; color: var(--primary-dark); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: clamp(25px, 3vw, 34px); }
+.section-heading p { max-width: 560px; margin-top: 7px; color: var(--text-soft); }
+.counter { min-width: 76px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); text-align: center; }
+.counter strong, .counter span { display: block; }
+.counter strong { color: var(--primary-dark); font-size: 20px; }
+.counter span { color: var(--text-soft); font-size: 11px; }
+.search { display: flex; align-items: center; gap: 9px; margin-bottom: 20px; padding: 0 13px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text-soft); }
+.search input { width: 100%; padding: 12px 0; border: 0; outline: 0; background: transparent; }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); gap: 18px; }
+
+.invoice { position: sticky; top: 18px; }
+.invoice__card, .cambio { padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.invoice__header { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.invoice__header h2 { font-size: 21px; }
+.invoice__count { display: grid; place-items: center; min-width: 30px; height: 30px; border-radius: 999px; background: var(--surface-soft); color: var(--primary-dark); font-size: 13px; font-weight: 800; }
+.invoice__labels, .factura-fila { margin-top: 16px; }
+.invoice__labels { display: grid; grid-template-columns: minmax(0, 1.5fr) 70px 100px 40px; gap: 8px; padding: 0 20px 7px; color: var(--text-soft); font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.invoice__items { max-height: 330px; overflow: auto; }
+.empty-state { display: grid; min-height: 180px; place-items: center; padding: 25px; text-align: center; color: var(--text-soft); }
+.empty-icon { font-size: 33px; }
+.empty-state h3 { margin: 8px 0 5px; color: var(--text); font-size: 15px; }
+.totals { margin-top: 10px; padding: 15px 0; border-top: 1px solid var(--border); }
+#botonesFactura { display: grid; gap: 11px; }
+#botonesFactura label { font-size: 12px; font-weight: 700; }
+.trabajador { display: grid; gap: 6px; }
+.input-text, #mtdpago { width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); }
+#botonesFactura button { min-height: 42px; padding: 9px 12px; border-radius: 10px; background: var(--surface-soft); color: var(--primary-dark); font-weight: 800; }
+#botonesFactura #btnGenerarFactura { background: var(--primary); color: #fff; }
+#botonesFactura #btncancelarFactura { background: var(--danger-bg); color: var(--danger-text); }
+.cambio { margin-top: 14px; display: grid; gap: 9px; }
+.cambio label { font-size: 12px; font-weight: 700; }
+.footer { padding: 24px 16px; border-top: 1px solid var(--border); color: var(--text-soft); text-align: center; font-size: 12px; }
+
+/* Complementos de facturación */
 
 
 /* =========================================================
