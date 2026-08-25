@@ -809,12 +809,51 @@ const imprimirVentaHistorica = (
                     font-size: 18px;
                 }
 
+                .acciones-impresion {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    margin-bottom: 24px;
+                }
+
+                .acciones-impresion button {
+                    padding: 9px 13px;
+                    border: 0;
+                    border-radius: 8px;
+                    background: #5237b4;
+                    color: #fff;
+                    cursor: pointer;
+                    font: inherit;
+                    font-weight: 700;
+                }
+
+                .acciones-impresion .cerrar {
+                    background: #eeeaf5;
+                    color: #3d3650;
+                }
+
+                @media print {
+                    .acciones-impresion {
+                        display: none;
+                    }
+                }
+
             </style>
 
         </head>
 
 
         <body>
+
+            <div class="acciones-impresion">
+                <button type="button" onclick="window.print()">
+                    Imprimir
+                </button>
+
+                <button class="cerrar" type="button" onclick="window.close()">
+                    Cerrar
+                </button>
+            </div>
 
             <h1>
                 PAPEL Y LUNA
@@ -942,8 +981,6 @@ const imprimirVentaHistorica = (
     ventana.document.close();
 
     ventana.focus();
-
-    ventana.print();
 };
 
 
