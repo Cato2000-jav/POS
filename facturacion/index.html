@@ -1,92 +1,415 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Generador de facturas de la Papelería Papel y Luna">
-  <title>Papel y Luna | Generador de Facturas</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Generador de facturas de la Papelería Papel y Luna"
+    >
+
+    <title>
+        Papel y Luna | Generador de Facturas
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
 </head>
+
 <body>
-  <header class="header">
-    <div class="container header__content">
-      <a class="brand" href="#catalogo" aria-label="Papel y Luna, ir al catálogo">
-        <span class="brand__icon" aria-hidden="true">☾</span>
-        <span><strong>Papel y Luna</strong><small>Generador de facturas</small></span>
-      </a>
-      <span class="tax-badge">IVA incluido · 19%</span>
-    </nav>
-      <button id="historial"  type="button" onclick="window.location.href='Historial_de_ventas.html'">Ver historial de facturas</button>
-      <button id="inifactura"  type="button">iniciar factura</button>
-    </nav>
-  </header>
 
-  <main class="container layout">
-    <section id="catalogo" class="catalog" aria-labelledby="titulo-catalogo">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">Catálogo</span>
-          <h1 id="titulo-catalogo">Productos para crear</h1>
-          <p>Elige artículos, indica la cantidad y agrégalos a la factura.</p>
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
+    <header class="header">
+
+        <div class="container header__content">
+
+            <a
+                class="brand"
+                href="#catalogo"
+                aria-label="Papel y Luna, ir al catálogo"
+            >
+
+                <span
+                    class="brand__icon"
+                    aria-hidden="true"
+                >
+                    ☾
+                </span>
+
+                <span>
+
+                    <strong>
+                        Papel y Luna
+                    </strong>
+
+                    <small>
+                        Generador de facturas
+                    </small>
+
+                </span>
+
+            </a>
+
+            <span class="tax-badge">
+                IVA · 19%
+            </span>
+
+            <button
+                id="historial"
+                type="button"
+            >
+                Ver historial de facturas
+            </button>
+
+            <button
+                id="inifactura"
+                type="button"
+            >
+                Iniciar factura
+            </button>
+
         </div>
-        <div class="counter"><strong id="contadorProductos">0</strong><span>productos</span></div>
-      </div>
 
-      <label class="search" for="buscador">
-        <span aria-hidden="true">⌕</span>
-        <input id="buscador" type="search" placeholder="Buscar producto por nombre..." autocomplete="off">
-      </label>
+    </header>
 
-      <!-- Las tarjetas se crean dinámicamente desde app.js. -->
-      <div id="catalogoProductos" class="products-grid" aria-live="polite"></div>
-    </section>
 
-    <aside class="invoice" aria-labelledby="titulo-factura">
-      <div class="invoice__card">
-        <div class="invoice__header">
-          <div>
-            <span class="eyebrow">Factura actual</span>
-            <h2 id="titulo-factura">Resumen de compra</h2>
-          </div>
-          <span id="contadorFactura" class="invoice__count" aria-label="Productos distintos en factura">0</span>
-        </div>
-        <div class="invoice__labels" aria-hidden="true"><span>Producto</span><span>Cant.</span><span>Subtotal</span><span></span></div>
-        <!-- Las filas se crean dinámicamente desde app.js. -->
-        <div id="facturaItems" class="invoice__items" aria-live="polite"></div>
-        <div id="totalesFactura" class="totals"></div>
-        <div id="botonesFactura" >
-          <div class="trabajador">
-            <label for="trabajador">Nombre del trabajador:</label>
-            <input type="text" id="trabajador" name="Trabajador" required class="input-text">
-          </div>
-          <label for="mtdpago">Elige el metodo de pago:</label>
-          <select id="mtdpago" name="mtdpago">
-              <option value="efectivo">Efectivo</option>
-              <option value="tarjeta">Tarjeta de crédito</option>
-              <option value="transferencia">Transferencia bancaria</option>
-          </select>
-          <button id="btnimprimirFactura"  type="button">imprimir factura</button>
-          <button id="btncancelarFactura"  type="button">cancelar factura</button>
-          <button id="btnGenerarFactura"   type="button">generar factura</button>
-        </div>
-        
-      </div>
-      <div class="cambio">
-        <label for="trabajador">introdusca el dinero que le dio el cliente:</label>
-        <input type="number" id="cambio" name="cambio" required class="input-text">
-        <label for="cambio">El cambio que se le debe dar al cliente es:</label>
-      </div>
-      <div> 
-        <p> Venta confirmada </p>
-      </div>
-    </aside>
-  </main>
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <footer class="footer">Proyecto académico creado con HTML5, CSS y JavaScript Vanilla.</footer>
+    <main class="container layout">
 
-  <script src="productos.js"></script>
-  <script src="Historial_de_ventas.js"></script>
-  <script src="app.js"></script>
+
+        <!-- =================================================
+             CATÁLOGO
+        ================================================== -->
+
+        <section
+            id="catalogo"
+            class="catalog"
+            aria-labelledby="titulo-catalogo"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Catálogo
+                    </span>
+
+                    <h1 id="titulo-catalogo">
+                        Productos para crear
+                    </h1>
+
+                    <p>
+                        Elige artículos, indica la cantidad
+                        y agrégalos a la factura.
+                    </p>
+
+                </div>
+
+                <div class="counter">
+
+                    <strong id="contadorProductos">
+                        0
+                    </strong>
+
+                    <span>
+                        productos
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUSCADOR -->
+
+            <label
+                class="search"
+                for="buscador"
+            >
+
+                <span aria-hidden="true">
+                    ⌕
+                </span>
+
+                <input
+                    id="buscador"
+                    type="search"
+                    placeholder="Buscar producto por nombre..."
+                    autocomplete="off"
+                >
+
+            </label>
+
+
+            <!--
+                Las tarjetas se crean dinámicamente
+                desde app.js
+            -->
+
+            <div
+                id="catalogoProductos"
+                class="products-grid"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- =================================================
+             FACTURA
+        ================================================== -->
+
+        <aside
+            class="invoice"
+            aria-labelledby="titulo-factura"
+        >
+
+            <div class="invoice__card">
+
+
+                <!-- ENCABEZADO FACTURA -->
+
+                <div class="invoice__header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            Factura actual
+                        </span>
+
+                        <h2 id="titulo-factura">
+                            Resumen de compra
+                        </h2>
+
+                    </div>
+
+                    <span
+                        id="contadorFactura"
+                        class="invoice__count"
+                        aria-label="Productos distintos en factura"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <!-- ENCABEZADOS -->
+
+                <div
+                    class="invoice__labels"
+                    aria-hidden="true"
+                >
+
+                    <span>
+                        Producto
+                    </span>
+
+                    <span>
+                        Cant.
+                    </span>
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span></span>
+
+                </div>
+
+
+                <!-- PRODUCTOS FACTURA -->
+
+                <div
+                    id="facturaItems"
+                    class="invoice__items"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- TOTALES -->
+
+                <div
+                    id="totalesFactura"
+                    class="totals"
+                ></div>
+
+
+                <!-- DATOS FACTURA -->
+
+                <div id="botonesFactura">
+
+                    <div class="trabajador">
+
+                        <label for="trabajador">
+                            Nombre del trabajador:
+                        </label>
+
+                        <input
+                            type="text"
+                            id="trabajador"
+                            name="Trabajador"
+                            required
+                            class="input-text"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <label for="mtdpago">
+                        Elige el método de pago:
+                    </label>
+
+                    <select
+                        id="mtdpago"
+                        name="mtdpago"
+                    >
+
+                        <option value="efectivo">
+                            Efectivo
+                        </option>
+
+                        <option value="nequi">
+                            Nequi
+                        </option>
+
+                        <option value="debe">
+                            Debe
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        id="btnimprimirFactura"
+                        type="button"
+                    >
+                        Imprimir factura
+                    </button>
+
+
+                    <button
+                        id="btncancelarFactura"
+                        type="button"
+                    >
+                        Cancelar factura
+                    </button>
+
+
+                    <button
+                        id="btnGenerarFactura"
+                        type="button"
+                    >
+                        Generar factura
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DINERO RECIBIDO / CAMBIO
+            ================================================== -->
+
+            <div
+                class="cambio"
+                id="seccionCambio"
+            >
+
+                <label for="cambio">
+                    Introduzca el dinero que le dio el cliente:
+                </label>
+
+                <input
+                    type="number"
+                    id="cambio"
+                    name="cambio"
+                    min="0"
+                    step="1"
+                    class="input-text"
+                    placeholder="Ej. 100000"
+                >
+
+                <div
+                    id="resultadoCambio"
+                    class="resultado-cambio"
+                    aria-live="polite"
+                >
+                    El cambio que se le debe dar al cliente es:
+                    <strong>$ 0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CONFIRMACIÓN
+            ================================================== -->
+
+            <div
+                id="ventaConfirmada"
+                class="venta-confirmada"
+                aria-live="polite"
+            >
+                <p>
+                    Venta pendiente
+                </p>
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+        Proyecto académico creado con HTML5,
+        CSS y JavaScript Vanilla.
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="productos.js"></script>
+
+    <script src="Historial_de_ventas.js"></script>
+
+    <script src="app.js"></script>
+
 </body>
+
 </html>
