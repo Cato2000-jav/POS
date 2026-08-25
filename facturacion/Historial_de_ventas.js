@@ -82,13 +82,20 @@ const registrarVenta = ({
 
     historialActual.unshift(nuevaVenta);
     guardarHistorial(historialActual);
-    renderHistorial();
+
+    if (tableBody && salesCount) {
+        renderHistorial();
+    }
 
     return nuevaVenta;
 };
 
 /*Renderiza todo el historial en la tabla.*/
 const renderHistorial = () => {
+    if (!tableBody || !salesCount) {
+        return;
+    }
+
     const historial = obtenerHistorial();
 
     tableBody.innerHTML = "";
@@ -205,7 +212,9 @@ const limpiarHistorial = () => {
 };
 
 /*Evento para limpiar el historial.*/
-clearHistoryButton.addEventListener("click", limpiarHistorial);
+if (clearHistoryButton) {
+    clearHistoryButton.addEventListener("click", limpiarHistorial);
+}
 
 /* Permite que app.js pueda registrar ventas. Al estar disponible en window, puede utilizarse desde otro archivo.*/
 window.registrarVentaEnHistorial = registrarVenta;

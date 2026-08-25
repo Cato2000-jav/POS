@@ -49,6 +49,18 @@ const toast =
     document.querySelector(
         "#toast"
     );
+const botonGenerarFactura =
+    document.querySelector(
+        "#btnGenerarFactura"
+    );
+const trabajador =
+    document.querySelector(
+        "#trabajador"
+    );
+const metodoPago =
+    document.querySelector(
+        "#mtdpago"
+    );
 
 /*
 =========================================================
@@ -820,6 +832,43 @@ buscador.addEventListener(
         );
     }
 );
+
+/* Guarda una venta terminada antes de vaciar la factura actual. */
+botonGenerarFactura.addEventListener(
+    "click",
+    () => {
+        if (estado.facturaActual.length === 0) {
+            mostrarToast(
+                "Agrega al menos un producto antes de generar la factura.",
+                "error"
+            );
+            return;
+        }
+
+        const {
+            subtotalGeneral,
+            iva,
+            total
+        } = calcularTotales();
+        const items = estado.facturaActual.reduce(
+            (acumulador, item) => acumulador + item.cantidad,
+            0
+        );
+
+        window.registrarVentaEnHistorial({
+            persona: trabajador.value.trim() || "Cliente general",
+            metodoPago: metodoPago.options[metodoPago.selectedIndex].text,
+            subtotal: subtotalGeneral,
+            iva,
+            total,
+            items
+        });
+
+        estado.facturaActual = [];
+        renderFactura();
+        mostrarToast("Factura generada y venta guardada en el historial.");
+    }
+);
 /*
 =========================================================
 RENDER INICIAL
@@ -827,4 +876,3 @@ RENDER INICIAL
 */
 renderProductos();
 renderFactura();
-

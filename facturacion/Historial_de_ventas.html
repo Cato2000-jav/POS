@@ -3,23 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Generador de facturas de la Papelería Papel y Luna">
-  <title>Papel y Luna | historial de Facturas</title>
+  <meta name="description" content="Historial de ventas de la Papelería Papel y Luna">
+  <title>Papel y Luna | Historial de ventas</title>
   <link rel="stylesheet" href="historial.css">
-  <link rel="stylesheet" href="Historial_de_ventas.js">
-  <link rel="stylesheet" href="Historial_de_ventas.html">
+  <script src="Historial_de_ventas.js" defer></script>
 </head>
 <body>
-    <header class="header">
-    <div class="container header__content">
-      <a class="brand" href="#catalogo" aria-label="Papel y Luna, ir al catálogo">
-        <span class="brand__icon" aria-hidden="true">☾</span>
-        <span><strong>Papel y Luna</strong><small>Generador de facturas</small></span>
+  <header class="main-header">
+    <div class="header-content">
+      <a class="brand" href="index.html" aria-label="Papel y Luna, ir a facturación">
+        <span class="brand-icon" aria-hidden="true">☾</span>
+        <span class="brand-text"><strong>Papel y Luna</strong><small>Generador de facturas</small></span>
       </a>
-      <span class="tax-badge">IVA incluido · 19%</span>
-    </nav>
-      <button id="historial"  type="button" onclick="window.location.href='index.html'">facturacion</button>
-    </nav>
+      <span class="tax-pill">IVA incluido · 19%</span>
+      <a class="billing-pill" href="index.html">Ir a facturación</a>
+    </div>
   </header>
-  <h1>Historial de ventas</h1>
+
+  <main class="main-content">
+    <section class="history-heading" aria-labelledby="history-title">
+      <p class="eyebrow">Ventas registradas</p>
+      <h1 id="history-title">Historial de ventas</h1>
+      <p>Consulta las facturas generadas desde la pantalla de facturación.</p>
+    </section>
+
+    <section class="history-card" aria-labelledby="sales-title">
+      <div class="table-header">
+        <h2 id="sales-title">Facturas generadas</h2>
+        <span id="sales-count" class="sales-count">0 ventas</span>
+      </div>
+      <div class="table-wrapper">
+        <table class="sales-table">
+          <thead>
+            <tr>
+              <th scope="col">Fecha y hora</th>
+              <th scope="col">Responsable</th>
+              <th scope="col">Método de pago</th>
+              <th scope="col">Total</th>
+              <th scope="col">Artículos</th>
+            </tr>
+          </thead>
+          <tbody id="sales-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="history-actions">
+      <a class="back-button" href="index.html">← Volver a facturación</a>
+      <button id="clear-history-button" class="clear-history-button" type="button">Limpiar historial</button>
+    </div>
+  </main>
+
+  <footer class="main-footer">Proyecto académico creado con HTML5, CSS y JavaScript Vanilla.</footer>
 </body>
+</html>
