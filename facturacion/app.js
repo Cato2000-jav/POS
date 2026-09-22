@@ -331,12 +331,12 @@ const renderProductos = () => {
                 <div class="product-image">
 
                     <img
-                        src="${imagen}"
-                        alt="${nombre}"
+                        src="${escaparHTML(imagen)}"
+                        alt="${escaparHTML(nombre)}"
                     >
 
                     <span class="categoria">
-                        ${categoria}
+                        ${escaparHTML(categoria)}
                     </span>
 
                 </div>
@@ -345,11 +345,11 @@ const renderProductos = () => {
                 <div class="product-body">
 
                     <h3>
-                        ${nombre}
+                        ${escaparHTML(nombre)}
                     </h3>
 
                     <p class="descripcion">
-                        ${descripcion}
+                        ${escaparHTML(descripcion)}
                     </p>
 
 
@@ -372,13 +372,13 @@ const renderProductos = () => {
                             <div class="cantidad-control">
 
                                 <label
-                                    for="cantidad-${id}"
+                                    for="cantidad-${escaparHTML(id)}"
                                 >
                                     Cantidad
                                 </label>
 
                                 <input
-                                    id="cantidad-${id}"
+                                    id="cantidad-${escaparHTML(id)}"
                                     type="number"
                                     min="1"
                                     step="1"
@@ -392,7 +392,7 @@ const renderProductos = () => {
 
                         <button
                             class="btn-agregar"
-                            data-id="${id}"
+                            data-id="${escaparHTML(id)}"
                             type="button"
                         >
                             + Agregar
@@ -989,7 +989,7 @@ const renderFactura = () => {
                 <div class="nombre-producto">
 
                     <strong>
-                        ${nombre}
+                        ${escaparHTML(nombre)}
                     </strong>
 
                     <small>
@@ -1010,8 +1010,8 @@ const renderFactura = () => {
                     class="cantidad-factura"
                     min="1"
                     step="1"
-                    value="${cantidad}"
-                    data-id="${id}"
+                    value="${escaparHTML(cantidad)}"
+                    data-id="${escaparHTML(id)}"
                 >
 
 
@@ -1029,7 +1029,7 @@ const renderFactura = () => {
 
                 <button
                     class="btn-eliminar"
-                    data-id="${id}"
+                    data-id="${escaparHTML(id)}"
                     title="Eliminar producto"
                     type="button"
                 >
@@ -1838,17 +1838,17 @@ const generarFactura = () => {
             </strong>
 
             <span>
-                Factura #${nuevaVenta.id}
+                Factura #${escaparHTML(nuevaVenta.id)}
             </span>
 
             <span>
                 Trabajador:
-                ${nuevaVenta.persona}
+                ${escaparHTML(nuevaVenta.persona)}
             </span>
 
             <span>
                 Método:
-                ${nuevaVenta.metodoPago}
+                ${escaparHTML(nuevaVenta.metodoPago)}
             </span>
 
             <span>
@@ -1861,6 +1861,17 @@ const generarFactura = () => {
                 }
             </span>
 
+            ${nuevaVenta.dineroRecibido !== null ? `
+                <span>
+                    Dinero recibido:
+                    ${formatoMoneda.format(nuevaVenta.dineroRecibido)}
+                </span>
+                <span>
+                    Cambio:
+                    ${formatoMoneda.format(nuevaVenta.cambio)}
+                </span>
+            ` : ""}
+
         </div>
     `;
 
@@ -1868,12 +1879,14 @@ const generarFactura = () => {
     /*
     La venta ya quedó almacenada.
     Ahora vaciamos la factura abierta,
-    pero conservamos ultimaVenta.
+    pero conservamos ultimaVenta y su cambio en la confirmación.
     */
 
     estado.facturaActual =
         [];
 
+    // Evita recalcular con el efectivo anterior cuando el carrito ya está vacío.
+    limpiarFormularioFactura();
 
     renderFactura();
 
@@ -1916,11 +1929,11 @@ const imprimirFactura = () => {
                     <tr>
 
                         <td>
-                            ${producto.nombre}
+                            ${escaparHTML(producto.nombre)}
                         </td>
 
                         <td>
-                            ${producto.cantidad}
+                            ${escaparHTML(producto.cantidad)}
                         </td>
 
                         <td>
@@ -2027,7 +2040,7 @@ const imprimirFactura = () => {
             <meta charset="UTF-8">
 
             <title>
-                Factura ${venta.id}
+                Factura ${escaparHTML(venta.id)}
             </title>
 
             <style>
@@ -2166,7 +2179,7 @@ const imprimirFactura = () => {
                         Factura:
                     </strong>
 
-                    #${venta.id}
+                    #${escaparHTML(venta.id)}
                 </p>
 
 
@@ -2175,7 +2188,7 @@ const imprimirFactura = () => {
                         Fecha:
                     </strong>
 
-                    ${venta.fecha}
+                    ${escaparHTML(venta.fecha)}
                 </p>
 
 
@@ -2184,7 +2197,7 @@ const imprimirFactura = () => {
                         Hora:
                     </strong>
 
-                    ${venta.hora}
+                    ${escaparHTML(venta.hora)}
                 </p>
 
 
@@ -2193,7 +2206,7 @@ const imprimirFactura = () => {
                         Trabajador:
                     </strong>
 
-                    ${venta.persona}
+                    ${escaparHTML(venta.persona)}
                 </p>
 
 
@@ -2202,7 +2215,7 @@ const imprimirFactura = () => {
                         Método de pago:
                     </strong>
 
-                    ${venta.metodoPago}
+                    ${escaparHTML(venta.metodoPago)}
                 </p>
 
             </div>
