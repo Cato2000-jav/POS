@@ -46,6 +46,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .header button { padding: 9px 12px; border-radius: 10px; background: var(--surface-soft); color: var(--primary-dark); font-size: 13px; font-weight: 700; }
 .header button:hover { background: #e9e2ff; }
 
+/* Categorías: panel independiente, sin cambiar la distribución de facturación. */
+.header__content { flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+.categorias-panel { margin-top: 24px; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.categorias-encabezado { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.categorias-encabezado button { padding: 10px 14px; border-radius: 10px; background: var(--surface-soft); color: var(--primary-dark); }
+.categorias-panel label { display: block; margin-bottom: 6px; }
+.categorias-panel p { margin-top: 12px; }
+.categorias-panel ul { margin: 12px 0 0; padding: 0; list-style: none; }
+.categorias-panel li { padding: 10px 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+.categorias-panel .categorias-error { color: var(--danger-text); }
+.categorias-panel button:disabled, .categorias-panel input:disabled { opacity: .6; cursor: wait; }
+.categorias-form { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.categorias-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.categorias-acciones button { padding: 10px 14px; border-radius: 10px; background: var(--surface-soft); color: var(--primary-dark); }
+#guardarCategoria { background: var(--primary); color: white; }
+.categorias-panel li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.categorias-panel li > span { min-width: 0; flex: 1 1 180px; }
+
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, 390px); gap: 28px; padding: 34px 0; align-items: start; }
 .layout.factura-no-iniciada { grid-template-columns: minmax(0, 1fr); }
 .section-heading { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }

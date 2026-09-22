@@ -80,6 +80,11 @@
                 Iniciar factura
             </button>
 
+            <button id="btnCategorias" type="button"
+                aria-controls="panelCategorias" aria-expanded="false">
+                Categorías
+            </button>
+
         </div>
 
     </header>
@@ -88,6 +93,28 @@
     <!-- =====================================================
          CONTENIDO
     ====================================================== -->
+
+    <section id="panelCategorias" class="container categorias-panel" hidden
+        aria-labelledby="tituloCategorias">
+        <div class="categorias-encabezado">
+            <h2 id="tituloCategorias">Categorías</h2>
+            <button id="recargarCategorias" type="button">Actualizar lista</button>
+        </div>
+        <form id="formCategoria" class="categorias-form">
+            <label for="nombreCategoria" id="etiquetaCategoria">Nueva categoría</label>
+            <input id="nombreCategoria" class="input-text" type="text" required
+                autocomplete="off" placeholder="Nombre de la categoría" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarCategoria" type="submit" disabled>Crear categoría</button>
+                <button id="cancelarCategoria" type="button" disabled>Cancelar</button>
+            </div>
+        </form>
+        <label for="buscarCategorias">Buscar categoría por nombre</label>
+        <input id="buscarCategorias" class="input-text" type="search" autocomplete="off"
+            placeholder="Escribe el nombre de la categoría">
+        <p id="estadoCategorias" role="status" aria-live="polite"></p>
+        <ul id="listaCategorias" aria-label="Categorías disponibles"></ul>
+    </section>
 
     <main class="container layout factura-no-iniciada">
 
@@ -408,6 +435,10 @@
     ====================================================== -->
 
     <script src="utils.js"></script>
+
+    <script src="api.js"></script>
+
+    <script src="categories.js"></script>
 
     <script src="productos.js"></script>
 

@@ -2,9 +2,19 @@
 
 ## Estado
 api.js está configurado con la URL /exec proporcionada por el usuario.
-Las pantallas todavía no cargan este archivo ni consultan el servicio.
+index.html carga api.js y categories.js. El panel Categorías consulta el servicio
+para listar, buscar, crear, editar y eliminar. Los demás módulos siguen pendientes.
 Se verificaron consultas GET reales; las escrituras solo se prueban con simulaciones.
 No se ha migrado el historial local ni publicado código en Apps Script.
+El usuario confirmó posteriormente que publicó una nueva versión con Code.gs.
+Las escrituras de la interfaz se verificaron con respuestas simuladas; no se crearon
+ni eliminaron categorías reales durante las pruebas.
+Se preparó google-apps-script/para-publicar/Code.gs con todas las correcciones y
+los auxiliares originales, sin definiciones duplicadas. LEEME.md en esa carpeta
+explica cómo actualizar la versión de la implementación conservando la URL.
+El editor compartido redirigió a la página pública en el navegador disponible;
+no se accedió ni se cambió el código remoto desde Codex. La publicación fue confirmada
+por el usuario desde su navegador.
 
 ## Contrato confirmado
 - GET: ?resource=productos (también ventas, compras, categorias, proveedores, clientes).
@@ -93,7 +103,8 @@ Los demás campos JSON siguen como texto.
 La validación de cantidades, precios y totales dentro de cada detalle queda pendiente.
 
 ## Pendiente antes de conectar ventas e inventario
-- Confirmar la disposición de categorias y los tipos reales de IDs, números y booleanos.
+- El usuario confirmó la corrección de categorias; GET respondió lista vacía.
+  Confirmar los tipos reales de IDs, números y booleanos.
 - Conservar precio como precio de venta; adaptar el frontend a itemsJson y valorRecibido.
 - Resolver persistencia de trabajador, IVA e imágenes/descripciones que usaba el MVP 1.
 - Verificar las restricciones de eliminación preparadas contra los encabezados reales.
@@ -119,8 +130,24 @@ Referencia: https://developers.google.com/apps-script/guides/web
   cambio, itemsJson, actualizadoEn.
 - compras: id, fecha, proveedorId, total, itemsJson.
 - proveedores y clientes: id, nombre, telefono, correo.
-- categorias: id, nombre; pendiente confirmar si los valores de prueba indicados
-  pertenecen a la fila 2 o están indebidamente en la fila de encabezados.
+- categorias: id, nombre. El usuario confirmó que corrigió la fila de encabezados.
+  La consulta posterior devolvió data: []; no se crearon ni borraron registros desde Codex.
+
+## Panel de categorías conectado
+categories.js mantiene solo una copia en memoria de los resultados de GET.
+El botón Categorías abre/cierra un panel independiente; al abrir consulta nuevamente.
+Actualizar lista permite reintentar una carga fallida. La búsqueda filtra por nombre.
+Durante la carga, bandera y controles deshabilitados evitan peticiones simultáneas.
+try/catch/finally restaura controles; fallos no se presentan como una lista vacía válida.
+Se verificó GET real desde navegador, estado vacío y tamaños 375/768/1280 sin
+desbordamiento horizontal en la vista con el panel de categorías y catálogo.
+Búsqueda, errores y doble carga se probaron con datos simulados. El formulario permite
+crear/editar y cada fila ofrece editar/eliminar con confirmación. Las escrituras usan
+api.guardar; no hay actualizaciones optimistas. Fallos conservan formulario y lista.
+El ID de creación se conserva ante un fallo para no generar otro ID al reintentar.
+Actualizar lista permite comprobar el estado cuando se pierde una respuesta.
+La restricción por productos asociados depende del servicio publicado.
+Pruebas locales repetibles: node facturacion/tests/categories.test.cjs.
 
 No renombrar precio a precioVenta en la hoja: es el precio de venta del sistema.
 itemsJson es texto JSON en la celda y lista en la respuesta del servicio corregido.
