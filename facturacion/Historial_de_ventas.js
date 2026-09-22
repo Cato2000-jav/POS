@@ -34,21 +34,13 @@ OBTENER HISTORIAL
 */
 
 const obtenerHistorial = () => {
-
-    const historialGuardado =
-        localStorage.getItem(
-            CLAVE_HISTORIAL
-        );
-
-
-    if (!historialGuardado) {
-
-        return [];
-
-    }
-
-
     try {
+        const historialGuardado = localStorage.getItem(CLAVE_HISTORIAL);
+
+        // Solo una clave inexistente representa un historial nuevo.
+        if (historialGuardado === null) {
+            return [];
+        }
 
         const historial =
             JSON.parse(
@@ -56,13 +48,13 @@ const obtenerHistorial = () => {
             );
 
 
-        return Array.isArray(
-            historial
-        )
-            ?
-            historial
-            :
-            [];
+        if (!Array.isArray(historial) || historial.some(
+            (venta) => venta === null || typeof venta !== "object" || Array.isArray(venta)
+        )) {
+            throw new Error("El historial no contiene una lista válida de ventas.");
+        }
+
+        return historial;
 
     } catch (error) {
 
@@ -71,7 +63,8 @@ const obtenerHistorial = () => {
             error
         );
 
-        return [];
+        // null indica fallo: los consumidores deben detenerse, no sobrescribir.
+        return null;
     }
 };
 
@@ -193,6 +186,9 @@ const registrarVenta = (
     const historialActual =
         obtenerHistorial();
 
+    if (historialActual === null) {
+        return null;
+    }
 
     const nuevaVenta = {
 
@@ -321,6 +317,17 @@ const renderHistorial = () => {
     tableBody.innerHTML =
         "";
 
+    if (historial === null) {
+        salesCount.textContent = "Historial no disponible";
+        const fila = document.createElement("tr");
+        const celda = document.createElement("td");
+        celda.colSpan = 6;
+        celda.className = "empty-state";
+        celda.textContent = "No se pudo leer el historial. Los datos guardados no se han modificado.";
+        fila.appendChild(celda);
+        tableBody.appendChild(fila);
+        return;
+    }
 
     salesCount.textContent =
         `${historial.length} ${
@@ -385,23 +392,23 @@ const crearFilaVenta = (
         <td>
 
             <span>
-                ${venta.hora}
+                ${escaparHTML(venta.hora)}
             </span>
 
             <small class="date-cell">
-                ${venta.fecha}
+                ${escaparHTML(venta.fecha)}
             </small>
 
         </td>
 
 
         <td class="person-cell">
-            ${venta.persona}
+            ${escaparHTML(venta.persona)}
         </td>
 
 
         <td>
-            ${venta.metodoPago}
+            ${escaparHTML(venta.metodoPago)}
         </td>
 
 
@@ -416,7 +423,7 @@ const crearFilaVenta = (
 
         <td class="items-cell">
 
-            ${venta.items}
+            ${escaparHTML(venta.items)}
 
             ${
                 Number(
@@ -437,7 +444,7 @@ const crearFilaVenta = (
 
             <button
                 class="btn-ver-detalle"
-                data-id="${venta.id}"
+                data-id="${escaparHTML(venta.id)}"
                 type="button"
             >
                 Ver detalle
@@ -445,7 +452,7 @@ const crearFilaVenta = (
 
             <button
                 class="btn-imprimir-historial"
-                data-id="${venta.id}"
+                data-id="${escaparHTML(venta.id)}"
                 type="button"
             >
                 Imprimir
@@ -453,7 +460,7 @@ const crearFilaVenta = (
 
             <button
                 class="btn-eliminar-venta"
-                data-id="${venta.id}"
+                data-id="${escaparHTML(venta.id)}"
                 type="button"
             >
                 Borrar
@@ -588,6 +595,11 @@ const verDetalleVenta = (
     const historial =
         obtenerHistorial();
 
+    if (historial === null) {
+        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
+        return;
+    }
+
 
     const venta =
         historial.find(
@@ -685,6 +697,11 @@ const imprimirVentaHistorica = (
     const historial =
         obtenerHistorial();
 
+    if (historial === null) {
+        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
+        return;
+    }
+
 
     const venta =
         historial.find(
@@ -727,11 +744,11 @@ const imprimirVentaHistorica = (
                     <tr>
 
                         <td>
-                            ${producto.nombre}
+                            ${escaparHTML(producto.nombre)}
                         </td>
 
                         <td>
-                            ${producto.cantidad}
+                            ${escaparHTML(producto.cantidad)}
                         </td>
 
                         <td>
@@ -785,7 +802,7 @@ const imprimirVentaHistorica = (
             <meta charset="UTF-8">
 
             <title>
-                Factura ${venta.id}
+                Factura ${escaparHTML(venta.id)}
             </title>
 
             <style>
@@ -887,28 +904,28 @@ const imprimirVentaHistorica = (
             </h1>
 
             <h2>
-                Factura #${venta.id}
+                Factura #${escaparHTML(venta.id)}
             </h2>
 
 
             <p>
                 Fecha:
-                ${venta.fecha}
+                ${escaparHTML(venta.fecha)}
             </p>
 
             <p>
                 Hora:
-                ${venta.hora}
+                ${escaparHTML(venta.hora)}
             </p>
 
             <p>
                 Trabajador:
-                ${venta.persona}
+                ${escaparHTML(venta.persona)}
             </p>
 
             <p>
                 Método:
-                ${venta.metodoPago}
+                ${escaparHTML(venta.metodoPago)}
             </p>
 
 
@@ -1089,6 +1106,11 @@ const eliminarVentaHistorica = (
     const historial =
         obtenerHistorial();
 
+    if (historial === null) {
+        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
+        return;
+    }
+
 
     const venta =
         historial.find(
@@ -1170,6 +1192,11 @@ const limpiarHistorial = () => {
     const historial =
         obtenerHistorial();
 
+    if (historial === null) {
+        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
+        return;
+    }
+
 
     if (
         historial.length
@@ -1197,9 +1224,13 @@ const limpiarHistorial = () => {
     }
 
 
-    localStorage.removeItem(
-        CLAVE_HISTORIAL
-    );
+    try {
+        localStorage.removeItem(CLAVE_HISTORIAL);
+    } catch (error) {
+        console.error("No fue posible limpiar el historial:", error);
+        mostrarNotificacion("No fue posible eliminar el historial. Intenta nuevamente.");
+        return;
+    }
 
 
     renderHistorial();
