@@ -43,12 +43,25 @@ con JSON todavía en texto, igual que leerHoja. Reutiliza el bloqueo de doPost.
 No habilita actualización genérica de ventas ni compras: sus reglas siguen pendientes.
 Las validaciones por campo y las relaciones se incorporarán al confirmar el esquema.
 
+## Eliminación preparada localmente
+google-apps-script/EliminarRegistro.gs sustituye el TODO de eliminarRegistro y añade
+comprobarSinAsociaciones. No se ha publicado ni ejecutado contra registros reales.
+Usa las relaciones definidas en el MVP 2: productos.categoriaId,
+compras.proveedorId y ventas.clienteId. Si la columna falta o está repetida, rechaza
+la eliminación, incluso cuando la hoja dependiente no contiene registros.
+Clientes asociados a cualquier venta, abierta o cerrada, quedan protegidos.
+La comprobación y deleteRow se ejecutan dentro del bloqueo existente de doPost.
+Permite eliminar productos, categorias, proveedores y clientes; ventas y compras
+continúan bloqueadas. Una segunda eliminación del mismo ID devuelve un error y
+no elimina otra fila. No actualiza inventario ni implementa reembolsos.
+Pendiente verificar los encabezados reales antes de publicar y conectar la interfaz.
+
 ## Pendiente antes de conectar ventas e inventario
 - Revisar auxiliares y encabezados de las seis hojas, tipos de IDs y números.
 - Confirmar modelos: producto con categoriaId, precioVenta, costo, stock y
   seguimientoInventario; preservar imagen/descripcion y los detalles históricos.
-- Validar relaciones y bloquear eliminación de categorías, proveedores y clientes
-  asociados. Acordar qué hacer con el borrado de ventas cerradas del MVP 1.
+- Verificar las restricciones de eliminación preparadas contra los encabezados reales.
+  Validar relaciones también al crear/actualizar; acordar el borrado de ventas del MVP 1.
 - Implementar ventas abiertas sin movimiento de stock; cierre con cliente para Debe,
   validación de existencias y conservación de precios históricos.
 - Confirmar compra y stock/último costo de forma coordinada. Solo modificar stock
