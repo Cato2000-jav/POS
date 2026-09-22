@@ -31,7 +31,7 @@ El anidamiento aparente provenía del fragmento inicial. Controladores.gs es una
 copia opcional con validación adicional de data, no una corrección necesaria de llaves.
 Los auxiliares completos ya se revisaron: actualizarRegistro y eliminarRegistro
 eran TODO. crearRegistro exige IDs del frontend y serializa objetos como JSON;
-leerHoja devuelve esos campos como texto. Falta confirmar los encabezados.
+la lectura original devuelve esos campos como texto. El usuario proporcionó los encabezados.
 
 ## Actualización parcial preparada localmente
 google-apps-script/ActualizarRegistro.gs sustituye únicamente el TODO de esa función.
@@ -39,9 +39,28 @@ No agregar una segunda definición en Apps Script. No se ha publicado el cambio.
 Permite actualizar productos, categorias, proveedores y clientes por id; rechaza
 campos sin columna y encabezados inválidos. Conserva campos omitidos, el id y las
 fórmulas de celdas no editadas; null vacía una celda. Devuelve los valores guardados,
-con JSON todavía en texto, igual que leerHoja. Reutiliza el bloqueo de doPost.
+con JSON todavía en texto. Reutiliza el bloqueo de doPost.
 No habilita actualización genérica de ventas ni compras: sus reglas siguen pendientes.
 Las validaciones por campo y las relaciones se incorporarán al confirmar el esquema.
+
+## Creación corregida localmente
+google-apps-script/CrearRegistro.gs reemplaza solo crearRegistro; no está publicado.
+Requiere también leerDetalleJson, incluida en LeerHoja.gs.
+Conserva los IDs del frontend y la serialización JSON de objetos y arreglos.
+Valida objeto e ID, encabezados únicos con id, campos desconocidos, duplicados,
+números no finitos y textos que iniciarían fórmulas. Prepara toda la fila antes
+de escribir. Campos omitidos o null se guardan vacíos; 0 y false se conservan.
+Devuelve los valores leídos después de guardar, no el objeto recibido sin verificar.
+Para ventas.itemsJson y compras.itemsJson valida el JSON antes de cambiar valores o formatos
+y devuelve una lista de objetos, igual que GET. Acepta detalle como lista o texto JSON.
+Una celda vacía conserva la compatibilidad anterior y devuelve []; esto no autoriza
+cerrar una venta vacía: la validación de cierre sigue pendiente.
+Un segundo create con el mismo ID se rechaza; esto no evita duplicados con otro ID.
+Si la escritura termina y falla la lectura de confirmación, puede haber un registro
+guardado sin respuesta exitosa. No reintentar con un nuevo ID sin comprobar el estado.
+No añade reglas de stock ni cierre de ventas. Conserva el alcance genérico del create
+existente; las pantallas de ventas/compras deben seguir sin conectarse hasta implementar
+sus reglas. También faltan campos obligatorios y validación de relaciones por entidad.
 
 ## Eliminación preparada localmente
 google-apps-script/EliminarRegistro.gs sustituye el TODO de eliminarRegistro y añade
@@ -54,12 +73,29 @@ La comprobación y deleteRow se ejecutan dentro del bloqueo existente de doPost.
 Permite eliminar productos, categorias, proveedores y clientes; ventas y compras
 continúan bloqueadas. Una segunda eliminación del mismo ID devuelve un error y
 no elimina otra fila. No actualiza inventario ni implementa reembolsos.
-Pendiente verificar los encabezados reales antes de publicar y conectar la interfaz.
+Los encabezados compartidos confirman las tres columnas de relación. Pendiente probar el despliegue.
+
+## Lectura de detalles preparada localmente
+google-apps-script/LeerHoja.gs reemplaza leerHoja y añade leerDetalleJson.
+Convierte ventas.itemsJson y compras.itemsJson a listas de objetos. Conserva
+leerProductosVenta como auxiliar compatible con ventas.productos si esa columna existe.
+No interpreta automáticamente otros textos como JSON.
+Una celda vacía representa el detalle ausente de una venta antigua y se devuelve [];
+una columna de detalle ausente se conserva ausente por compatibilidad; los flujos de
+cierre y compra deberán exigir sus campos al implementarse.
+JSON mal formado, null, objetos en lugar de listas y elementos que no son objetos
+provocan una respuesta de error con fila y columna. No se ocultan como listas vacías.
+La lectura completa falla ante un detalle corrupto: no se devuelve un historial parcial.
+La función conserva el orden, las filas vacías omitidas y las fechas ISO; valida encabezados.
+No modifica hojas. No se ha publicado. CrearRegistro.gs reutiliza leerDetalleJson
+para devolver itemsJson como lista y rechazar JSON inválido antes de escribir.
+Los demás campos JSON siguen como texto.
+La validación de cantidades, precios y totales dentro de cada detalle queda pendiente.
 
 ## Pendiente antes de conectar ventas e inventario
-- Revisar auxiliares y encabezados de las seis hojas, tipos de IDs y números.
-- Confirmar modelos: producto con categoriaId, precioVenta, costo, stock y
-  seguimientoInventario; preservar imagen/descripcion y los detalles históricos.
+- Confirmar la disposición de categorias y los tipos reales de IDs, números y booleanos.
+- Conservar precio como precio de venta; adaptar el frontend a itemsJson y valorRecibido.
+- Resolver persistencia de trabajador, IVA e imágenes/descripciones que usaba el MVP 1.
 - Verificar las restricciones de eliminación preparadas contra los encabezados reales.
   Validar relaciones también al crear/actualizar; acordar el borrado de ventas del MVP 1.
 - Implementar ventas abiertas sin movimiento de stock; cierre con cliente para Debe,
@@ -76,3 +112,21 @@ Pendiente verificar los encabezados reales antes de publicar y conectar la inter
   la migración. La importación de registros existentes será una etapa separada.
 
 Referencia: https://developers.google.com/apps-script/guides/web
+
+## Encabezados proporcionados por el usuario
+- productos: id, codigo, nombre, categoriaId, precio, costo, seguimientoInventario, stock.
+- ventas: id, fecha, estado, clienteId, metodoPago, subtotal, total, valorRecibido,
+  cambio, itemsJson, actualizadoEn.
+- compras: id, fecha, proveedorId, total, itemsJson.
+- proveedores y clientes: id, nombre, telefono, correo.
+- categorias: id, nombre; pendiente confirmar si los valores de prueba indicados
+  pertenecen a la fila 2 o están indebidamente en la fila de encabezados.
+
+No renombrar precio a precioVenta en la hoja: es el precio de venta del sistema.
+itemsJson es texto JSON en la celda y lista en la respuesta del servicio corregido.
+El frontend del MVP 1 usa productos y dineroRecibido: requiere adaptación explícita
+a itemsJson y valorRecibido antes de migrar. No enviar campos desconocidos.
+Ventas no tiene persona, hora ni iva; hay que preservar esos datos del MVP 1 durante
+la migración (no confundir clienteId con trabajador ni descartar datos históricos).
+Productos no tiene imagen ni descripcion: resolver su conservación antes de reemplazar
+el catálogo actual. No se han modificado encabezados ni datos en Google Sheets.
