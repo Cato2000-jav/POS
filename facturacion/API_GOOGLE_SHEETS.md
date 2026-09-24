@@ -155,5 +155,65 @@ El frontend del MVP 1 usa productos y dineroRecibido: requiere adaptación expl�
 a itemsJson y valorRecibido antes de migrar. No enviar campos desconocidos.
 Ventas no tiene persona, hora ni iva; hay que preservar esos datos del MVP 1 durante
 la migración (no confundir clienteId con trabajador ni descartar datos históricos).
-Productos no tiene imagen ni descripcion: resolver su conservación antes de reemplazar
-el catálogo actual. No se han modificado encabezados ni datos en Google Sheets.
+Productos no tiene imagen ni descripcion: los archivos originales y las imágenes se
+conservan, pero no se asignan automáticamente a los IDs remotos. Las tarjetas remotas
+muestran un indicador sin imagen. No se modificaron encabezados ni datos en Sheets.
+
+## Carga del catálogo
+products.js consulta productos y categorias mediante api.listar y valida la respuesta
+antes de sustituir la copia en memoria. index.html ya no carga el catálogo de ejemplo
+productos.js; ese archivo se conserva como referencia para una futura migración explícita.
+Los IDs se usan como texto en el catálogo y el carrito. TRUE/FALSE se convierten sin
+tratar la cadena FALSE como verdadera. Una recarga fallida conserva la última lista y
+muestra el error; una hoja vacía no activa datos de ejemplo. No se permite recargar
+con artículos en la venta para evitar que cambien sus precios silenciosamente.
+Pruebas: node facturacion/tests/products.test.cjs.
+Ventas e inventario todavía no están migrados. Esta carga no implica que el cierre
+de ventas actual actualice Sheets.
+
+## Creación y edición de productos
+product-form.js agrega un formulario al catálogo sin reemplazar su estructura.
+abrirProducto recibe un ID para editar o null para crear; consulta categorías al abrir
+y llena un select mediante textContent. No permite escribir una categoría libre.
+guardarProductoFormulario recibe el evento submit, valida usando normalizarProductos
+y llama a api.guardar. Ambas funciones son async y actualizan la interfaz; no devuelven
+un registro al llamador. El registro confirmado lo devuelve api.guardar.
+Al editar, se reflejan nombre, categoría, precio y costo provisionalmente en el catálogo
+y en la factura actual. Se bloquea la interacción con la venta durante la petición.
+Un fallo restaura el producto anterior, recalcula la factura y conserva el formulario.
+No se modifica ultimaVenta ni los registros del historial. La creación se incorpora
+al catálogo únicamente tras confirmación y conserva su ID al reintentar un fallo.
+Al editar se omiten stock y seguimientoInventario en el POST; ambos controles están
+deshabilitados. Se admite stock inicial al crear. No hay ajustes de inventario aquí.
+Si se pierde una respuesta, revertir la vista no deshace una escritura que pudo llegar
+a Sheets: comprobar el catálogo antes de repetir una operación de resultado incierto.
+
+Pruebas simuladas: node facturacion/tests/product-form.test.cjs.
+Comprobación en navegador: formulario visible, categoría cuadernos obtenida del servicio,
+sin errores de consola y sin desbordamiento horizontal a 375, 768 y 1280 píxeles.
+No se efectuaron escrituras reales de prueba. La hoja productos estaba vacía.
+La migración de ventas/compras sigue pendiente. Las validaciones del formulario no
+sustituyen las validaciones del servicio.
+
+## Eliminación y reglas del producto (requiere nueva publicación)
+eliminarProductoCatalogo recibe un ID y elimina mediante api.guardar solo tras una
+confirmación del usuario. No es eliminarProducto de app.js: esa función sigue quitando
+artículos del carrito. Bloquea productos de la venta actual y formularios abiertos.
+Mientras se procesa, impide recargas y operaciones concurrentes desde esta interfaz.
+No retira el producto de memoria hasta confirmar el ID en la respuesta. Si falla,
+conserva el catálogo y muestra el error. No cambia historial ni ultimaVenta.
+
+Code.gs ahora valida productos antes de escribir y comprueba que categoriaId existe.
+actualizarRegistro combina los datos actuales con los cambios para validar una edición
+parcial; rechaza stock y seguimientoInventario en esa operación. eliminarRegistro
+comprueba ventas abiertas e impide eliminar productos que necesiten esas ventas.
+Los detalles de ventas abiertas usan itemsJson con id por artículo. Estados o detalles
+inválidos bloquean la eliminación; las ventas cerradas conservan sus propios datos.
+El bloqueo de doPost abarca la comprobación y la escritura, no las ediciones manuales
+que se hagan directamente en la hoja.
+
+Pruebas locales: tests/products-service.test.cjs (Code.gs con hojas simuladas) y
+tests/product-form.test.cjs (CRUD de interfaz con API simulada). Pasan también las
+pruebas previas de catálogo y categorías. No se hicieron escrituras remotas de prueba.
+Es necesario publicar la revisión actual de google-apps-script/para-publicar/Code.gs
+en la misma implementación para activar las nuevas reglas del servicio.

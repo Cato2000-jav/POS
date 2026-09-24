@@ -34,6 +34,15 @@ function actualizarRegistro(nombre, datos) {
     }
     const rango = hoja.getRange(numeroFila, 1, 1, encabezados.length);
     const actuales = rango.getValues()[0];
+    if (nombre === "productos") {
+        if (Object.prototype.hasOwnProperty.call(datos, "stock") ||
+            Object.prototype.hasOwnProperty.call(datos, "seguimientoInventario")) {
+            throw new Error("Esta edición no permite cambiar stock ni seguimiento de inventario.");
+        }
+        const completo = {};
+        encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
+        validarProducto(Object.assign(completo, datos));
+    }
     const formulas = rango.getFormulas()[0];
     const cambios = encabezados.map(function (clave) {
         return clave !== "id" && Object.prototype.hasOwnProperty.call(datos, clave);

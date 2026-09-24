@@ -28,6 +28,8 @@ function crearRegistro(nombre, datos) {
         throw new Error("Ya existe un registro con id " + datos.id);
     }
 
+    if (nombre === "productos") validarProducto(datos);
+
     // Prepara y valida toda la fila antes de modificar la hoja.
     const fila = encabezados.map(function (clave) {
         if (!Object.prototype.hasOwnProperty.call(datos, clave)) return "";

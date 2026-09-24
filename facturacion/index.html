@@ -189,6 +189,25 @@
                 desde app.js
             -->
 
+            <button id="nuevoProducto" type="button">Nuevo producto</button>
+            <button id="recargarProductos" type="button">Actualizar catálogo</button>
+            <form id="formProducto" class="producto-form" hidden>
+                <h2 id="tituloProducto">Nuevo producto</h2>
+                <label>Nombre<input id="productoNombre" required type="text"></label>
+                <label>Código<input id="productoCodigo" type="text"></label>
+                <label>Categoría<select id="productoCategoria" required></select></label>
+                <label>Precio de venta<input id="productoPrecio" required type="number" min="0" step="any"></label>
+                <label>Costo<input id="productoCosto" required type="number" min="0" step="any"></label>
+                <label>Stock inicial<input id="productoStock" required type="number" min="0" step="1" value="0"></label>
+                <label><input id="productoSeguimiento" type="checkbox" checked> Seguimiento de inventario</label>
+                <p>El stock y el seguimiento se definen al crear. No se modifican desde esta edición.</p>
+                <div>
+                    <button id="guardarProducto" type="submit">Guardar producto</button>
+                    <button id="cancelarProducto" type="button">Cancelar</button>
+                </div>
+                <p id="mensajeProducto" role="status" aria-live="polite"></p>
+            </form>
+            <p id="estadoProductos" role="status" aria-live="polite"></p>
             <div
                 id="catalogoProductos"
                 class="products-grid"
@@ -440,7 +459,8 @@
 
     <script src="categories.js"></script>
 
-    <script src="productos.js"></script>
+    <script src="products.js"></script>
+    <script src="product-form.js"></script>
 
     <script src="Historial_de_ventas.js"></script>
 

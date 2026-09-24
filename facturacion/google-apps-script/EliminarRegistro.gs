@@ -23,7 +23,9 @@ function eliminarRegistro(nombre, datos) {
     }
 
     // Son las relaciones del MVP 2. Si falta su columna, no se presupone que esté vacía.
-    if (nombre === "categorias") {
+    if (nombre === "productos") {
+        comprobarProductoSinVentasAbiertas(datos.id);
+    } else if (nombre === "categorias") {
         comprobarSinAsociaciones("productos", "categoriaId", datos.id,
             "No puedes eliminar la categoría: tiene productos asociados.");
     } else if (nombre === "proveedores") {

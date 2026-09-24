@@ -6,9 +6,7 @@ ESTADO DE LA APLICACIÓN
 
 const estado = {
 
-    productosDisponibles: [
-        ...productos
-    ],
+    productosDisponibles: [],
 
     facturaActual: [],
 
@@ -284,12 +282,11 @@ const renderProductos = () => {
             </span>
 
             <h3>
-                No encontramos productos
+                ${estado.terminoBusqueda ? "No encontramos productos" : "No hay productos cargados"}
             </h3>
 
             <p>
-                Intenta buscar utilizando
-                otro nombre.
+                ${estado.terminoBusqueda ? "Intenta buscar utilizando otro nombre." : "Consulta el estado de la carga sobre el catálogo."}
             </p>
         `;
 
@@ -330,10 +327,10 @@ const renderProductos = () => {
 
                 <div class="product-image">
 
-                    <img
+                    ${imagen ? `<img
                         src="${escaparHTML(imagen)}"
                         alt="${escaparHTML(nombre)}"
-                    >
+                    >` : '<span role="img" aria-label="Producto sin imagen">📦</span>'}
 
                     <span class="categoria">
                         ${escaparHTML(categoria)}
@@ -343,6 +340,8 @@ const renderProductos = () => {
 
 
                 <div class="product-body">
+                    <button type="button" class="btn-editar-producto" data-id="${escaparHTML(id)}">Editar producto</button>
+                    <button type="button" class="btn-eliminar-producto" data-id="${escaparHTML(id)}">Eliminar producto</button>
 
                     <h3>
                         ${escaparHTML(nombre)}
@@ -420,6 +419,13 @@ const renderProductos = () => {
             ".btn-agregar"
         );
 
+    catalogoProductos.querySelectorAll(".btn-editar-producto").forEach(boton => {
+        boton.addEventListener("click", () => abrirProducto(boton.dataset.id));
+    });
+    catalogoProductos.querySelectorAll(".btn-eliminar-producto").forEach(boton => {
+        boton.addEventListener("click", () => eliminarProductoCatalogo(boton.dataset.id));
+    });
+
     botonesAgregar.forEach(
         (boton) => {
 
@@ -444,7 +450,7 @@ const manejarAgregarProducto = (
 ) => {
 
     const idProducto =
-        Number(
+        String(
             evento
                 .currentTarget
                 .dataset
@@ -452,8 +458,8 @@ const manejarAgregarProducto = (
         );
 
     const inputCantidad =
-        document.querySelector(
-            `#cantidad-${idProducto}`
+        document.getElementById(
+            `cantidad-${idProducto}`
         );
 
     const cantidad =
@@ -1064,7 +1070,7 @@ const renderFactura = () => {
                 (evento) => {
 
                     const idProducto =
-                        Number(
+                        String(
                             evento
                                 .currentTarget
                                 .dataset
@@ -1103,7 +1109,7 @@ const renderFactura = () => {
                 (evento) => {
 
                     const idProducto =
-                        Number(
+                        String(
                             evento
                                 .currentTarget
                                 .dataset
@@ -2455,3 +2461,5 @@ mostrarVentaPendiente();
 renderProductos();
 
 renderFactura();
+
+cargarProductos();

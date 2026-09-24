@@ -22,7 +22,12 @@ para publicar, no otro servicio ni otra hoja. No se ha publicado automáticament
 Esta versión añade actualización y eliminación de entidades maestras y valida
 detalle JSON en ventas.itemsJson y compras.itemsJson. Las restricciones de eliminación
 usan productos.categoriaId, compras.proveedorId y ventas.clienteId.
-Todavía faltan validaciones por entidad, ventas abiertas/cierre, inventario y compras
+También valida nombre, precio, costo, stock inicial, seguimiento y categoría existente
+al crear productos. La edición parcial valida el registro completo y rechaza cambios
+de stock/seguimiento. La eliminación de productos revisa ventas abiertas con itemsJson;
+un detalle abierto identifica cada producto mediante id. Las ventas cerradas no se editan.
+Estas comprobaciones se ejecutan dentro del bloqueo de doPost.
+Todavía faltan validaciones de las otras entidades, ventas abiertas/cierre, inventario y compras
 coordinadas. No conectar el cierre de ventas ni compras a create genérico.
 
 Al publicar, no se ejecutan automáticamente las funciones de prueba ni se migran datos.
@@ -30,3 +35,10 @@ Para restaurar el servicio anterior, selecciona su versión anterior en esa mism
 implementación. Esto restaura código, no revierte registros que ya hayan sido escritos.
 
 Referencia: https://developers.google.com/apps-script/concepts/deployments
+
+## Actualización de productos pendiente de publicar
+Si ya publicaste la versión anterior, vuelve a actualizar la implementación existente
+con este Code.gs. Las funciones cambiadas son crearRegistro, actualizarRegistro y
+eliminarRegistro; las nuevas son validarProducto y comprobarProductoSinVentasAbiertas.
+No basta con actualizar los archivos HTML/JS locales. No se ha publicado esta revisión
+automáticamente ni se han creado o eliminado registros reales para probarla.
