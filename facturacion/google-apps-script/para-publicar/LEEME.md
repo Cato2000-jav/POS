@@ -42,3 +42,18 @@ con este Code.gs. Las funciones cambiadas son crearRegistro, actualizarRegistro 
 eliminarRegistro; las nuevas son validarProducto y comprobarProductoSinVentasAbiertas.
 No basta con actualizar los archivos HTML/JS locales. No se ha publicado esta revisión
 automáticamente ni se han creado o eliminado registros reales para probarla.
+
+## Actualización de proveedores pendiente de publicar
+La revisión actual también agrega validarProveedor y la invoca desde crearRegistro
+y actualizarRegistro. Valida nombre y contacto antes de escribir, conservando campos
+omitidos en las ediciones parciales. Teléfono y correo siguen siendo opcionales.
+Publica una nueva versión en la misma implementación para activar estas reglas.
+No añadas ValidarProveedor.gs por separado si ya pegaste este Code.gs unificado:
+la función ya está incluida. Las pruebas locales no publican cambios en Google.
+
+## Actualización de clientes pendiente de publicar
+La última revisión incluye validarCliente y sus llamadas en crearRegistro y
+actualizarRegistro. Publica este Code.gs unificado como nueva versión de la misma
+implementación; conserva URL y permisos. No pegues también ValidarCliente.gs porque
+duplicaría la función. No necesitas modificar encabezados. Las ventas y el pago Debe
+todavía no están conectados al nuevo panel de clientes.

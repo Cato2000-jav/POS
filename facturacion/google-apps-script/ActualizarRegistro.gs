@@ -34,6 +34,16 @@ function actualizarRegistro(nombre, datos) {
     }
     const rango = hoja.getRange(numeroFila, 1, 1, encabezados.length);
     const actuales = rango.getValues()[0];
+    if (nombre === "clientes") {
+        const completo = {};
+        encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
+        validarCliente(Object.assign(completo, datos));
+    }
+    if (nombre === "proveedores") {
+        const completo = {};
+        encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
+        validarProveedor(Object.assign(completo, datos));
+    }
     if (nombre === "productos") {
         if (Object.prototype.hasOwnProperty.call(datos, "stock") ||
             Object.prototype.hasOwnProperty.call(datos, "seguimientoInventario")) {

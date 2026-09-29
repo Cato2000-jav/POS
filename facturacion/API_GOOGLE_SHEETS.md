@@ -217,3 +217,55 @@ tests/product-form.test.cjs (CRUD de interfaz con API simulada). Pasan también 
 pruebas previas de catálogo y categorías. No se hicieron escrituras remotas de prueba.
 Es necesario publicar la revisión actual de google-apps-script/para-publicar/Code.gs
 en la misma implementación para activar las nuevas reglas del servicio.
+
+## Proveedores
+suppliers.js agrega listado, búsqueda por nombre/teléfono/correo, creación, edición
+y eliminación mediante api.js. Reutiliza las clases visuales del panel de categorías.
+Nombre obligatorio; teléfono y correo opcionales. El teléfono se envía como texto.
+Los registros se incorporan a la copia en memoria solo tras confirmación de la API.
+Errores conservan formulario y registros; una bandera bloquea solicitudes simultáneas.
+El ID de creación se conserva ante errores para no generar otro registro al reintentar.
+Actualizar lista permite comprobar una operación cuya respuesta se haya perdido.
+La eliminación requiere confirmación y depende de la restricción existente del servicio
+para compras.proveedorId. No se modificó Apps Script en esta etapa: no requiere otra
+publicación si la versión anterior ya está publicada. Las validaciones de nombre/correo
+de esta etapa son de interfaz; aún falta reforzarlas en el servicio.
+Pruebas: node facturacion/tests/suppliers.test.cjs, con API y DOM simulados.
+También pasan las pruebas previas de categorías, catálogo y productos. No se escribieron
+datos reales ni se comprobó visualmente el nuevo panel en móvil en esa primera etapa.
+
+### Validación del servicio y verificación del panel
+La revisión siguiente agrega validarProveedor a Code.gs y a ValidarProveedor.gs.
+crearRegistro valida antes de escribir; actualizarRegistro combina los campos actuales
+con los cambios y valida el resultado sin borrar los campos omitidos. Nombre requerido,
+correo opcional con formato básico y teléfono opcional de tipo texto o número finito
+para compatibilidad con registros antiguos. No comprueba que la dirección exista.
+El bloqueo de doPost y la comprobación de compras.proveedorId permanecen sin cambios.
+Esta revisión requiere publicar una nueva versión de la misma implementación.
+
+Pruebas: tests/suppliers-service.test.cjs verifica rechazo sin escritura, edición
+parcial, contacto opcional y eliminación bloqueada por compras o encabezados faltantes.
+En navegador se comprobó GET real, abrir/cancelar edición y búsqueda sin coincidencias.
+Panel sin desbordamiento horizontal a 375, 768 y 1280 píxeles; consola sin errores.
+No se hicieron escrituras remotas de prueba. No fue necesario cambiar CSS.
+
+## Clientes
+customers.js incorpora CRUD y búsqueda por nombre/teléfono/correo con el mismo patrón
+de proveedores, sin cambiar las funciones existentes ni añadir un gestor genérico.
+Usa api.listar y api.guardar; mantiene una copia en memoria, no localStorage.
+Nombre requerido, teléfono/correo opcionales. Incorpora registros solo tras confirmar
+la respuesta; conserva formulario e ID de creación ante fallos y bloquea doble envío.
+La eliminación pide confirmación y usa la restricción existente ventas.clienteId.
+El panel reutiliza las clases de categorías; no necesita nuevos estilos.
+
+Code.gs agrega validarCliente y la invoca en crearRegistro y actualizarRegistro antes
+de escribir. En edición valida la combinación de campos actuales y recibidos sin borrar
+los omitidos. Esta revisión requiere nueva publicación en la misma implementación.
+No se ha conectado aún el cliente a la venta ni implementado su obligatoriedad para Debe.
+Tampoco cambia el historial ni el inventario.
+
+Pruebas simuladas: tests/customers.test.cjs y tests/customers-service.test.cjs.
+Comprueban CRUD, búsqueda, errores, doble envío, validación de contacto, actualización
+parcial y bloqueo de eliminación por ventas o por encabezados faltantes.
+GET real en navegador devolvió lista vacía. Panel sin desbordamiento a 375/768/1280,
+sin errores de consola. No se realizaron escrituras ni eliminaciones remotas de prueba.

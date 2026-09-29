@@ -84,6 +84,10 @@
                 aria-controls="panelCategorias" aria-expanded="false">
                 Categorías
             </button>
+            <button id="btnProveedores" type="button"
+                aria-controls="panelProveedores" aria-expanded="false">Proveedores</button>
+            <button id="btnClientes" type="button"
+                aria-controls="panelClientes" aria-expanded="false">Clientes</button>
 
         </div>
 
@@ -114,6 +118,54 @@
             placeholder="Escribe el nombre de la categoría">
         <p id="estadoCategorias" role="status" aria-live="polite"></p>
         <ul id="listaCategorias" aria-label="Categorías disponibles"></ul>
+    </section>
+
+    <section id="panelProveedores" class="container categorias-panel" hidden aria-labelledby="tituloProveedores">
+        <div class="categorias-encabezado">
+            <h2 id="tituloProveedores">Proveedores</h2>
+            <button id="recargarProveedores" type="button">Actualizar lista</button>
+        </div>
+        <form id="formProveedor" class="categorias-form">
+            <h3 id="etiquetaProveedor">Nuevo proveedor</h3>
+            <label for="proveedorNombre">Nombre (obligatorio)</label>
+            <input id="proveedorNombre" class="input-text" type="text" required disabled>
+            <label for="proveedorTelefono">Teléfono</label>
+            <input id="proveedorTelefono" class="input-text" type="tel" disabled>
+            <label for="proveedorCorreo">Correo</label>
+            <input id="proveedorCorreo" class="input-text" type="email" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarProveedor" type="submit" disabled>Guardar proveedor</button>
+                <button id="cancelarProveedor" type="button" disabled>Cancelar edición</button>
+            </div>
+        </form>
+        <label for="buscarProveedores">Buscar por nombre, teléfono o correo</label>
+        <input id="buscarProveedores" class="input-text" type="search" disabled>
+        <p id="estadoProveedores" role="status" aria-live="polite"></p>
+        <ul id="listaProveedores" aria-label="Proveedores registrados"></ul>
+    </section>
+
+    <section id="panelClientes" class="container categorias-panel" hidden aria-labelledby="tituloClientes">
+        <div class="categorias-encabezado">
+            <h2 id="tituloClientes">Clientes</h2>
+            <button id="recargarClientes" type="button">Actualizar lista</button>
+        </div>
+        <form id="formCliente" class="categorias-form">
+            <h3 id="etiquetaCliente">Nuevo cliente</h3>
+            <label for="clienteNombre">Nombre (obligatorio)</label>
+            <input id="clienteNombre" class="input-text" type="text" required disabled>
+            <label for="clienteTelefono">Teléfono</label>
+            <input id="clienteTelefono" class="input-text" type="tel" disabled>
+            <label for="clienteCorreo">Correo</label>
+            <input id="clienteCorreo" class="input-text" type="email" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarCliente" type="submit" disabled>Guardar cliente</button>
+                <button id="cancelarCliente" type="button" disabled>Cancelar edición</button>
+            </div>
+        </form>
+        <label for="buscarClientes">Buscar por nombre, teléfono o correo</label>
+        <input id="buscarClientes" class="input-text" type="search" disabled>
+        <p id="estadoClientes" role="status" aria-live="polite"></p>
+        <ul id="listaClientes" aria-label="Clientes registrados"></ul>
     </section>
 
     <main class="container layout factura-no-iniciada">
@@ -458,6 +510,8 @@
     <script src="api.js"></script>
 
     <script src="categories.js"></script>
+    <script src="suppliers.js"></script>
+    <script src="customers.js"></script>
 
     <script src="products.js"></script>
     <script src="product-form.js"></script>
