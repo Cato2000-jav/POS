@@ -1,6 +1,7 @@
 // Reemplaza únicamente la función actualizarRegistro que contiene el TODO.
 // Reutiliza los auxiliares existentes y el bloqueo de doPost.
 function actualizarRegistro(nombre, datos) {
+    if (nombre === "ventas") return guardarVentaAbierta(datos, true);
     // Ventas y compras necesitan reglas de inventario antes de poder editarse.
     if (["productos", "categorias", "proveedores", "clientes"].indexOf(nombre) === -1) {
         throw new Error("La actualización de ventas y compras todavía no está habilitada.");

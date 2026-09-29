@@ -172,6 +172,8 @@ REGISTRAR VENTA
 const registrarVenta = (
     {
         persona = "Cliente general",
+        clienteId = "",
+        clienteNombre = "",
         metodoPago = "No especificado",
         subtotal = 0,
         iva = 0,
@@ -202,6 +204,8 @@ const registrarVenta = (
             obtenerHoraActual(),
 
         persona,
+        clienteId,
+        clienteNombre,
 
         metodoPago,
 
@@ -672,6 +676,7 @@ const verDetalleVenta = (
 Fecha: ${venta.fecha}
 Hora: ${venta.hora}
 Trabajador: ${venta.persona}
+Cliente: ${venta.clienteNombre || "Sin cliente"}
 Método: ${venta.metodoPago}
 
 PRODUCTOS
@@ -922,6 +927,7 @@ const imprimirVentaHistorica = (
                 Trabajador:
                 ${escaparHTML(venta.persona)}
             </p>
+            <p>Cliente: ${escaparHTML(venta.clienteNombre || "Sin cliente")}</p>
 
             <p>
                 Método:

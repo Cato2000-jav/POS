@@ -111,6 +111,7 @@ async function guardarClienteFormulario(evento) {
         limpiarCliente();
         renderClientes();
         mensajeClientes.textContent = "Cliente guardado en Google Sheets.";
+        if (typeof invalidarClientesVenta === "function") invalidarClientesVenta();
     } catch (error) {
         mensajeClientes.textContent = "No se confirmó el guardado: " + error.message;
     } finally { bloquearClientes(false); }
@@ -129,6 +130,7 @@ async function eliminarCliente(cliente) {
         if (clientesEstado.editandoId === cliente.id) limpiarCliente();
         renderClientes();
         mensajeClientes.textContent = "Cliente eliminado.";
+        if (typeof invalidarClientesVenta === "function") invalidarClientesVenta();
     } catch (error) {
         mensajeClientes.textContent = "No se confirmó la eliminación: " + error.message;
     } finally { bloquearClientes(false); }

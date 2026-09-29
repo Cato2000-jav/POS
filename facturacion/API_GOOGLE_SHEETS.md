@@ -269,3 +269,55 @@ Comprueban CRUD, búsqueda, errores, doble envío, validación de contacto, actu
 parcial y bloqueo de eliminación por ventas o por encabezados faltantes.
 GET real en navegador devolvió lista vacía. Panel sin desbordamiento a 375/768/1280,
 sin errores de consola. No se realizaron escrituras ni eliminaciones remotas de prueba.
+
+## Cliente en el flujo de venta (transición del MVP 1)
+sale-customer.js consulta clientes mediante api.listar y llena clienteVenta con opciones
+seguras mediante textContent. Efectivo/Nequi admiten cliente vacío; Debe exige uno.
+Se conserva Tarjeta débito del MVP 1 y se agrega Debe sin cambiar valores anteriores.
+validarVenta llama a obtenerClienteVenta antes de continuar. Una carga en curso o una
+selección obsoleta impiden confirmar; un fallo permite reintentar. Las modificaciones
+del CRUD invalidan el selector, incluso si ocurren mientras se consulta la lista.
+
+obtenerClienteVenta devuelve {clienteId, clienteNombre}. El nombre es una copia para
+la factura histórica, independiente del nombre que tenga después el cliente. Se muestra
+en confirmación, detalle e impresión. Los registros anteriores usan Sin cliente.
+limpiarFormularioFactura borra la selección al iniciar/cancelar/finalizar una venta.
+
+IMPORTANTE: esta etapa conserva registrarVenta del MVP 1 y su historial local. Todavía
+no guarda ventas en Sheets ni descuenta inventario. La regla Debe de esta etapa es de
+interfaz; deberá repetirse en el servicio al migrar el cierre. No afirmar que las ventas
+locales activan la restricción ventas.clienteId en Sheets. No se modifican encabezados
+ni se envía clienteNombre a la hoja actual, que no dispone de esa columna.
+Esta revisión de frontend no requiere otra publicación de Apps Script.
+Pruebas: tests/sale-customer.test.cjs incluye la función validarVenta real, efectivo
+suficiente/insuficiente, Debe con/sin cliente, fallos, doble carga y copia del nombre.
+La verificación visual de estos nuevos controles queda pendiente; no se guardaron
+ventas reales de prueba ni se probaron todavía ventas abiertas o inventario.
+
+## Servicio de ventas abiertas
+Se agregó guardarVentaAbierta(datos, actualizar), invocada por create/update de ventas
+dentro del bloqueo de doPost. La interfaz aún no la llama. No realiza ninguna escritura
+en productos: una abierta se admite incluso si sus cantidades superan el stock actual.
+El cierre con inventario sigue pendiente y no puede hacerse mediante create genérico.
+
+Entrada: id de texto, estado abierta, persona, clienteId (texto vacío si no hay cliente),
+metodoPago y itemsJson como arreglo de {id, cantidad}. Cada producto aparece una vez,
+con cantidad entera positiva. Al actualizar también se envía actualizadoEn, exactamente
+como se recibió al consultar. La edición es un reemplazo del borrador, no un parche parcial.
+Métodos admitidos: vacío, Efectivo, Nequi, Debe y Tarjeta débito (compatibilidad MVP 1).
+Debe requiere cliente existente. Precios/nombres se consultan en el catálogo; el nombre
+del cliente se toma de clientes. Importes enviados por el navegador no son autoridad.
+
+Salida: registro confirmado con itemsJson como arreglo, subtotal, iva y total calculados
+por el servicio. Se conserva IVA 19% y el cálculo sin redondeo del MVP 1. fecha se asigna
+al crear y se conserva al editar; actualizadoEn cambia en cada guardado. Ambos son ISO.
+valorRecibido/cambio permanecen vacíos porque no se ha cobrado. No se edita una cerrada.
+ID repetido en create se rechaza: consultar el existente antes de repetir un envío incierto.
+actualizadoEn evita sobrescribir cambios de otra sesión; una versión antigua se rechaza.
+Las columnas originales se conservan junto con persona, iva y clienteNombre. No se
+migran ni eliminan ventas antiguas automáticamente.
+
+Pruebas: node facturacion/tests/open-sales-service.test.cjs. Ejecuta doPost y las reglas
+del Code.gs unificado con hojas simuladas, comprueba bloqueo/liberación, errores antes
+de escribir, Debe, totales, stock intacto, creación duplicada, edición y conflictos.
+No se han hecho escrituras reales ni se ha publicado esta revisión automáticamente.

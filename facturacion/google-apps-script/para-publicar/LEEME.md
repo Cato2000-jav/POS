@@ -57,3 +57,12 @@ actualizarRegistro. Publica este Code.gs unificado como nueva versión de la mis
 implementación; conserva URL y permisos. No pegues también ValidarCliente.gs porque
 duplicaría la función. No necesitas modificar encabezados. Las ventas y el pago Debe
 todavía no están conectados al nuevo panel de clientes.
+
+## Ventas abiertas: nueva revisión pendiente de publicar
+La revisión actual agrega guardarVentaAbierta y la usa desde crearRegistro y
+actualizarRegistro cuando el recurso es ventas. Requiere las columnas persona, iva y
+clienteNombre añadidas al final de la hoja ventas. No escribe en productos.
+Crear ventas cerradas por el create genérico queda bloqueado hasta implementar su
+cierre con inventario. Las otras operaciones de entidades maestras siguen iguales.
+Publica este Code.gs como nueva versión de la implementación existente, sin duplicar
+funciones ni modificar permisos. La interfaz para guardar/retomar abiertas sigue pendiente.

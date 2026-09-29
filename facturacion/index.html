@@ -373,6 +373,13 @@
                     </div>
 
 
+                    <label for="clienteVenta">Cliente (opcional, obligatorio para Debe)</label>
+                    <select id="clienteVenta" disabled>
+                        <option value="">Sin cliente</option>
+                    </select>
+                    <button id="recargarClientesVenta" type="button">Actualizar clientes</button>
+                    <p id="estadoClientesVenta" role="status" aria-live="polite"></p>
+
                     <label for="mtdpago">
                         Elige el método de pago:
                     </label>
@@ -393,6 +400,7 @@
                         <option value="debito">
                             Tarjeta débito
                         </option>
+                        <option value="debe">Debe</option>
 
                     </select>
 
@@ -512,6 +520,7 @@
     <script src="categories.js"></script>
     <script src="suppliers.js"></script>
     <script src="customers.js"></script>
+    <script src="sale-customer.js"></script>
 
     <script src="products.js"></script>
     <script src="product-form.js"></script>

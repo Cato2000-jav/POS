@@ -1215,6 +1215,7 @@ MOSTRAR / OCULTAR EFECTIVO
 */
 
 const actualizarMetodoPago = () => {
+    clienteVenta.required = metodoPago.value === "debe";
 
     const esEfectivo =
         metodoPago.value
@@ -1388,6 +1389,7 @@ const limpiarFormularioFactura =
 
         trabajador.value =
             "";
+        clienteVenta.value = "";
 
         metodoPago.value =
             "efectivo";
@@ -1611,6 +1613,14 @@ const validarVenta = () => {
     }
 
 
+    try {
+        obtenerClienteVenta();
+    } catch (error) {
+        mostrarToast(error.message, "error");
+        clienteVenta.focus();
+        return false;
+    }
+
     /*
     4. EFECTIVO
     */
@@ -1779,6 +1789,8 @@ const generarFactura = () => {
                             .value
                             .trim(),
 
+                    ...obtenerClienteVenta(),
+
                     metodoPago:
                         textoMetodoPago,
 
@@ -1851,6 +1863,7 @@ const generarFactura = () => {
                 Trabajador:
                 ${escaparHTML(nuevaVenta.persona)}
             </span>
+            <span>Cliente: ${escaparHTML(nuevaVenta.clienteNombre || "Sin cliente")}</span>
 
             <span>
                 Método:
@@ -2214,6 +2227,7 @@ const imprimirFactura = () => {
 
                     ${escaparHTML(venta.persona)}
                 </p>
+                <p><strong>Cliente:</strong> ${escaparHTML(venta.clienteNombre || "Sin cliente")}</p>
 
 
                 <p>
@@ -2463,3 +2477,4 @@ renderProductos();
 renderFactura();
 
 cargarProductos();
+cargarClientesVenta();
