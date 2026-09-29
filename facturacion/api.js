@@ -15,7 +15,7 @@ const api = {
 
     async solicitar(recurso, accion, datos = null) {
         const recursos = ["productos", "ventas", "compras", "categorias", "proveedores", "clientes"];
-        const acciones = ["listar", "crear", "actualizar", "eliminar"];
+        const acciones = ["listar", "crear", "actualizar", "eliminar", "cerrar"];
         if (!this.url) {
             throw new Error("Falta configurar la URL del servicio de Google Sheets.");
         }
@@ -24,6 +24,9 @@ const api = {
         }
 
         const esLectura = accion === "listar";
+        if (accion === "cerrar" && recurso !== "ventas") {
+            throw new Error("Solo se pueden cerrar ventas.");
+        }
         if (!esLectura && (!datos || typeof datos !== "object" || Array.isArray(datos))) {
             throw new Error("La escritura necesita un objeto con los datos del registro.");
         }
@@ -32,7 +35,7 @@ const api = {
         destino.searchParams.set("resource", recurso);
         const opciones = { method: esLectura ? "GET" : "POST", redirect: "follow" };
         if (!esLectura) {
-            const accionesServicio = { crear: "create", actualizar: "update", eliminar: "delete" };
+            const accionesServicio = { crear: "create", actualizar: "update", eliminar: "delete", cerrar: "close" };
             // El cuerpo sigue siendo JSON; Apps Script lo lee con e.postData.contents.
             opciones.headers = { "Content-Type": "text/plain;charset=UTF-8" };
             opciones.body = JSON.stringify({ action: accionesServicio[accion], data: datos });
@@ -63,8 +66,10 @@ const api = {
             throw new Error("Respuesta del servicio no reconocida. No se confirmó la operación.");
         }
         if (!resultado.success) {
-            throw new Error(typeof resultado.message === "string"
+            const error = new Error(typeof resultado.message === "string"
                 ? resultado.message : "El servicio rechazó la operación.");
+            error.codigo = resultado.codigo;
+            throw error;
         }
         if (!Object.hasOwn(resultado, "data") || (esLectura && !Array.isArray(resultado.data))) {
             throw new Error("La respuesta del servicio no contiene los datos esperados.");

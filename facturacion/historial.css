@@ -225,3 +225,9 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
     }
 
 }
+/* Controles de fuente del historial; no alteran la tabla existente. */
+#fuenteHistorial, #recargarHistorial {
+    max-width: 100%; box-sizing: border-box; padding: 10px; margin: 8px 0;
+}
+#estadoHistorial { overflow-wrap: anywhere; margin: 12px 0; }
+.btn-eliminar-venta[hidden], #clear-history-button[hidden] { display: none !important; }

@@ -1430,6 +1430,7 @@ INICIAR NUEVA FACTURA
 */
 
 const iniciarFactura = () => {
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente) return;
 
     if (
         estado.facturaActual.length
@@ -1453,6 +1454,7 @@ const iniciarFactura = () => {
 
     estado.facturaIniciada =
         true;
+    limpiarReferenciaAbierta();
 
     panelFactura.hidden =
         false;
@@ -1498,6 +1500,7 @@ CANCELAR FACTURA
 */
 
 const cancelarFactura = () => {
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente) return;
 
     if (
         estado.facturaActual.length
@@ -1516,7 +1519,7 @@ const cancelarFactura = () => {
 
     const confirmar =
         window.confirm(
-            "¿Seguro que deseas cancelar la factura actual?"
+            "¿Descartar los cambios de la factura actual? Si está guardada en Sheets, seguirá abierta allí."
         );
 
 
@@ -1525,6 +1528,8 @@ const cancelarFactura = () => {
         return;
 
     }
+
+    limpiarReferenciaAbierta();
 
 
     estado.facturaActual =
@@ -1688,148 +1693,32 @@ GENERAR FACTURA
 =========================================================
 */
 
-const generarFactura = () => {
-
-    if (
-        !validarVenta()
-    ) {
-
+const generarFactura = async () => {
+    if (ventasAbiertasEstado.ocupado) return;
+    if (ventasAbiertasEstado.cierrePendiente) {
+        await cerrarVentaRemota();
         return;
-
     }
-
-
-    const {
-        subtotalGeneral,
-        iva,
-        total
-    } =
-        calcularTotales();
-
-
-    const detalleProductos =
-        obtenerDetalleFactura();
-
-
-    const items =
-        estado
-            .facturaActual
-            .reduce(
-                (
-                    acumulador,
-                    item
-                ) =>
-                    acumulador
-                    +
-                    item.cantidad,
-
-                0
-            );
-
-
-    const textoMetodoPago =
-        metodoPago
-            .options[
-                metodoPago.selectedIndex
-            ]
-            .text;
-
-
-    let valorRecibido =
-        null;
-
-    let valorCambio =
-        null;
-
-
-    if (
-        metodoPago.value
-        ===
-        "efectivo"
-    ) {
-
-        valorRecibido =
-            Number(
-                dineroRecibido.value
-            );
-
-        valorCambio =
-            valorRecibido
-            -
-            total;
-    }
-
-
-    /*
-    REGISTRAR EN HISTORIAL
-    */
-
-    if (
-        typeof window.registrarVentaEnHistorial
-        !==
-        "function"
-    ) {
-
-        mostrarToast(
-            "No se pudo cargar el historial de facturas.",
-            "error"
-        );
-
+    if (!comprobarDisponibilidadAbiertas()) return;
+    if (ventasAbiertasEstado.nuevoId && !ventasAbiertasEstado.id) {
+        mostrarToast("Consulta y retoma la venta: hay un guardado pendiente de confirmar.", "error");
         return;
-
     }
-
-    const nuevaVenta =
-        window
-            .registrarVentaEnHistorial(
-                {
-
-                    persona:
-                        trabajador
-                            .value
-                            .trim(),
-
-                    ...obtenerClienteVenta(),
-
-                    metodoPago:
-                        textoMetodoPago,
-
-                    subtotal:
-                        subtotalGeneral,
-
-                    iva:
-                        iva,
-
-                    total:
-                        total,
-
-                    items:
-                        items,
-
-                    productos:
-                        detalleProductos,
-
-                    dineroRecibido:
-                        valorRecibido,
-
-                    cambio:
-                        valorCambio
-                }
-            );
-
-
-    if (!nuevaVenta) {
-
-        mostrarToast(
-            "No fue posible guardar la venta. Revisa el almacenamiento del navegador.",
-            "error"
-        );
-
-        return;
-
+    if (!validarVenta()) return;
+    if (!ventasAbiertasEstado.id || firmaVentaActual() !== ventasAbiertasEstado.firmaGuardada) {
+        const totalMostrado = calcularTotales().total;
+        const guardada = await guardarVentaAbiertaFormulario();
+        if (!guardada) return;
+        if (guardada.total !== totalMostrado) {
+            mostrarToast("El catálogo cambió el total. Revisa el importe y vuelve a confirmar el cierre.", "error");
+            return;
+        }
     }
+    await cerrarVentaRemota();
+};
 
-
+// Comparte presentación e impresión entre el flujo anterior y el cierre remoto.
+const mostrarFacturaConfirmada = (nuevaVenta) => {
     /*
     Guardamos la última venta para
     poder imprimirla.
@@ -1911,7 +1800,7 @@ const generarFactura = () => {
 
 
     mostrarToast(
-        "Factura generada y venta guardada en el historial.",
+        nuevaVenta.estado === "cerrada" ? "Venta cerrada y guardada en Google Sheets." : "Factura generada y venta guardada en el historial local.",
         "success"
     );
 };

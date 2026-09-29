@@ -66,3 +66,41 @@ Crear ventas cerradas por el create genérico queda bloqueado hasta implementar 
 cierre con inventario. Las otras operaciones de entidades maestras siguen iguales.
 Publica este Code.gs como nueva versión de la implementación existente, sin duplicar
 funciones ni modificar permisos. La interfaz para guardar/retomar abiertas sigue pendiente.
+
+## Cierre de ventas con inventario: revisión pendiente de publicar
+La revisión actual agrega cerrarVenta y actualizarCeldaCierre, y la acción close en
+doPost. Requiere habilitar el servicio avanzado Google Sheets API (identificador Sheets)
+en Apps Script: editor > Servicios > + > Google Sheets API > Agregar.
+Si usas un proyecto estándar de Google Cloud, también debes habilitar Sheets API en
+ese proyecto; en un proyecto predeterminado de Apps Script se activa al agregarlo.
+No habilites servicios distintos ni cambies los permisos públicos de la implementación.
+Si aparece una solicitud de autorización, revisa que corresponda a Google Sheets.
+Publica este Code.gs unificado como nueva versión de la misma implementación.
+
+El cierre usa Sheets.Spreadsheets.batchUpdate: las celdas de stock y de estado/cobro de
+la venta se escriben juntas o ninguna. No hay setValues separados ni reversión manual.
+Todas las comprobaciones se hacen bajo el bloqueo de doPost. Evita editar directamente
+las hojas durante operaciones del POS: ese bloqueo no controla ediciones manuales.
+La interfaz de cierre remoto sigue pendiente; no ejecutes cierres reales de prueba.
+Referencia: https://developers.google.com/workspace/sheets/api/guides/batch
+Activación: https://developers.google.com/apps-script/guides/services/advanced
+
+## Clasificación de errores para el cierre de interfaz
+La revisión de integración agrega codigo a errores de doPost: RECHAZADO cuando no
+se alcanzó la escritura del cierre; CIERRE_INCIERTO si falló la confirmación del lote.
+Se modificaron doPost y el bloque batchUpdate de cerrarVenta. Publica este Code.gs como
+nueva versión de la implementación existente. Google Sheets API ya debe estar activada;
+no necesitas volver a agregarla. Una versión antigua sin codigo se trata de forma
+conservadora como resultado incierto y mantiene el cierre pendiente.
+
+## Compras con inventario: nueva revisión pendiente de publicar
+crearRegistro ahora deriva compras a guardarCompra. Code.gs incluye guardarCompra,
+firmaCompra y validarColumnasCompra; no pegues también Compras.gs, que es el fragmento
+de referencia. Publica una nueva versión de la implementación existente con este
+Code.gs integrado. Conserva la URL, permisos y servicio avanzado Sheets ya activado.
+No necesitas añadir columnas: compras conserva id, fecha, proveedorId, total, itemsJson.
+Se validan proveedor, fecha, productos, cantidades y costos antes de escribir.
+Compra, stock y costo se escriben en un único batchUpdate. Un reintento con el mismo
+ID y contenido devuelve la compra guardada sin volver a sumar inventario. Un resultado
+incierto lleva codigo COMPRA_INCIERTA; no debe reenviarse con un ID nuevo.
+La pantalla de compras sigue pendiente. Solo hay pruebas simuladas, no compras reales.

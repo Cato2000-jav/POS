@@ -321,3 +321,168 @@ Pruebas: node facturacion/tests/open-sales-service.test.cjs. Ejecuta doPost y la
 del Code.gs unificado con hojas simuladas, comprueba bloqueo/liberación, errores antes
 de escribir, Debe, totales, stock intacto, creación duplicada, edición y conflictos.
 No se han hecho escrituras reales ni se ha publicado esta revisión automáticamente.
+
+## Interfaz de ventas abiertas
+open-sales.js usa api.listar/guardar: botones Guardar como abierta, Consultar ventas
+abiertas y Retomar. Mantiene ID y actualizadoEn en memoria. No utiliza localStorage.
+Crear conserva el ID ante un error; para un resultado incierto se consulta y retoma la
+venta existente antes de reintentar. Actualizar envía la versión recibida del servidor.
+El servicio rechaza versiones antiguas y la interfaz conserva el carrito ante errores.
+
+Retomar pide confirmación si hay artículos en curso y consulta nuevamente ventas,
+productos, categorías y clientes antes de reemplazar el carrito. Usa precios actuales
+y lo indica al usuario. Si faltan productos/clientes o la venta ya no está abierta,
+no sustituye la venta en pantalla. No recupera efectivo como cobro confirmado.
+Guardar muestra los precios confirmados por el servicio sin modificar el stock local.
+La consulta a productos al retomar actualiza la copia local, no escribe existencias.
+
+Iniciar otra factura o cancelar descarta los cambios locales y desvincula la venta;
+no elimina la abierta en Sheets. El cierre local está bloqueado cuando existe ID remoto
+o un intento de guardado incierto: el cierre remoto con inventario sigue pendiente.
+Las ventas nuevas que no se han guardado como abiertas conservan el flujo MVP 1.
+No afirmar todavía que todo el historial está migrado a Sheets.
+
+Prueba: node facturacion/tests/open-sales.test.cjs. Cubre creación, actualización,
+doble envío, conflictos, retomar/cancelar recuperación, error conservando carrito,
+stock sin cambios y bloqueo del cierre local. No se guardaron ventas reales de prueba.
+La revisión visual móvil de los nuevos controles sigue pendiente. Esta etapa solo
+modifica frontend y requiere la versión de guardarVentaAbierta ya publicada por el usuario.
+
+## Servicio de cierre (pendiente de publicación e integración visual)
+api.guardar("ventas", "cerrar", datos) envía action close a doPost. Otros recursos
+no admiten cerrar. datos contiene id, actualizadoEn y valorRecibido (número para
+Efectivo, null/vacío/omitido para otros métodos). Primero debe existir una venta abierta.
+No se crean ventas cerradas directamente mediante create.
+
+cerrarVenta revisa la versión, cliente, método, importes del detalle guardado y stock
+actual. No cambia precios históricos con el catálogo actual. Recalcula los totales
+con IVA 19% y exige que coincidan con los guardados. Ante stock insuficiente identifica
+el producto y sus cantidades. Los productos sin seguimiento no generan escritura de stock.
+El cierre normal valida efectivo y calcula cambio; Debe exige un cliente existente.
+
+Una sola petición Sheets.Spreadsheets.batchUpdate modifica las existencias necesarias
+y estado/valorRecibido/cambio/actualizadoEn. Requiere habilitar Google Sheets API como
+servicio avanzado dentro del mismo Apps Script. No añade otro servicio externo ni backend.
+Tras confirmar el lote se devuelve el comprobante. Si se pierde la respuesta, consultar
+o reintentar el mismo ID: una venta ya cerrada devuelve su comprobante sin volver a
+descontar ni modificar el pago. Esto no implementa correcciones de ventas cerradas.
+El bloqueo coordina operaciones de este Apps Script, no cambios manuales ni otros scripts.
+
+Pruebas: tests/close-sales-service.test.cjs simula doPost, bloqueo y lote atómico; cubre
+stock insuficiente, efectivo insuficiente, Debe, versión antigua, stock sin seguimiento,
+fallo antes de escribir y respuesta perdida después del lote con reintento sin duplicar.
+No se ha cerrado una venta real. El botón remoto permanece bloqueado en esta etapa;
+se conectará después de activar el servicio y publicar la implementación.
+
+## Cierre remoto conectado para ventas abiertas
+close-sales.js conecta Cerrar venta en Sheets al servicio publicado. Requiere que la
+venta haya sido guardada como abierta, con todos sus cambios confirmados. Una firma
+en memoria compara trabajador, cliente, método y artículos/precios antes de cerrar.
+Retomar exige volver a guardar para confirmar precios actuales antes de cobrar.
+La firma no incluye efectivo: se introduce para el cierre, no para guardar el borrador.
+
+Los datos de cierre se congelan en cierrePendiente. Un doble clic no envía otra petición.
+Un error RECHAZADO conserva carrito y permite corregirlo. Una respuesta incierta bloquea
+edición/cambio de venta y muestra Reintentar cierre pendiente, que reutiliza el mismo ID,
+versión y pago. No se marca éxito ni se borra el carrito antes de validar el comprobante.
+doPost y cerrarVenta agregan códigos de error; requiere nueva publicación. No hace
+falta volver a activar Google Sheets API. Sin código se asume resultado incierto.
+
+adaptarVentaCerrada convierte itemsJson a productos y valorRecibido a dineroRecibido,
+mantiene los datos históricos y presenta fecha/hora en America/Bogota. La confirmación
+y la impresión reutilizan mostrarFacturaConfirmada extraída de generarFactura; no se
+escribe el comprobante remoto en localStorage. Tras confirmar se consulta el catálogo.
+Si falla esa consulta, se advierte que la venta SÍ se cerró, sin inventar stock ni reabrirla.
+
+TRANSICIÓN: las ventas no guardadas como abiertas aún usan el cierre local original,
+ahora identificado como Generar factura (MVP 1 local). El historial remoto aún no está
+integrado: el comprobante remoto actual se puede imprimir, pero no aparece todavía en
+la página de historial local. La siguiente etapa debe migrar ese historial y unificar
+el cierre normal; no considerar finalizada la migración MVP 2.
+No cerrar la pestaña durante un cierre incierto. La operación pendiente es solo memoria;
+tras recargar, consultar ventas en Sheets antes de recrear una venta cuyo resultado se desconoce.
+
+Prueba nueva: tests/close-sales.test.cjs. Verifica confirmación, adaptación, petición
+duplicada, stock remoto, rechazo, respuesta perdida, datos de reintento inmutables y
+fallo de recarga después de un cierre confirmado. No se cerraron ventas reales ni se
+verificó visualmente el nuevo botón en esta etapa.
+
+## Historial remoto y cierre unificado (revisión posterior)
+generarFactura ya no llama a registrarVentaEnHistorial. Para una venta nueva guarda
+primero un borrador remoto y luego solicita cerrar; si hay cambios en una abierta,
+los guarda antes de cerrar. Un fallo de guardado detiene el cierre. Si el total del
+servicio difiere del mostrado, exige revisar y confirmar de nuevo. El cierre conserva
+las reglas anteriores de stock, cobro, versión y recuperación del resultado incierto.
+index.html ya no carga Historial_de_ventas.js; no hay escrituras locales de ventas.
+
+sales-data.js contiene el adaptador compartido de comprobantes que antes estaba en
+close-sales.js, para que historial y factura muestren exactamente el mismo formato.
+remote-history.js consulta ventas mediante api.listar, filtra cerradas, valida/adapta
+registros y mantiene una copia en memoria. obtenerHistorial consume esa copia por defecto.
+Una consulta fallida conserva la última carga remota y explica el error, sin recurrir
+silenciosamente al historial del navegador.
+
+La opción Historial anterior consulta explícitamente la clave local del MVP 1 en modo
+solo lectura. No importa, mezcla, borra ni modifica esos registros ni su inventario.
+guardarHistorial/registrarVenta ya no escriben; las acciones de borrado quedan inhabilitadas.
+Se conservan detalle, factura e impresión usando los registros de la fuente elegida.
+PDF se obtiene mediante Imprimir > Guardar como PDF; no se agregó una librería externa.
+La importación del archivo antiguo a Sheets queda pendiente como migración separada.
+
+Las páginas versionan los scripts para evitar mezclar el historial viejo almacenado
+en caché con HTML nuevo. Se verificó GET real: cero ventas cerradas; la vista anterior
+mantiene su factura local. Historial móvil a 375 px sin desbordamiento del documento;
+la tabla conserva su desplazamiento horizontal. No hay errores de consola en historial
+ni facturación. No se verificó un cierre real ni se generó un PDF real en esta etapa.
+Pruebas nuevas: tests/remote-history.test.cjs y tests/generate-remote.test.cjs.
+Pasan las quince pruebas locales. Esta etapa no agrega cambios de Apps Script; sigue
+siendo necesaria la revisión anterior con RECHAZADO/CIERRE_INCIERTO para distinguir errores.
+
+## Compras: servicio atómico (interfaz pendiente)
+POST resource=compras, action=create deriva ahora a guardarCompra, no al alta genérica.
+Entrada: {id, fecha: "YYYY-MM-DD", proveedorId, itemsJson: [{id, cantidad, costo}], total?}.
+El ID de texto debe generarse una vez por compra y conservarse en reintentos.
+Cantidad es entero positivo seguro; costo es número finito no negativo; no se repiten
+productos. El total se calcula en el servidor; si se envía debe coincidir exactamente.
+Salida: {id, fecha, proveedorId, total, itemsJson}, donde cada detalle conserva además
+nombre y subtotal de esa compra. No se añade IVA a compras ni se cambia el IVA de ventas.
+Fecha es texto de calendario, no un instante UTC, para evitar desplazar el día elegido.
+
+Funciones nuevas:
+- guardarCompra(datos): valida relaciones, construye snapshots y solicitudes, confirma
+  un único lote y devuelve el registro. Se llama desde crearRegistro bajo el lock de doPost.
+- firmaCompra(compra): valida identidad/fecha/detalle/total y devuelve texto comparable;
+  permite reconocer el mismo intento sin depender de nombres actuales del catálogo.
+- validarColumnasCompra(columnas, requeridas): devuelve undefined cuando son válidas
+  o lanza Error si faltan columnas o hay encabezados vacíos/duplicados. No escribe.
+Se reutiliza actualizarCeldaCierre: pese a su nombre, solo construye una petición de
+celda y sirve también para stock/costo de compras. No se renombró para evitar cambios
+innecesarios en el cierre ya probado.
+
+El lote suma stock únicamente con seguimientoInventario true. Actualiza costo en
+todos los productos, incluidos los sin seguimiento. Última compra significa última
+registrada/confirmada, aunque su fecha elegida sea anterior; no recalcula cronología.
+appendCells añade la compra y expande filas si hace falta dentro del mismo lote.
+Un ID ya registrado con idénticos datos devuelve su snapshot sin volver a escribir;
+otro contenido con ese ID se rechaza. Mantener exactamente orden y datos al reintentar.
+No se admiten edición ni eliminación de compras confirmadas. No se reproduce ni se
+migra inventario de compras antiguas. Evitar editar manualmente Sheets mientras opera
+el POS: LockService no bloquea al usuario de la hoja ni a otros proyectos.
+
+Si batchUpdate lanza error, codigo=COMPRA_INCIERTA: puede haber aplicado el lote antes
+de perderse la respuesta. Consultar o reintentar el mismo ID/datos, nunca crear otro ID.
+La futura interfaz deberá bloquear doble envío y conservar el intento incierto; no
+se implementó todavía esa pantalla ni se modificó HTML/CSS en esta etapa.
+Publicar Code.gs unificado como nueva versión, sin cambiar encabezados ni URL.
+
+Prueba nueva: tests/purchases-service.test.cjs, ejecuta el Code.gs integrado con Sheets
+simulado. Cubre compra, proveedor/fecha/cantidades/costos inválidos, stock fuera de
+rango, costo sin seguimiento, histórico, doble envío, rechazo atómico y respuesta
+perdida seguida de reintento. Pasan las 16 pruebas locales. No se hicieron escrituras
+en la hoja real; la publicación y prueba real quedan pendientes.
+
+Para sustentación: ¿por qué no guardar primero la compra y después el stock?
+Porque la segunda escritura podría fallar. Un único lote atómico aplica todos los
+cambios o ninguno; además, el ID estable evita repetirlos al reintentar la petición.
+Referencia: https://developers.google.com/workspace/sheets/api/guides/batch
+appendCells: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#AppendCellsRequest

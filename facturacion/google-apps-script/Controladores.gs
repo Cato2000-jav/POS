@@ -25,6 +25,9 @@ function doPost(e) {
         lock.waitLock(10000);
         bloqueado = true;
         switch (body.action) {
+            case "close":
+                if (resource !== "ventas") throw new Error("El cierre solo está disponible para ventas.");
+                return responder({ success: true, data: cerrarVenta(body.data) });
             case "create":
                 return responder({ success: true, data: crearRegistro(resource, body.data) });
             case "update":
@@ -35,7 +38,7 @@ function doPost(e) {
                 throw new Error("Acción no soportada: " + body.action);
         }
     } catch (error) {
-        return responder({ success: false, message: error.message });
+        return responder({ success: false, message: error.message, codigo: error.codigo || "RECHAZADO" });
     } finally {
         if (bloqueado) lock.releaseLock();
     }

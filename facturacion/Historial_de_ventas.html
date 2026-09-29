@@ -23,13 +23,16 @@
     
     <link
         rel="stylesheet"
-        href="historial.css"
+        href="historial.css?v=mvp2-ventas-2"
     >
 
-    <script src="utils.js" defer></script>
+    <script src="utils.js?v=mvp2-ventas-2" defer></script>
+    <script src="api.js?v=mvp2-ventas-2" defer></script>
+    <script src="sales-data.js?v=mvp2-ventas-2" defer></script>
+    <script src="remote-history.js?v=mvp2-ventas-2" defer></script>
 
     <script
-        src="Historial_de_ventas.js"
+        src="Historial_de_ventas.js?v=mvp2-ventas-2"
         defer
     ></script>
 
@@ -135,6 +138,14 @@
 
 
             <div class="table-wrapper">
+                <label for="fuenteHistorial">Consultar:</label>
+                <select id="fuenteHistorial">
+                    <option value="sheets">Ventas cerradas de Google Sheets</option>
+                    <option value="anterior">Historial anterior de este navegador (solo lectura)</option>
+                </select>
+                <button id="recargarHistorial" type="button">Actualizar historial</button>
+                <p id="estadoHistorial" role="status" aria-live="polite"></p>
+                <p>Para guardar una factura como PDF, pulsa Imprimir y elige Guardar como PDF en el diálogo de impresión.</p>
 
                 <table class="sales-table">
 
@@ -194,6 +205,7 @@
 
             <button
                 id="clear-history-button"
+                hidden disabled
                 class="clear-history-button"
                 type="button"
             >

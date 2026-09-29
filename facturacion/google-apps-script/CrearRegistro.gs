@@ -2,6 +2,7 @@
 // La validación del recurso y el bloqueo siguen en doPost.
 function crearRegistro(nombre, datos) {
     if (nombre === "ventas") return guardarVentaAbierta(datos, false);
+    if (nombre === "compras") return guardarCompra(datos);
     if (!datos || typeof datos !== "object" || Array.isArray(datos) ||
         !Object.prototype.hasOwnProperty.call(datos, "id") ||
         !["string", "number"].includes(typeof datos.id) ||

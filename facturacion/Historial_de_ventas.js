@@ -33,7 +33,10 @@ OBTENER HISTORIAL
 =========================================================
 */
 
-const obtenerHistorial = () => {
+const obtenerHistorial = () => historialConsulta.fuente === "anterior"
+    ? leerHistorialAnterior() : historialConsulta.registros;
+
+const leerHistorialAnterior = () => {
     try {
         const historialGuardado = localStorage.getItem(CLAVE_HISTORIAL);
 
@@ -75,31 +78,8 @@ GUARDAR HISTORIAL
 =========================================================
 */
 
-const guardarHistorial = (
-    historial
-) => {
-
-    try {
-
-        localStorage.setItem(
-            CLAVE_HISTORIAL,
-            JSON.stringify(
-                historial
-            )
-        );
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "No fue posible guardar el historial:",
-            error
-        );
-
-        return false;
-    }
-};
+// Compatibilidad: el archivo anterior es solo lectura; no se permiten escrituras locales.
+const guardarHistorial = () => false;
 
 
 /*
@@ -169,129 +149,10 @@ REGISTRAR VENTA
 =========================================================
 */
 
-const registrarVenta = (
-    {
-        persona = "Cliente general",
-        clienteId = "",
-        clienteNombre = "",
-        metodoPago = "No especificado",
-        subtotal = 0,
-        iva = 0,
-        total = 0,
-        items = 0,
-        productos = [],
-        dineroRecibido = null,
-        cambio = null
-    }
-) => {
-
-    const historialActual =
-        obtenerHistorial();
-
-    if (historialActual === null) {
-        return null;
-    }
-
-    const nuevaVenta = {
-
-        id:
-            `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-
-        fecha:
-            obtenerFechaActual(),
-
-        hora:
-            obtenerHoraActual(),
-
-        persona,
-        clienteId,
-        clienteNombre,
-
-        metodoPago,
-
-        subtotal:
-            Number(
-                subtotal
-            ),
-
-        iva:
-            Number(
-                iva
-            ),
-
-        total:
-            Number(
-                total
-            ),
-
-        items:
-            Number(
-                items
-            ),
-
-        productos:
-            Array.isArray(
-                productos
-            )
-                ?
-                productos
-                :
-                [],
-
-        dineroRecibido:
-            dineroRecibido
-            ===
-            null
-                ?
-                null
-                :
-                Number(
-                    dineroRecibido
-                ),
-
-        cambio:
-            cambio
-            ===
-            null
-                ?
-                null
-                :
-                Number(
-                    cambio
-                )
-    };
-
-    
-
-    historialActual.unshift(
-        nuevaVenta
-    );
-
-
-    if (!guardarHistorial(historialActual)) {
-
-        return null;
-
-    }
-
-
-    /*
-    Si estamos en la página
-    del historial, renderizamos.
-    */
-
-    if (
-        tableBody
-        &&
-        salesCount
-    ) {
-
-        renderHistorial();
-
-    }
-
-
-    return nuevaVenta;
+// Se conserva el nombre por compatibilidad, pero ya no registra ventas locales.
+const registrarVenta = () => {
+    mostrarNotificacion("Las ventas se registran desde facturación mediante Google Sheets.");
+    return null;
 };
 
 
@@ -322,12 +183,13 @@ const renderHistorial = () => {
         "";
 
     if (historial === null) {
-        salesCount.textContent = "Historial no disponible";
+        salesCount.textContent = historialConsulta.cargando ? "Cargando…" : "Historial no disponible";
         const fila = document.createElement("tr");
         const celda = document.createElement("td");
         celda.colSpan = 6;
         celda.className = "empty-state";
-        celda.textContent = "No se pudo leer el historial. Los datos guardados no se han modificado.";
+        celda.textContent = historialConsulta.cargando ? "Cargando ventas desde Google Sheets…"
+            : "No se pudo leer el historial. Los datos guardados no se han modificado.";
         fila.appendChild(celda);
         tableBody.appendChild(fila);
         return;
@@ -464,6 +326,7 @@ const crearFilaVenta = (
 
             <button
                 class="btn-eliminar-venta"
+                hidden disabled
                 data-id="${escaparHTML(venta.id)}"
                 type="button"
             >
@@ -1105,85 +968,8 @@ ELIMINAR UNA VENTA
 =========================================================
 */
 
-const eliminarVentaHistorica = (
-    idVenta
-) => {
-
-    const historial =
-        obtenerHistorial();
-
-    if (historial === null) {
-        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
-        return;
-    }
-
-
-    const venta =
-        historial.find(
-            (registro) =>
-                String(
-                    registro.id
-                )
-                ===
-                String(
-                    idVenta
-                )
-        );
-
-
-    if (!venta) {
-
-        mostrarNotificacion(
-            "No se encontró la factura que deseas borrar."
-        );
-
-        return;
-
-    }
-
-
-    const confirmar =
-        window.confirm(
-            `¿Deseas borrar la factura #${venta.id}?`
-        );
-
-
-    if (!confirmar) {
-
-        return;
-
-    }
-
-
-    const historialActualizado =
-        historial.filter(
-            (registro) =>
-                String(
-                    registro.id
-                )
-                !==
-                String(
-                    idVenta
-                )
-        );
-
-
-    if (!guardarHistorial(historialActualizado)) {
-
-        mostrarNotificacion(
-            "No fue posible borrar la factura."
-        );
-
-        return;
-
-    }
-
-
-    renderHistorial();
-
-    mostrarNotificacion(
-        "Factura eliminada correctamente."
-    );
+const eliminarVentaHistorica = () => {
+    mostrarNotificacion("Las ventas cerradas y el archivo anterior son de solo lectura.");
 };
 
 
@@ -1194,57 +980,7 @@ LIMPIAR HISTORIAL
 */
 
 const limpiarHistorial = () => {
-
-    const historial =
-        obtenerHistorial();
-
-    if (historial === null) {
-        mostrarNotificacion("No se pudo leer el historial. No se realizó la operación.");
-        return;
-    }
-
-
-    if (
-        historial.length
-        ===
-        0
-    ) {
-
-        mostrarNotificacion(
-            "No hay ventas para eliminar."
-        );
-
-        return;
-    }
-
-
-    const confirmar =
-        window.confirm(
-            "¿Seguro que deseas eliminar todo el historial de ventas?"
-        );
-
-
-    if (!confirmar) {
-
-        return;
-    }
-
-
-    try {
-        localStorage.removeItem(CLAVE_HISTORIAL);
-    } catch (error) {
-        console.error("No fue posible limpiar el historial:", error);
-        mostrarNotificacion("No fue posible eliminar el historial. Intenta nuevamente.");
-        return;
-    }
-
-
-    renderHistorial();
-
-
-    mostrarNotificacion(
-        "Historial eliminado correctamente."
-    );
+    mostrarNotificacion("No se permite borrar el historial desde esta vista.");
 };
 
 
@@ -1308,4 +1044,5 @@ RENDER INICIAL
 =========================================================
 */
 
+if (tableBody) cargarHistorialRemoto();
 renderHistorial();

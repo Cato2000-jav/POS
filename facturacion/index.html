@@ -20,7 +20,7 @@
 
     <link
         rel="stylesheet"
-        href="styles.css"
+        href="styles.css?v=mvp2-ventas-2"
     >
 </head>
 
@@ -166,6 +166,16 @@
         <input id="buscarClientes" class="input-text" type="search" disabled>
         <p id="estadoClientes" role="status" aria-live="polite"></p>
         <ul id="listaClientes" aria-label="Clientes registrados"></ul>
+    </section>
+
+    <section class="container categorias-panel" id="panelVentasAbiertas" aria-labelledby="tituloVentasAbiertas">
+        <div class="categorias-encabezado">
+            <h2 id="tituloVentasAbiertas">Ventas abiertas</h2>
+            <button id="recargarVentasAbiertas" type="button">Consultar ventas abiertas</button>
+            <button id="reintentarCierre" type="button" hidden>Reintentar cierre pendiente</button>
+        </div>
+        <p id="estadoVentasAbiertas" role="status" aria-live="polite">Consulta las ventas guardadas en Google Sheets.</p>
+        <ul id="listaVentasAbiertas"></ul>
     </section>
 
     <main class="container layout factura-no-iniciada">
@@ -427,6 +437,7 @@
                     >
                         Generar factura
                     </button>
+                    <button id="guardarVentaAbierta" type="button">Guardar como abierta</button>
 
                 </div>
 
@@ -513,21 +524,22 @@
          JAVASCRIPT
     ====================================================== -->
 
-    <script src="utils.js"></script>
+    <script src="utils.js?v=mvp2-ventas-2"></script>
 
-    <script src="api.js"></script>
+    <script src="api.js?v=mvp2-ventas-2"></script>
 
-    <script src="categories.js"></script>
-    <script src="suppliers.js"></script>
-    <script src="customers.js"></script>
-    <script src="sale-customer.js"></script>
+    <script src="categories.js?v=mvp2-ventas-2"></script>
+    <script src="suppliers.js?v=mvp2-ventas-2"></script>
+    <script src="customers.js?v=mvp2-ventas-2"></script>
+    <script src="sale-customer.js?v=mvp2-ventas-2"></script>
+    <script src="open-sales.js?v=mvp2-ventas-2"></script>
+    <script src="sales-data.js?v=mvp2-ventas-2"></script>
+    <script src="close-sales.js?v=mvp2-ventas-2"></script>
 
-    <script src="products.js"></script>
-    <script src="product-form.js"></script>
+    <script src="products.js?v=mvp2-ventas-2"></script>
+    <script src="product-form.js?v=mvp2-ventas-2"></script>
 
-    <script src="Historial_de_ventas.js"></script>
-
-    <script src="app.js"></script>
+    <script src="app.js?v=mvp2-ventas-2"></script>
 
 </body>
 
