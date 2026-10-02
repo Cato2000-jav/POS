@@ -15,7 +15,7 @@ const api = {
 
     async solicitar(recurso, accion, datos = null) {
         const recursos = ["productos", "ventas", "compras", "categorias", "proveedores", "clientes"];
-        const acciones = ["listar", "crear", "actualizar", "eliminar", "cerrar"];
+        const acciones = ["listar", "crear", "actualizar", "eliminar", "cerrar", "importar"];
         if (!this.url) {
             throw new Error("Falta configurar la URL del servicio de Google Sheets.");
         }
@@ -27,6 +27,7 @@ const api = {
         if (accion === "cerrar" && recurso !== "ventas") {
             throw new Error("Solo se pueden cerrar ventas.");
         }
+        if (accion === "importar" && recurso !== "ventas") throw new Error("Solo se importan ventas históricas.");
         if (!esLectura && (!datos || typeof datos !== "object" || Array.isArray(datos))) {
             throw new Error("La escritura necesita un objeto con los datos del registro.");
         }
@@ -35,7 +36,7 @@ const api = {
         destino.searchParams.set("resource", recurso);
         const opciones = { method: esLectura ? "GET" : "POST", redirect: "follow" };
         if (!esLectura) {
-            const accionesServicio = { crear: "create", actualizar: "update", eliminar: "delete", cerrar: "close" };
+            const accionesServicio = { crear: "create", actualizar: "update", eliminar: "delete", cerrar: "close", importar: "import" };
             // El cuerpo sigue siendo JSON; Apps Script lo lee con e.postData.contents.
             opciones.headers = { "Content-Type": "text/plain;charset=UTF-8" };
             opciones.body = JSON.stringify({ action: accionesServicio[accion], data: datos });

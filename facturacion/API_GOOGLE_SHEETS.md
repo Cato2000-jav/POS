@@ -516,3 +516,10 @@ Mismo origenId/contenido devuelve el registro; conflicto rechaza; error de lote 
 IMPORTACION_INCIERTA. Reutilizar siempre ID/datos en reintento. Esta acción NO sustituye
 al cierre de ventas nuevas. La pantalla de confirmación y api.js aún no la invocan.
 Publicar Code.gs unificado; ver CAMBIOS_IMPORTACION_SERVICIO.md. Pasan 21 pruebas locales.
+
+## Confirmación de importación conectada (revisión posterior)
+api.guardar("ventas","importar",{origenId,venta}) ya envía action=import. El historial
+ofrece botones individuales solo a candidatos convertibles; exige confirmación con
+fecha/hora de Bogotá y conserva borrador pendiente para reintentos tras recarga.
+No elimina originales. Ver CAMBIOS_CONFIRMACION_MIGRACION.md. Pasan 22 pruebas locales;
+no se importaron registros reales. Requiere la versión de Code.gs de la etapa anterior.

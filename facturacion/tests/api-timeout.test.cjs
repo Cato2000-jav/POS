@@ -9,5 +9,12 @@ const fs = require("node:fs"), vm = require("node:vm"), path = require("node:pat
     assert.equal(limpio, 1);
     ctx.fetch = async () => ({ok: true, json: async () => ({success: true, data: []})});
     await vm.runInContext('api.listar("compras")', ctx); assert.equal(limpio, 2);
+    ctx.fetch = async (url, opciones) => {
+        assert.equal(JSON.parse(opciones.body).action, "import");
+        assert.match(url, /resource=ventas/);
+        return {ok: true, json: async () => ({success: true, data: {id: "mvp1-1"}})};
+    };
+    await vm.runInContext('api.guardar("ventas", "importar", {origenId:"1",venta:{}})', ctx);
+    await assert.rejects(vm.runInContext('api.guardar("compras", "importar", {})', ctx), /Solo se importan/);
     console.log("PASS: timeout de API mantiene POST incierto y libera temporizador.");
 })().catch(error => {console.error(error); process.exitCode = 1;});

@@ -104,3 +104,10 @@ Implementada y probada en simulación la acción import de ventas históricas, s
 movimientos de inventario. Sigue pendiente publicar y conectar la confirmación desde
 la vista previa, incluida conversión de fechas antiguas. No considerar la migración
 terminada. Ver CAMBIOS_IMPORTACION_SERVICIO.md. Pasan 21 pruebas locales.
+
+## Avance posterior: confirmación de importación
+Conectada la interfaz individual con conversión estricta de fecha/hora antigua de
+Bogotá, confirmación y borrador de envío recuperable. Los posibles duplicados y datos
+incompletos no se importan automáticamente. Pasan 22 pruebas locales. Falta comprobar
+visualmente el flujo y ejecutar una migración real autorizada con el servicio publicado.
+Ver CAMBIOS_CONFIRMACION_MIGRACION.md; no se han borrado los archivos originales.

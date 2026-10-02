@@ -32,7 +32,7 @@ function analizarHistorialAnterior(locales, remotas) {
             venta.dineroRecibido < venta.total || !igual(venta.dineroRecibido - venta.total, venta.cambio))) {
             problemas.push("Efectivo/cambio incompleto o inconsistente; no se inventarán esos valores.");
         }
-        const coincidenciaId = id && contar(remotas, id) > 0;
+        const coincidenciaId = id && (contar(remotas, id) > 0 || contar(remotas, "mvp1-" + encodeURIComponent(id)) > 0);
         // Es solo una alerta: dos ventas legítimas pueden tener exactamente el mismo detalle.
         const firma = detalle => JSON.stringify(detalle.map(i => [i?.nombre, i?.cantidad, i?.precio, i?.subtotal]));
         const coincidenciaContenido = Array.isArray(items) && remotas.some(v => v.estado === "cerrada" &&
@@ -67,6 +67,9 @@ async function prepararVistaMigracion() {
             const item = document.createElement("li");
             item.textContent = `Registro ${fila.fila} · ${fila.id} · ${fila.estado}. ${fila.notas.join(" ")}`;
             lista.appendChild(item);
+            if (fila.estado === "Candidato a migración" && typeof agregarBotonImportacion === "function") {
+                agregarBotonImportacion(item, anteriores[fila.fila - 1]);
+            }
         }
         mensaje.textContent = `${informe.length} registro(s) revisado(s): ${informe.filter(f => f.estado === "Candidato a migración").length} candidato(s), ${informe.filter(f => f.estado === "Posible duplicado").length} posible(s) duplicado(s), ${informe.filter(f => f.estado === "Requiere corrección").length} con problemas. No se importó ningún registro.`;
     } catch (error) { mensaje.textContent = "No se pudo preparar la revisión: " + error.message; }

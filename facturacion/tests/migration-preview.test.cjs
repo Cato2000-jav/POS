@@ -10,6 +10,7 @@ const analizar = ctx.analizarHistorialAnterior;
 const original = JSON.stringify(venta);
 assert.equal(analizar([venta], [])[0].estado, "Candidato a migración");
 assert.equal(analizar([venta], [{id: "123", estado: "abierta"}])[0].estado, "Posible duplicado");
+assert.equal(analizar([venta], [{id: "mvp1-123", estado: "cerrada"}])[0].estado, "Posible duplicado");
 assert.equal(analizar([venta], [{...venta, id: "otro", estado: "cerrada", itemsJson: venta.productos}])[0].estado, "Posible duplicado");
 assert.equal(analizar([venta, venta], [])[0].estado, "Requiere corrección");
 for (const cambio of [{productos: []}, {total: 999}, {hora: ""}, {metodoPago: "Debe"}, {metodoPago: "Efectivo"}]) {

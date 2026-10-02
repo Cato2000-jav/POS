@@ -27,7 +27,7 @@
     >
 
     <script src="utils.js?v=mvp2-ventas-2" defer></script>
-    <script src="api.js?v=mvp2-compras-1" defer></script>
+    <script src="api.js?v=mvp2-importacion-1" defer></script>
     <script src="sales-data.js?v=mvp2-ventas-2" defer></script>
     <script src="remote-history.js?v=mvp2-ventas-2" defer></script>
 
@@ -35,7 +35,8 @@
         src="Historial_de_ventas.js?v=mvp2-ventas-2"
         defer
     ></script>
-    <script src="migration-preview.js?v=1" defer></script>
+    <script src="migration-preview.js?v=2" defer></script>
+    <script src="migration-import.js?v=1" defer></script>
 
 </head>
 
@@ -152,6 +153,9 @@
                     <p>Esta revisión no importa, borra ni modifica inventario. Consulta el archivo del navegador y compara con Google Sheets.</p>
                     <p>Abre esta página de la misma forma y en el mismo navegador donde usabas el MVP 1: los datos de file:// pueden ser distintos de los de localhost.</p>
                     <button id="revisarMigracion" type="button">Preparar vista previa</button>
+                    <p>Importar requiere confirmar cada registro y que Code.gs tenga publicada la operación import. Se interpreta fecha/hora antigua como día/mes/año y hora de Bogotá. El archivo original se conserva.</p>
+                    <button id="reintentarImportacion" type="button" hidden>Reintentar importación pendiente</button>
+                    <p id="estadoImportacion" role="status" aria-live="polite"></p>
                     <p id="estadoMigracion" role="status" aria-live="polite"></p>
                     <ul id="listaMigracion"></ul>
                 </details>
