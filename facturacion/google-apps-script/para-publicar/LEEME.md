@@ -111,3 +111,11 @@ en crearRegistro/actualizarRegistro: el servicio rechaza nombres vacíos o de ti
 incorrecto, también al editar. Está incluida en Code.gs; no pegar además ValidarCategoria.gs.
 Publica nueva versión en la implementación existente, sin cambiar URL ni columnas.
 19 pruebas locales pasan. No se ha publicado ni escrito en hojas reales automáticamente.
+
+## Importación histórica: revisión posterior
+Code.gs ahora incluye importarVentaHistorica, validarVentaHistorica y la acción import
+en doPost, exclusiva para ventas. Importa comprobantes cerrados sin cambiar inventario.
+Publica nueva versión de la misma implementación; no cambies columnas, URL ni permisos.
+No pegues además ImportarVentaHistorica.gs: ya está incluido. La interfaz de confirmación
+todavía no está conectada; la vista previa sigue siendo de solo lectura. Pasan 21 pruebas
+locales, sin publicación automática ni importación real.

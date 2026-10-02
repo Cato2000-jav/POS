@@ -25,6 +25,9 @@ function doPost(e) {
         lock.waitLock(10000);
         bloqueado = true;
         switch (body.action) {
+            case "import":
+                if (resource !== "ventas") throw new Error("Solo se importan ventas históricas.");
+                return responder({ success: true, data: importarVentaHistorica(body.data) });
             case "close":
                 if (resource !== "ventas") throw new Error("El cierre solo está disponible para ventas.");
                 return responder({ success: true, data: cerrarVenta(body.data) });

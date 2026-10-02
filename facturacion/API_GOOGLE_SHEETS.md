@@ -506,3 +506,13 @@ ni inventario. Si el almacenamiento falla antes de enviar, no se hace POST; si e
 borrador es ilegible, se bloquea sin borrarlo. Esta nota reemplaza la limitación anterior
 de perder el intento al recargar. Detalle: CAMBIOS_RECUPERACION_CIERRE.md.
 No hay cambios de servidor en esta etapa; pasan los 19 archivos de pruebas locales.
+
+## Operación de importación histórica (revisión posterior del servidor)
+POST resource=ventas con {action:"import",data:{origenId,venta}}. venta contiene fecha
+ISO UTC completa, persona, clienteId, clienteNombre, metodoPago, subtotal, iva, total,
+valorRecibido, cambio e itemsJson. El servicio asigna id="mvp1-"+encodeURIComponent(origenId),
+estado cerrada y actualizadoEn. Conserva snapshots y no mueve stock/costo.
+Mismo origenId/contenido devuelve el registro; conflicto rechaza; error de lote devuelve
+IMPORTACION_INCIERTA. Reutilizar siempre ID/datos en reintento. Esta acción NO sustituye
+al cierre de ventas nuevas. La pantalla de confirmación y api.js aún no la invocan.
+Publicar Code.gs unificado; ver CAMBIOS_IMPORTACION_SERVICIO.md. Pasan 21 pruebas locales.

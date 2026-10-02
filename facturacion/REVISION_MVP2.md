@@ -98,3 +98,9 @@ de esta revisión no se consideran completadas por este cambio.
 El historial ofrece revisión de solo lectura del archivo anterior contra ventas de
 Sheets. Clasifica candidatos, problemas y posibles duplicados. No importa todavía,
 no borra datos y no mueve stock. Ver CAMBIOS_PREVIA_MIGRACION.md. Pasan 20 pruebas locales.
+
+## Avance posterior: servicio de importación
+Implementada y probada en simulación la acción import de ventas históricas, sin
+movimientos de inventario. Sigue pendiente publicar y conectar la confirmación desde
+la vista previa, incluida conversión de fechas antiguas. No considerar la migración
+terminada. Ver CAMBIOS_IMPORTACION_SERVICIO.md. Pasan 21 pruebas locales.
