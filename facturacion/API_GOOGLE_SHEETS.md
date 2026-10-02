@@ -486,3 +486,23 @@ Porque la segunda escritura podría fallar. Un único lote atómico aplica todos
 cambios o ninguno; además, el ID estable evita repetirlos al reintentar la petición.
 Referencia: https://developers.google.com/workspace/sheets/api/guides/batch
 appendCells: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#AppendCellsRequest
+
+## Interfaz de compras integrada
+compras.html, purchases.js y purchases.css implementan creación, selección de proveedor
+y fecha, búsqueda/agregado de productos, cantidades/costos, total, listado y detalle.
+Acceso desde el enlace Compras del encabezado; abre aparte para preservar la venta.
+La única persistencia local nueva es el borrador de envío pendiente, recuperable tras
+recarga con el mismo ID. Historial/catálogos siguen proviniendo de api.listar.
+api.js limita la espera a 30 segundos; cancelar un POST conserva resultado incierto.
+Se verificaron 18 pruebas locales, carga GET real y UI en 375/768/1280 px, sin POST real.
+Explicación de funciones, fragmentos y sustentación: CAMBIOS_COMPRAS_UI.md.
+Sigue siendo necesario publicar la revisión de Code.gs de compras antes de guardar.
+
+## Recuperación posterior de cierres pendientes
+El cierre pendiente ya no se conserva solo en memoria: close-sales.js guarda su
+borrador de petición en papelLuna.cierrePendiente.v1 antes de enviar. app.js lo recupera
+al iniciar y exige reintento explícito del mismo ID/versión/pago. No almacena historial
+ni inventario. Si el almacenamiento falla antes de enviar, no se hace POST; si el
+borrador es ilegible, se bloquea sin borrarlo. Esta nota reemplaza la limitación anterior
+de perder el intento al recargar. Detalle: CAMBIOS_RECUPERACION_CIERRE.md.
+No hay cambios de servidor en esta etapa; pasan los 19 archivos de pruebas locales.

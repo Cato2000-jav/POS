@@ -104,3 +104,10 @@ Compra, stock y costo se escriben en un único batchUpdate. Un reintento con el 
 ID y contenido devuelve la compra guardada sin volver a sumar inventario. Un resultado
 incierto lleva codigo COMPRA_INCIERTA; no debe reenviarse con un ID nuevo.
 La pantalla de compras sigue pendiente. Solo hay pruebas simuladas, no compras reales.
+
+## Validación de categorías: revisión posterior
+La interfaz de compras ya existe. Esta revisión agrega validarCategoria y sus llamadas
+en crearRegistro/actualizarRegistro: el servicio rechaza nombres vacíos o de tipo
+incorrecto, también al editar. Está incluida en Code.gs; no pegar además ValidarCategoria.gs.
+Publica nueva versión en la implementación existente, sin cambiar URL ni columnas.
+19 pruebas locales pasan. No se ha publicado ni escrito en hojas reales automáticamente.

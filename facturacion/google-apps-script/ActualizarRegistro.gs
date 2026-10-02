@@ -35,6 +35,11 @@ function actualizarRegistro(nombre, datos) {
     }
     const rango = hoja.getRange(numeroFila, 1, 1, encabezados.length);
     const actuales = rango.getValues()[0];
+    if (nombre === "categorias") {
+        const completo = {};
+        encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
+        validarCategoria(Object.assign(completo, datos));
+    }
     if (nombre === "clientes") {
         const completo = {};
         encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });

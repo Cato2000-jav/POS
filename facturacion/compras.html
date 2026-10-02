@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Papel y Luna | Compras</title>
+    <link rel="stylesheet" href="styles.css?v=mvp2-ventas-2">
+    <link rel="stylesheet" href="purchases.css?v=1">
+    <script src="api.js?v=mvp2-compras-1" defer></script>
+    <script src="purchases.js?v=1" defer></script>
+</head>
+<body>
+    <header class="header"><div class="container header__content">
+        <a class="brand" href="index.html">☾ Papel y Luna</a><h1>Compras</h1>
+    </div></header>
+    <main class="container compras">
+        <p>Esta página no modifica la venta abierta en otra pestaña. Después de comprar, actualiza el catálogo de ventas cuando termines esa venta.</p>
+        <button id="recargarCompras" type="button">Actualizar datos</button>
+        <p id="estadoCompras" role="status" aria-live="polite">Cargando…</p>
+        <section aria-labelledby="tituloCompra">
+            <h2 id="tituloCompra">Nueva compra</h2>
+            <form id="formCompra">
+                <fieldset id="camposCompra" disabled>
+                    <div class="compra-campos">
+                        <label>Proveedor<select id="compraProveedor" required><option value="">Selecciona proveedor</option></select></label>
+                        <label>Fecha<input id="compraFecha" type="date" required></label>
+                        <label>Buscar producto<input id="compraBuscar" type="search" placeholder="Nombre o código"></label>
+                        <label>Producto<select id="compraProducto"></select></label>
+                    </div>
+                    <button id="agregarCompra" type="button">Agregar producto</button>
+                    <div class="compra-tabla"><table>
+                        <caption>Productos de esta compra</caption>
+                        <thead><tr><th>Producto</th><th>Cantidad</th><th>Costo unitario</th><th>Subtotal</th><th>Acción</th></tr></thead>
+                        <tbody id="itemsCompra"></tbody>
+                    </table></div>
+                    <p>Total: <output id="totalCompra">$0</output></p>
+                    <button type="submit">Guardar compra</button>
+                </fieldset>
+            </form>
+            <button id="reintentarCompra" type="button" hidden>Reintentar la misma compra</button>
+        </section>
+        <section aria-labelledby="tituloCompras">
+            <h2 id="tituloCompras">Compras registradas en Google Sheets</h2>
+            <ul id="listaCompras"></ul>
+            <section id="detalleCompra" aria-label="Detalle de compra" hidden></section>
+        </section>
+    </main>
+</body>
+</html>

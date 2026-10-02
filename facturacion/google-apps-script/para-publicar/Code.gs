@@ -144,6 +144,7 @@ function crearRegistro(nombre, datos) {
     if (nombre === "productos") validarProducto(datos);
     if (nombre === "proveedores") validarProveedor(datos);
     if (nombre === "clientes") validarCliente(datos);
+    if (nombre === "categorias") validarCategoria(datos);
 
     // Prepara y valida toda la fila antes de modificar la hoja.
     const fila = encabezados.map(function (clave) {
@@ -232,6 +233,11 @@ function actualizarRegistro(nombre, datos) {
     }
     const rango = hoja.getRange(numeroFila, 1, 1, encabezados.length);
     const actuales = rango.getValues()[0];
+    if (nombre === "categorias") {
+        const completo = {};
+        encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
+        validarCategoria(Object.assign(completo, datos));
+    }
     if (nombre === "clientes") {
         const completo = {};
         encabezados.forEach(function (clave, i) { completo[clave] = actuales[i]; });
@@ -787,6 +793,13 @@ function validarColumnasCompra(columnas, requeridas) {
     if (!requeridas.every(function (c) { return columnas.indexOf(c) !== -1; }) ||
         columnas.some(function (c, i) { return typeof c !== "string" || !c.trim() || c !== c.trim() || columnas.indexOf(c) !== i; })) {
         throw new Error("Revisa los encabezados de compras/productos: faltantes, vacíos o duplicados.");
+    }
+}
+
+// Se ejecuta bajo el bloqueo de doPost, antes de escribir una categoría.
+function validarCategoria(datos) {
+    if (!datos || typeof datos.nombre !== "string" || !datos.nombre.trim()) {
+        throw new Error("La categoría debe tener un nombre no vacío.");
     }
 }
 

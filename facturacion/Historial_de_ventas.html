@@ -23,11 +23,11 @@
     
     <link
         rel="stylesheet"
-        href="historial.css?v=mvp2-ventas-2"
+        href="historial.css?v=mvp2-migracion-1"
     >
 
     <script src="utils.js?v=mvp2-ventas-2" defer></script>
-    <script src="api.js?v=mvp2-ventas-2" defer></script>
+    <script src="api.js?v=mvp2-compras-1" defer></script>
     <script src="sales-data.js?v=mvp2-ventas-2" defer></script>
     <script src="remote-history.js?v=mvp2-ventas-2" defer></script>
 
@@ -35,6 +35,7 @@
         src="Historial_de_ventas.js?v=mvp2-ventas-2"
         defer
     ></script>
+    <script src="migration-preview.js?v=1" defer></script>
 
 </head>
 
@@ -146,6 +147,14 @@
                 <button id="recargarHistorial" type="button">Actualizar historial</button>
                 <p id="estadoHistorial" role="status" aria-live="polite"></p>
                 <p>Para guardar una factura como PDF, pulsa Imprimir y elige Guardar como PDF en el diálogo de impresión.</p>
+                <details>
+                    <summary>Revisar historial anterior antes de migrarlo</summary>
+                    <p>Esta revisión no importa, borra ni modifica inventario. Consulta el archivo del navegador y compara con Google Sheets.</p>
+                    <p>Abre esta página de la misma forma y en el mismo navegador donde usabas el MVP 1: los datos de file:// pueden ser distintos de los de localhost.</p>
+                    <button id="revisarMigracion" type="button">Preparar vista previa</button>
+                    <p id="estadoMigracion" role="status" aria-live="polite"></p>
+                    <ul id="listaMigracion"></ul>
+                </details>
 
                 <table class="sales-table">
 

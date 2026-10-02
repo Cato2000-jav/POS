@@ -231,3 +231,4 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
 }
 #estadoHistorial { overflow-wrap: anywhere; margin: 12px 0; }
 .btn-eliminar-venta[hidden], #clear-history-button[hidden] { display: none !important; }
+#listaMigracion li { overflow-wrap: anywhere; margin-block: 12px; }

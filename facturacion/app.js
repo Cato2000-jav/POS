@@ -1430,7 +1430,7 @@ INICIAR NUEVA FACTURA
 */
 
 const iniciarFactura = () => {
-    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente) return;
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
 
     if (
         estado.facturaActual.length
@@ -1500,7 +1500,7 @@ CANCELAR FACTURA
 */
 
 const cancelarFactura = () => {
-    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente) return;
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
 
     if (
         estado.facturaActual.length
@@ -2365,5 +2365,5 @@ renderProductos();
 
 renderFactura();
 
-cargarProductos();
+if (!recuperarCierrePendiente()) cargarProductos();
 cargarClientesVenta();

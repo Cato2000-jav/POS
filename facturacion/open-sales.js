@@ -1,5 +1,5 @@
 // Borradores remotos. El cierre y su recuperación se coordinan en close-sales.js.
-const ventasAbiertasEstado = { ocupado: false, id: null, nuevoId: null, actualizadoEn: null, registros: [], firmaGuardada: null, cierrePendiente: null };
+const ventasAbiertasEstado = { ocupado: false, id: null, nuevoId: null, actualizadoEn: null, registros: [], firmaGuardada: null, cierrePendiente: null, recuperacionBloqueada: false };
 const mensajeAbiertas = document.querySelector("#estadoVentasAbiertas");
 
 function limpiarReferenciaAbierta() {
@@ -13,7 +13,7 @@ function limpiarReferenciaAbierta() {
 }
 
 function comprobarDisponibilidadAbiertas() {
-    if (ventasAbiertasEstado.ocupado) return false;
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.recuperacionBloqueada) return false;
     if (ventasAbiertasEstado.cierrePendiente) {
         mensajeAbiertas.textContent = "Resuelve el cierre pendiente antes de cambiar de venta.";
         return false;
@@ -32,7 +32,7 @@ function comprobarDisponibilidadAbiertas() {
 
 function bloquearAbiertas(ocupado) {
     ventasAbiertasEstado.ocupado = ocupado;
-    const bloqueado = ocupado || Boolean(ventasAbiertasEstado.cierrePendiente);
+    const bloqueado = ocupado || Boolean(ventasAbiertasEstado.cierrePendiente) || ventasAbiertasEstado.recuperacionBloqueada;
     // Conserva los controles internos (por ejemplo, un selector aún no cargado).
     for (const selector of [".layout", "#panelClientes", "#panelCategorias", "#panelProveedores"]) {
         document.querySelector(selector).inert = bloqueado;

@@ -41,40 +41,48 @@ const api = {
             opciones.body = JSON.stringify({ action: accionesServicio[accion], data: datos });
         }
 
-        let respuesta;
+        // Limita también la espera del cuerpo JSON. Un POST cancelado puede haber sido aplicado.
+        const controlador = new AbortController();
+        opciones.signal = controlador.signal;
+        const temporizador = setTimeout(() => controlador.abort(), 30000);
         try {
-            respuesta = await fetch(destino.href, opciones);
-        } catch (error) {
-            throw new Error(esLectura
-                ? "No se pudo conectar con Google Sheets. Revisa la conexión y el acceso al servicio."
-                : "No se pudo confirmar el guardado. Consulta el estado antes de reintentar para evitar duplicados.",
-            { cause: error });
-        }
+            let respuesta;
+            try {
+                respuesta = await fetch(destino.href, opciones);
+            } catch (error) {
+                throw new Error(esLectura
+                    ? "No se pudo conectar con Google Sheets. Revisa la conexión y el acceso al servicio."
+                    : "No se pudo confirmar el guardado. Consulta el estado antes de reintentar para evitar duplicados.",
+                { cause: error });
+            }
 
-        if (!respuesta.ok) {
-            throw new Error(`El servicio respondió con HTTP ${respuesta.status}. No se confirmó la operación.`);
-        }
+            if (!respuesta.ok) {
+                throw new Error(`El servicio respondió con HTTP ${respuesta.status}. No se confirmó la operación.`);
+            }
 
-        let resultado;
-        try {
-            resultado = await respuesta.json();
-        } catch (error) {
-            throw new Error("El servicio no devolvió JSON válido. No se confirmó la operación.", { cause: error });
-        }
+            let resultado;
+            try {
+                resultado = await respuesta.json();
+            } catch (error) {
+                throw new Error("El servicio no devolvió JSON válido. No se confirmó la operación.", { cause: error });
+            }
 
-        if (!resultado || typeof resultado.success !== "boolean") {
-            throw new Error("Respuesta del servicio no reconocida. No se confirmó la operación.");
+            if (!resultado || typeof resultado.success !== "boolean") {
+                throw new Error("Respuesta del servicio no reconocida. No se confirmó la operación.");
+            }
+            if (!resultado.success) {
+                const error = new Error(typeof resultado.message === "string"
+                    ? resultado.message : "El servicio rechazó la operación.");
+                error.codigo = resultado.codigo;
+                throw error;
+            }
+            if (!Object.hasOwn(resultado, "data") || (esLectura && !Array.isArray(resultado.data))) {
+                throw new Error("La respuesta del servicio no contiene los datos esperados.");
+            }
+            return resultado.data;
+        } finally {
+            clearTimeout(temporizador);
         }
-        if (!resultado.success) {
-            const error = new Error(typeof resultado.message === "string"
-                ? resultado.message : "El servicio rechazó la operación.");
-            error.codigo = resultado.codigo;
-            throw error;
-        }
-        if (!Object.hasOwn(resultado, "data") || (esLectura && !Array.isArray(resultado.data))) {
-            throw new Error("La respuesta del servicio no contiene los datos esperados.");
-        }
-        return resultado.data;
     },
 
     listar(recurso) {

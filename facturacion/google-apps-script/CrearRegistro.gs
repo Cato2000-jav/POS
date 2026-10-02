@@ -33,6 +33,7 @@ function crearRegistro(nombre, datos) {
     if (nombre === "productos") validarProducto(datos);
     if (nombre === "proveedores") validarProveedor(datos);
     if (nombre === "clientes") validarCliente(datos);
+    if (nombre === "categorias") validarCategoria(datos);
 
     // Prepara y valida toda la fila antes de modificar la hoja.
     const fila = encabezados.map(function (clave) {

@@ -4,11 +4,12 @@ const venta = {id: "v-1", estado: "cerrada", fecha: "2026-09-29T12:00:00.000Z",
     persona: "Vendedor", clienteId: "c-1", clienteNombre: "Ana", metodoPago: "Efectivo",
     subtotal: 200, iva: 38, total: 238, valorRecibido: 300, cambio: 62,
     itemsJson: [{id: "p-1", nombre: "Cuaderno", cantidad: 2, precio: 100, subtotal: 200}]};
-function preparar() {
-    const remoto = {id: "v-1", actualizadoEn: "version-1", registros: [venta], ocupado: false, cierrePendiente: null};
+function preparar(memoria = new Map()) {
+    const remoto = {id: "v-1", actualizadoEn: "2026-09-29T12:00:00.000Z", registros: [venta], ocupado: false, cierrePendiente: null};
     const estado = {facturaActual: [{id: "p-1", cantidad: 2}], productosDisponibles: [{id: "p-1", nombre: "Cuaderno", precio: 100, stock: 5}]};
     const llamadas = [], comprobantes = [];
     const ctx = vm.createContext({ventasAbiertasEstado: remoto, estado,
+        localStorage: {getItem: k => memoria.get(k) ?? null, setItem: (k, v) => memoria.set(k, v), removeItem: k => memoria.delete(k)},
         trabajador: {value: "Vendedor"}, clienteVenta: {value: "c-1"}, metodoPago: {value: "efectivo"}, dineroRecibido: {value: "300"},
         document: {querySelector: () => ({addEventListener() {}})}, mensajeAbiertas: {textContent: ""},
         mostrarToast() {}, comprobarDisponibilidadAbiertas: () => !remoto.ocupado,
@@ -22,7 +23,7 @@ function preparar() {
     vm.runInContext(fs.readFileSync(path.join(__dirname, "../sales-data.js"), "utf8"), ctx);
     vm.runInContext(fs.readFileSync(path.join(__dirname, "../close-sales.js"), "utf8"), ctx);
     remoto.firmaGuardada = ctx.firmaVentaActual();
-    return {ctx, remoto, estado, llamadas, comprobantes};
+    return {ctx, remoto, estado, llamadas, comprobantes, memoria};
 }
 (async () => {
     let t = preparar();
@@ -57,6 +58,15 @@ function preparar() {
     t.ctx.api.guardar = async () => {throw new Error("Respuesta perdida");};
     await t.ctx.cerrarVentaRemota();
     const pendiente = JSON.stringify(t.remoto.cierrePendiente);
+    assert.equal(t.memoria.size, 1);
+    const recargado = preparar(t.memoria);
+    recargado.estado.facturaActual = [];
+    assert.equal(recargado.ctx.recuperarCierrePendiente(), true);
+    assert.equal(recargado.llamadas.length, 0); // no POST automático al recargar
+    assert.equal(JSON.stringify(recargado.remoto.cierrePendiente), pendiente);
+    await recargado.ctx.cerrarVentaRemota();
+    assert.equal(recargado.comprobantes.length, 1);
+    assert.equal(recargado.memoria.size, 0);
     assert.equal(t.comprobantes.length, 0);
     t.ctx.dineroRecibido.value = "500"; // el reintento debe conservar el pago original
     t.ctx.api.guardar = async (r, a, datos) => {assert.equal(JSON.stringify(datos), pendiente); return venta;};
@@ -75,5 +85,19 @@ function preparar() {
     assert.ok(t.remoto.cierrePendiente);
     assert.equal(t.comprobantes.length, 0);
     assert.throws(() => t.ctx.adaptarVentaCerrada({...venta, itemsJson: []}));
+    t = preparar();
+    t.ctx.localStorage.setItem = () => {throw new Error("Sin espacio");};
+    await t.ctx.cerrarVentaRemota(); assert.equal(t.llamadas.length, 0);
+    assert.match(t.ctx.mensajeAbiertas.textContent, /No se envió/);
+    t = preparar(new Map([["papelLuna.cierrePendiente.v1", "JSON roto"]]));
+    assert.equal(t.ctx.recuperarCierrePendiente(), true);
+    assert.equal(t.remoto.recuperacionBloqueada, true);
+    await t.ctx.cerrarVentaRemota(); assert.equal(t.llamadas.length, 0);
+    assert.equal(t.memoria.size, 1); // no se borra información para desbloquear
+    t = preparar();
+    t.ctx.localStorage.removeItem = () => {throw new Error("No se puede borrar");};
+    await t.ctx.cerrarVentaRemota();
+    assert.ok(t.remoto.cierrePendiente); assert.equal(t.memoria.size, 1);
+    assert.match(t.ctx.mensajeAbiertas.textContent, /confirmado/);
     console.log("PASS: cierre confirmado, comprobante, stock remoto, errores, doble clic y reintento con pago inmutable.");
 })().catch(e => {console.error(e); process.exitCode = 1;});
