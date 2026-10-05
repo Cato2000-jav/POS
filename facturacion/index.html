@@ -1,91 +1,547 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Generador de facturas de la Papelería Papel y Luna">
-  <title>Papel y Luna | Generador de Facturas</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Generador de facturas de la Papelería Papel y Luna"
+    >
+
+    <title>
+        Papel y Luna | Generador de Facturas
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css?v=mvp2-ventas-2"
+    >
 </head>
+
 <body>
-  <header class="header">
-    <div class="container header__content">
-      <a class="brand" href="#catalogo" aria-label="Papel y Luna, ir al catálogo">
-        <span class="brand__icon" aria-hidden="true">☾</span>
-        <span><strong>Papel y Luna</strong><small>Generador de facturas</small></span>
-      </a>
-      <span class="tax-badge">IVA incluido · 19%</span>
-    </nav>
-      <button id="historial"  type="button" onclick="window.location.href='Historial_de_ventas.html'">Ver historial de facturas</button>
-      <button id="inifactura"  type="button">iniciar factura</button>
-    </nav>
-  </header>
 
-  <main class="container layout">
-    <section id="catalogo" class="catalog" aria-labelledby="titulo-catalogo">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">Catálogo</span>
-          <h1 id="titulo-catalogo">Productos para crear</h1>
-          <p>Elige artículos, indica la cantidad y agrégalos a la factura.</p>
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
+    <header class="header">
+
+        <div class="container header__content">
+
+            <a
+                class="brand"
+                href="#catalogo"
+                aria-label="Papel y Luna, ir al catálogo"
+            >
+
+            
+                <span
+                    class="brand__icon"
+                    aria-hidden="true"
+                >
+                    ☾
+                </span>
+
+                <span>
+
+                    <strong>
+                        Papel y Luna
+                    </strong>
+
+                    <small>
+                        Generador de facturas
+                    </small>
+
+                </span>
+
+            </a>
+
+            <span class="tax-badge">
+                IVA · 19%
+            </span>
+
+            <button
+                id="historial"
+                type="button"
+            >
+                Ver historial de facturas
+            </button>
+
+            <button
+                id="inifactura"
+                type="button"
+            >
+                Iniciar factura
+            </button>
+
+            <button id="btnCategorias" type="button"
+                aria-controls="panelCategorias" aria-expanded="false">
+                Categorías
+            </button>
+            <button id="btnProveedores" type="button"
+                aria-controls="panelProveedores" aria-expanded="false">Proveedores</button>
+            <button id="btnClientes" type="button"
+                aria-controls="panelClientes" aria-expanded="false">Clientes</button>
+            <a href="compras.html" target="_blank" rel="noopener">Compras ↗</a>
+
         </div>
-        <div class="counter"><strong id="contadorProductos">0</strong><span>productos</span></div>
-      </div>
 
-      <label class="search" for="buscador">
-        <span aria-hidden="true">⌕</span>
-        <input id="buscador" type="search" placeholder="Buscar producto por nombre..." autocomplete="off">
-      </label>
+    </header>
 
-      <!-- Las tarjetas se crean dinámicamente desde app.js. -->
-      <div id="catalogoProductos" class="products-grid" aria-live="polite"></div>
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <section id="panelCategorias" class="container categorias-panel" hidden
+        aria-labelledby="tituloCategorias">
+        <div class="categorias-encabezado">
+            <h2 id="tituloCategorias">Categorías</h2>
+            <button id="recargarCategorias" type="button">Actualizar lista</button>
+        </div>
+        <form id="formCategoria" class="categorias-form">
+            <label for="nombreCategoria" id="etiquetaCategoria">Nueva categoría</label>
+            <input id="nombreCategoria" class="input-text" type="text" required
+                autocomplete="off" placeholder="Nombre de la categoría" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarCategoria" type="submit" disabled>Crear categoría</button>
+                <button id="cancelarCategoria" type="button" disabled>Cancelar</button>
+            </div>
+        </form>
+        <label for="buscarCategorias">Buscar categoría por nombre</label>
+        <input id="buscarCategorias" class="input-text" type="search" autocomplete="off"
+            placeholder="Escribe el nombre de la categoría">
+        <p id="estadoCategorias" role="status" aria-live="polite"></p>
+        <ul id="listaCategorias" aria-label="Categorías disponibles"></ul>
     </section>
 
-    <aside class="invoice" aria-labelledby="titulo-factura">
-      <div class="invoice__card">
-        <div class="invoice__header">
-          <div>
-            <span class="eyebrow">Factura actual</span>
-            <h2 id="titulo-factura">Resumen de compra</h2>
-          </div>
-          <span id="contadorFactura" class="invoice__count" aria-label="Productos distintos en factura">0</span>
+    <section id="panelProveedores" class="container categorias-panel" hidden aria-labelledby="tituloProveedores">
+        <div class="categorias-encabezado">
+            <h2 id="tituloProveedores">Proveedores</h2>
+            <button id="recargarProveedores" type="button">Actualizar lista</button>
         </div>
-        <div class="invoice__labels" aria-hidden="true"><span>Producto</span><span>Cant.</span><span>Subtotal</span><span></span></div>
-        <!-- Las filas se crean dinámicamente desde app.js. -->
-        <div id="facturaItems" class="invoice__items" aria-live="polite"></div>
-        <div id="totalesFactura" class="totals"></div>
-        <div id="botonesFactura" >
-          <div class="trabajador">
-            <label for="trabajador">Nombre del trabajador:</label>
-            <input type="text" id="trabajador" name="Trabajador" required class="input-text">
-          </div>
-          <label for="mtdpago">Elige el metodo de pago:</label>
-          <select id="mtdpago" name="mtdpago">
-              <option value="efectivo">Efectivo</option>
-              <option value="tarjeta">Tarjeta de crédito</option>
-              <option value="transferencia">Transferencia bancaria</option>
-          </select>
-          <button id="btnimprimirFactura"  type="button">imprimir factura</button>
-          <button id="btncancelarFactura"  type="button">cancelar factura</button>
-          <button id="btnGenerarFactura"   type="button">generar factura</button>
+        <form id="formProveedor" class="categorias-form">
+            <h3 id="etiquetaProveedor">Nuevo proveedor</h3>
+            <label for="proveedorNombre">Nombre (obligatorio)</label>
+            <input id="proveedorNombre" class="input-text" type="text" required disabled>
+            <label for="proveedorTelefono">Teléfono</label>
+            <input id="proveedorTelefono" class="input-text" type="tel" disabled>
+            <label for="proveedorCorreo">Correo</label>
+            <input id="proveedorCorreo" class="input-text" type="email" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarProveedor" type="submit" disabled>Guardar proveedor</button>
+                <button id="cancelarProveedor" type="button" disabled>Cancelar edición</button>
+            </div>
+        </form>
+        <label for="buscarProveedores">Buscar por nombre, teléfono o correo</label>
+        <input id="buscarProveedores" class="input-text" type="search" disabled>
+        <p id="estadoProveedores" role="status" aria-live="polite"></p>
+        <ul id="listaProveedores" aria-label="Proveedores registrados"></ul>
+    </section>
+
+    <section id="panelClientes" class="container categorias-panel" hidden aria-labelledby="tituloClientes">
+        <div class="categorias-encabezado">
+            <h2 id="tituloClientes">Clientes</h2>
+            <button id="recargarClientes" type="button">Actualizar lista</button>
         </div>
-        
-      </div>
-      <div class="cambio">
-        <label for="trabajador">introdusca el dinero que le dio el cliente:</label>
-        <input type="number" id="cambio" name="cambio" required class="input-text">
-        <label for="cambio">El cambio que se le debe dar al cliente es:</label>
-      </div>
-      <div> 
-        <p> Venta confirmada </p>
-      </div>
-    </aside>
-  </main>
+        <form id="formCliente" class="categorias-form">
+            <h3 id="etiquetaCliente">Nuevo cliente</h3>
+            <label for="clienteNombre">Nombre (obligatorio)</label>
+            <input id="clienteNombre" class="input-text" type="text" required disabled>
+            <label for="clienteTelefono">Teléfono</label>
+            <input id="clienteTelefono" class="input-text" type="tel" disabled>
+            <label for="clienteCorreo">Correo</label>
+            <input id="clienteCorreo" class="input-text" type="email" disabled>
+            <div class="categorias-acciones">
+                <button id="guardarCliente" type="submit" disabled>Guardar cliente</button>
+                <button id="cancelarCliente" type="button" disabled>Cancelar edición</button>
+            </div>
+        </form>
+        <label for="buscarClientes">Buscar por nombre, teléfono o correo</label>
+        <input id="buscarClientes" class="input-text" type="search" disabled>
+        <p id="estadoClientes" role="status" aria-live="polite"></p>
+        <ul id="listaClientes" aria-label="Clientes registrados"></ul>
+    </section>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <footer class="footer">Proyecto académico creado con HTML5, CSS y JavaScript Vanilla.</footer>
+    <section class="container categorias-panel" id="panelVentasAbiertas" aria-labelledby="tituloVentasAbiertas">
+        <div class="categorias-encabezado">
+            <h2 id="tituloVentasAbiertas">Ventas abiertas</h2>
+            <button id="recargarVentasAbiertas" type="button">Consultar ventas abiertas</button>
+            <button id="reintentarCierre" type="button" hidden>Reintentar cierre pendiente</button>
+        </div>
+        <p id="estadoVentasAbiertas" role="status" aria-live="polite">Consulta las ventas guardadas en Google Sheets.</p>
+        <ul id="listaVentasAbiertas"></ul>
+    </section>
 
-  <script src="productos.js"></script>
-  <script src="app.js"></script>
+    <main class="container layout factura-no-iniciada">
+
+
+        <!-- =================================================
+             CATÁLOGO
+        ================================================== -->
+
+        <section
+            id="catalogo"
+            class="catalog"
+            aria-labelledby="titulo-catalogo"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Catálogo
+                    </span>
+
+                    <h1 id="titulo-catalogo">
+                        Productos para crear
+                    </h1>
+
+                    <p>
+                        Elige artículos, indica la cantidad
+                        y agrégalos a la factura.
+                    </p>
+
+                </div>
+
+                <div class="counter">
+
+                    <strong id="contadorProductos">
+                        0
+                    </strong>
+
+                    <span>
+                        productos
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUSCADOR -->
+
+            <label
+                class="search"
+                for="buscador"
+            >
+
+                <span aria-hidden="true">
+                    ⌕
+                </span>
+
+                <input
+                    id="buscador"
+                    type="search"
+                    placeholder="Buscar producto por nombre..."
+                    autocomplete="off"
+                >
+
+            </label>
+
+
+            <!--
+                Las tarjetas se crean dinámicamente
+                desde app.js
+            -->
+
+            <button id="nuevoProducto" type="button">Nuevo producto</button>
+            <button id="recargarProductos" type="button">Actualizar catálogo</button>
+            <form id="formProducto" class="producto-form" hidden>
+                <h2 id="tituloProducto">Nuevo producto</h2>
+                <label>Nombre<input id="productoNombre" required type="text"></label>
+                <label>Código<input id="productoCodigo" type="text"></label>
+                <label>Categoría<select id="productoCategoria" required></select></label>
+                <label>Precio de venta<input id="productoPrecio" required type="number" min="0" step="any"></label>
+                <label>Costo<input id="productoCosto" required type="number" min="0" step="any"></label>
+                <label>Stock inicial<input id="productoStock" required type="number" min="0" step="1" value="0"></label>
+                <label><input id="productoSeguimiento" type="checkbox" checked> Seguimiento de inventario</label>
+                <p>El stock y el seguimiento se definen al crear. No se modifican desde esta edición.</p>
+                <div>
+                    <button id="guardarProducto" type="submit">Guardar producto</button>
+                    <button id="cancelarProducto" type="button">Cancelar</button>
+                </div>
+                <p id="mensajeProducto" role="status" aria-live="polite"></p>
+            </form>
+            <p id="estadoProductos" role="status" aria-live="polite"></p>
+            <div
+                id="catalogoProductos"
+                class="products-grid"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- =================================================
+             FACTURA
+        ================================================== -->
+
+        <aside
+            id="panelFactura"
+            class="invoice"
+            aria-labelledby="titulo-factura"
+            hidden
+        >
+
+            <div class="invoice__card">
+
+
+                <!-- ENCABEZADO FACTURA -->
+
+                <div class="invoice__header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            Factura actual
+                        </span>
+
+                        <h2 id="titulo-factura">
+                            Resumen de compra
+                        </h2>
+
+                    </div>
+
+                    <span
+                        id="contadorFactura"
+                        class="invoice__count"
+                        aria-label="Productos distintos en factura"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <!-- ENCABEZADOS -->
+
+                <div
+                    class="invoice__labels"
+                    aria-hidden="true"
+                >
+
+                    <span>
+                        Producto
+                    </span>
+
+                    <span>
+                        Cant.
+                    </span>
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span></span>
+
+                </div>
+
+
+                <!-- PRODUCTOS FACTURA -->
+
+                <div
+                    id="facturaItems"
+                    class="invoice__items"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- TOTALES -->
+
+                <div
+                    id="totalesFactura"
+                    class="totals"
+                ></div>
+
+
+                <!-- DATOS FACTURA -->
+
+                <div id="botonesFactura">
+
+                    <div class="trabajador">
+
+                        <label for="trabajador">
+                            Nombre del trabajador:
+                        </label>
+
+                        <input
+                            type="text"
+                            id="trabajador"
+                            name="Trabajador"
+                            required
+                            class="input-text"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <label for="clienteVenta">Cliente (opcional, obligatorio para Debe)</label>
+                    <select id="clienteVenta" disabled>
+                        <option value="">Sin cliente</option>
+                    </select>
+                    <button id="recargarClientesVenta" type="button">Actualizar clientes</button>
+                    <p id="estadoClientesVenta" role="status" aria-live="polite"></p>
+
+                    <label for="mtdpago">
+                        Elige el método de pago:
+                    </label>
+
+                    <select
+                        id="mtdpago"
+                        name="mtdpago"
+                    >
+
+                        <option value="efectivo">
+                            Efectivo
+                        </option>
+
+                        <option value="nequi">
+                            Nequi
+                        </option>
+
+                        <option value="debito">
+                            Tarjeta débito
+                        </option>
+                        <option value="debe">Debe</option>
+
+                    </select>
+
+
+                    <button
+                        id="btnimprimirFactura"
+                        type="button"
+                    >
+                        Imprimir factura
+                    </button>
+
+
+                    <button
+                        id="btncancelarFactura"
+                        type="button"
+                    >
+                        Cancelar factura
+                    </button>
+
+
+                    <button
+                        id="btnGenerarFactura"
+                        type="button"
+                    >
+                        Generar factura
+                    </button>
+                    <button id="guardarVentaAbierta" type="button">Guardar como abierta</button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DINERO RECIBIDO / CAMBIO
+            ================================================== -->
+
+            <div
+                class="cambio"
+                id="seccionCambio"
+            >
+
+                <label for="cambio">
+                    Introduzca el dinero que le dio el cliente:
+                </label>
+
+                <input
+                    type="number"
+                    id="cambio"
+                    name="cambio"
+                    min="0"
+                    step="1"
+                    class="input-text"
+                    placeholder="Ej. 100000"
+                >
+
+                <div
+                    id="resultadoCambio"
+                    class="resultado-cambio"
+                    aria-live="polite"
+                >
+                    El cambio que se le debe dar al cliente es:
+                    <strong>$ 0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CONFIRMACIÓN
+            ================================================== -->
+
+            <div
+                id="ventaConfirmada"
+                class="venta-confirmada"
+                aria-live="polite"
+            >
+                <p>
+                    Venta pendiente
+                </p>
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+        Proyecto académico creado con HTML5,
+        CSS y JavaScript Vanilla.
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="utils.js?v=mvp2-ventas-2"></script>
+
+    <script src="api.js?v=mvp2-compras-1"></script>
+
+    <script src="categories.js?v=mvp2-ventas-2"></script>
+    <script src="suppliers.js?v=mvp2-ventas-2"></script>
+    <script src="customers.js?v=mvp2-ventas-2"></script>
+    <script src="sale-customer.js?v=mvp2-ventas-2"></script>
+    <script src="open-sales.js?v=mvp2-cierre-3"></script>
+    <script src="sales-data.js?v=mvp2-ventas-2"></script>
+    <script src="close-sales.js?v=mvp2-cierre-3"></script>
+
+    <script src="products.js?v=mvp2-ventas-2"></script>
+    <script src="product-form.js?v=mvp2-ventas-2"></script>
+
+    <script src="app.js?v=mvp2-cierre-3"></script>
+
 </body>
+
 </html>
