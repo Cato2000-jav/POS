@@ -1,0 +1,12 @@
+{
+  "descripcion": "Respaldo previo a eliminar cinco ventas abiertas de prueba autorizadas por el usuario. Este archivo no confirma su eliminación ni movimientos de inventario.",
+  "fechaRespaldo": "2026-10-06",
+  "recurso": "ventas",
+  "registros": [
+    {"id":"6c02bc76-132b-459f-a640-f7b7ee6566cc","fecha":"","estado":"abierta","clienteId":"d69dd001-cd2c-4f50-86dd-221858d1df8b","metodoPago":"Nequi","subtotal":"","total":"","valorRecibido":"","cambio":"","itemsJson":[{"id":"e4b5ce9b-742e-4f66-94cf-fcce2fe3d0cb","cantidad":1}],"actualizadoEn":"","persona":"gchh","iva":"","clienteNombre":""},
+    {"id":"43ee2946-ef4c-476b-ae37-081924498ed5","fecha":"","estado":"abierta","clienteId":"d69dd001-cd2c-4f50-86dd-221858d1df8b","metodoPago":"Tarjeta débito","subtotal":"","total":"","valorRecibido":"","cambio":"","itemsJson":[{"id":"e4b5ce9b-742e-4f66-94cf-fcce2fe3d0cb","cantidad":1},{"id":"becf637d-8bd0-469d-8404-227662e0bcd7","cantidad":1}],"actualizadoEn":"","persona":"dfgfd","iva":"","clienteNombre":""},
+    {"id":"3111afc5-6638-4dc3-a240-ef40f027e1da","fecha":"","estado":"abierta","clienteId":"d69dd001-cd2c-4f50-86dd-221858d1df8b","metodoPago":"Nequi","subtotal":"","total":"","valorRecibido":"","cambio":"","itemsJson":[{"id":"e4b5ce9b-742e-4f66-94cf-fcce2fe3d0cb","cantidad":1},{"id":"e2351022-f340-4dad-bbad-844f34a672dd","cantidad":1}],"actualizadoEn":"","persona":"fds","iva":"","clienteNombre":""},
+    {"id":"a13569f8-0974-4931-8d2e-4d9de798615f","fecha":"","estado":"abierta","clienteId":"","metodoPago":"Tarjeta débito","subtotal":"","total":"","valorRecibido":"","cambio":"","itemsJson":[{"id":"e2351022-f340-4dad-bbad-844f34a672dd","cantidad":1}],"actualizadoEn":"","persona":"fgnc","iva":"","clienteNombre":""},
+    {"id":"5c55f671-91c2-4cb6-a482-b677de880d77","fecha":"","estado":"abierta","clienteId":"d69dd001-cd2c-4f50-86dd-221858d1df8b","metodoPago":"Efectivo","subtotal":"","total":"","valorRecibido":"","cambio":"","itemsJson":[{"id":"e4b5ce9b-742e-4f66-94cf-fcce2fe3d0cb","cantidad":1}],"actualizadoEn":"","persona":"Gabo","iva":"","clienteNombre":""}
+  ]
+}

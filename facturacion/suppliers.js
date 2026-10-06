@@ -119,7 +119,11 @@ async function guardarProveedorFormulario(evento) {
 async function eliminarProveedor(proveedor) {
     if (proveedoresEstado.ocupado || !proveedoresEstado.cargados) return;
     if (!await confirmarAccion(`¿Eliminar el proveedor «${proveedor.nombre}»? No se eliminará si tiene compras asociadas.`, {peligro: true})) return;
-    if (proveedoresEstado.ocupado) return;
+    if (proveedoresEstado.ocupado || !proveedoresEstado.cargados) return;
+    if (!proveedoresEstado.registros.some(registro => registro.id === proveedor.id)) {
+        mensajeProveedores.textContent = "El proveedor ya no está en la lista. Actualiza antes de eliminar.";
+        return;
+    }
     bloquearProveedores(true);
     mensajeProveedores.textContent = "Eliminando proveedor…";
     try {
@@ -131,7 +135,7 @@ async function eliminarProveedor(proveedor) {
         renderProveedores();
         mensajeProveedores.textContent = "Proveedor eliminado.";
     } catch (error) {
-        mensajeProveedores.textContent = "No se confirmó la eliminación: " + error.message;
+        mensajeProveedores.textContent = "No se confirmó la eliminación: " + error.message + " Actualiza la lista antes de volver a intentar.";
     } finally { bloquearProveedores(false); }
 }
 

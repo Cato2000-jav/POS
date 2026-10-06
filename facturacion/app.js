@@ -1425,6 +1425,9 @@ const iniciarFactura = async () => {
     }
 
 
+    // El estado puede cambiar mientras esperamos la confirmación del diálogo.
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
+
     estado.facturaIniciada =
         true;
     limpiarReferenciaAbierta();
@@ -1502,6 +1505,8 @@ const cancelarFactura = async () => {
 
     }
 
+    // Revalidar después del await antes de descartar el carrito.
+    if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
     limpiarReferenciaAbierta();
 
 

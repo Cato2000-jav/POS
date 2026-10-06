@@ -83,6 +83,11 @@ function prepararMensajesUI() {
         elemento.classList.add("ui-estado");
         const actualizar = () => {
             const texto = elemento.textContent.trim();
+            // Los módulos pueden indicar el estado real sin depender de palabras del mensaje.
+            if (["error", "warning", "loading", "success", "info"].includes(elemento.dataset.tipoMensaje)) {
+                elemento.dataset.tipo = elemento.dataset.tipoMensaje;
+                return;
+            }
             elemento.dataset.tipo = /no se pudo|no se confirmó|error|inválid|insuficiente|rechaz|no puedes/i.test(texto) ? "error" :
                 /pendiente|revisa|espera|no se conoce/i.test(texto) ? "warning" :
                 /cargando|guardando|eliminando|consultando|importando|confirmando/i.test(texto) ? "loading" :

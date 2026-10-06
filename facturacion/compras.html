@@ -7,9 +7,11 @@
     <title>Papel y Luna | Compras</title>
     <link rel="stylesheet" href="styles.css?v=mvp2-ventas-2">
     <link rel="stylesheet" href="purchases.css?v=1">
-    <script src="api.js?v=mvp2-compras-1" defer></script>
-    <script src="purchases.js?v=2-lectura-historica" defer></script>
+    <script src="api.js?v=mvp2-servicio-20261006" defer></script>
+    <script src="history-filters.js?v=1" defer></script>
+    <script src="purchases.js?v=4-filtros" defer></script>
     <link rel="stylesheet" href="ui-theme.css?v=1">
+    <link rel="stylesheet" href="history-filters.css?v=2">
 </head>
 
 <body>
@@ -44,6 +46,13 @@
         </section>
         <section aria-labelledby="tituloCompras">
             <h2 id="tituloCompras">Compras registradas en Google Sheets</h2>
+            <form id="filtrosCompras" class="historial-filtros" aria-label="Filtrar compras">
+                <label>Desde<input type="date" id="filtrosCompras-desde"></label>
+                <label>Hasta<input type="date" id="filtrosCompras-hasta"></label>
+                <label>Proveedor<select id="filtrosCompras-proveedor"><option value="">Todos</option></select></label>
+                <button type="reset">Limpiar filtros</button>
+                <p id="resultadoFiltrosCompras" role="status" aria-live="polite"></p>
+            </form>
             <ul id="listaCompras"></ul>
             <section id="detalleCompra" aria-label="Detalle de compra" hidden></section>
         </section>

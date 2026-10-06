@@ -120,7 +120,11 @@ async function guardarClienteFormulario(evento) {
 async function eliminarCliente(cliente) {
     if (clientesEstado.ocupado || !clientesEstado.cargados) return;
     if (!await confirmarAccion(`¿Eliminar el cliente «${cliente.nombre}»? No se eliminará si tiene ventas asociadas.`, {peligro: true})) return;
-    if (clientesEstado.ocupado) return;
+    if (clientesEstado.ocupado || !clientesEstado.cargados) return;
+    if (!clientesEstado.registros.some(registro => registro.id === cliente.id)) {
+        mensajeClientes.textContent = "El cliente ya no está en la lista. Actualiza antes de eliminar.";
+        return;
+    }
     bloquearClientes(true);
     mensajeClientes.textContent = "Eliminando cliente…";
     try {
@@ -133,7 +137,7 @@ async function eliminarCliente(cliente) {
         mensajeClientes.textContent = "Cliente eliminado.";
         if (typeof invalidarClientesVenta === "function") invalidarClientesVenta();
     } catch (error) {
-        mensajeClientes.textContent = "No se confirmó la eliminación: " + error.message;
+        mensajeClientes.textContent = "No se confirmó la eliminación: " + error.message + " Actualiza la lista antes de volver a intentar.";
     } finally { bloquearClientes(false); }
 }
 

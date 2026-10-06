@@ -175,7 +175,7 @@ const renderHistorial = () => {
     }
 
 
-    const historial =
+    let historial =
         obtenerHistorial();
 
 
@@ -195,6 +195,12 @@ const renderHistorial = () => {
         return;
     }
 
+    const filtros = leerFiltrosHistorial("filtrosVentas");
+    const totalSinFiltrar = historial.length;
+    historial = filtrarHistorial(historial, filtros);
+    document.getElementById("resultadoFiltrosVentas").textContent = filtros.desde && filtros.hasta && filtros.desde > filtros.hasta
+        ? "La fecha Desde no puede ser posterior a Hasta."
+        : `${historial.length} de ${totalSinFiltrar} ventas. El cliente se busca por nombre guardado o ID.`;
     salesCount.textContent =
         `${historial.length} ${
             historial.length
@@ -213,7 +219,11 @@ const renderHistorial = () => {
         0
     ) {
 
-        mostrarEstadoVacio();
+        const fila = document.createElement("tr"), celda = document.createElement("td");
+        celda.colSpan = 6;
+        celda.className = "empty-state";
+        celda.textContent = totalSinFiltrar ? "No hay ventas que coincidan con los filtros." : "No hay ventas registradas en esta fuente.";
+        fila.appendChild(celda); tableBody.appendChild(fila);
 
         return;
     }
@@ -270,6 +280,8 @@ const crearFilaVenta = (
 
         <td class="person-cell">
             ${escaparHTML(venta.persona)}
+            <small class="date-cell">Cliente: ${escaparHTML(venta.clienteNombre || venta.clienteId || "Sin cliente registrado")}</small>
+            <small class="date-cell">${venta.estado === "abierta" ? "Abierta · sin factura definitiva" : "Cerrada"}</small>
         </td>
 
 
@@ -379,6 +391,8 @@ const crearFilaVenta = (
 
         }
     );
+    botonImprimir.hidden = venta.estado === "abierta";
+    botonImprimir.disabled = venta.estado === "abierta";
 
 
     const botonEliminar =
@@ -534,7 +548,7 @@ const verDetalleVenta = (
 
 
     confirmarAccion(
-        `FACTURA #${venta.id}
+        `${venta.estado === "abierta" ? "VENTA ABIERTA — NO ES FACTURA" : "FACTURA"} #${venta.id}
 
 Fecha: ${venta.fecha}
 Hora: ${venta.hora}
@@ -547,7 +561,7 @@ ${productosTexto}
 
 Subtotal: ${formatearMoneda(venta.subtotal)}
 IVA 19%: ${formatearMoneda(venta.iva)}
-TOTAL: ${formatearMoneda(venta.total)}`, {titulo: "Detalle de la factura", aceptar: "Cerrar", soloLectura: true}
+TOTAL: ${formatearMoneda(venta.total)}`, {titulo: venta.estado === "abierta" ? "Detalle de venta abierta" : "Detalle de la factura", aceptar: "Cerrar", soloLectura: true}
     );
 };
 
@@ -593,6 +607,11 @@ const imprimirVentaHistorica = (
         return;
     }
 
+
+    if (venta.estado === "abierta") {
+        mostrarNotificacion("La venta está abierta. Ciérrala desde Facturación antes de imprimir una factura.");
+        return;
+    }
 
     const productos =
         Array.isArray(
@@ -988,5 +1007,8 @@ RENDER INICIAL
 =========================================================
 */
 
-if (tableBody) cargarHistorialRemoto();
+if (tableBody) {
+    prepararFiltrosHistorial("filtrosVentas", renderHistorial);
+    cargarHistorialRemoto();
+}
 renderHistorial();

@@ -4,12 +4,26 @@ const claveCompraPendiente = "papelLuna.compraPendiente.v1";
 const compraElemento = id => document.getElementById(id);
 const dineroCompra = valor => new Intl.NumberFormat("es-CO", {style: "currency", currency: "COP", maximumFractionDigits: 2}).format(valor);
 function avisarCompra(texto) { compraElemento("estadoCompras").textContent = texto; }
+// Consulta solo los registros ya cargados; no confirma inventario ni elimina borradores.
+function problemaCompraPendiente() {
+    const pendiente = comprasEstado.pendiente;
+    if (!pendiente) return "";
+    const registrada = comprasEstado.registros.find(compra => compra.id === pendiente.id);
+    if (!registrada) return "";
+    if (!mismaCompra(registrada, pendiente)) {
+        return `La compra ${pendiente.id} ya existe en Sheets con datos diferentes. Se conserva el borrador; revisa el registro antes de continuar. No se reenviará.`;
+    }
+    if (registrada.detalleHistoricoIncompleto) {
+        return `La compra ${pendiente.id} ya existe en Sheets, pero su detalle histórico está incompleto. Se conserva el borrador para revisión; no se reenviará ni se ajustará inventario. Consulta Ver detalle.`;
+    }
+    return "";
+}
 function bloquearCompra(ocupado) {
     comprasEstado.ocupado = ocupado;
     compraElemento("camposCompra").disabled = ocupado || !comprasEstado.cargado || !!comprasEstado.pendiente || comprasEstado.bloqueado;
     compraElemento("recargarCompras").disabled = ocupado;
     compraElemento("reintentarCompra").hidden = !comprasEstado.pendiente;
-    compraElemento("reintentarCompra").disabled = ocupado;
+    compraElemento("reintentarCompra").disabled = ocupado || !!problemaCompraPendiente();
     compraElemento("formCompra").setAttribute("aria-busy", String(ocupado));
 }
 // Recibe el detalle y devuelve su total; rechaza valores que el servicio tampoco admite.
@@ -112,8 +126,14 @@ function renderItemsCompra() {
 }
 function renderListaCompras() {
     const lista = compraElemento("listaCompras"); lista.replaceChildren();
-    if (!comprasEstado.registros.length) { const li = document.createElement("li"); li.textContent = "No hay compras registradas."; lista.append(li); }
-    [...comprasEstado.registros].sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(compra => {
+    compraElemento("detalleCompra").hidden = true;
+    const filtros = leerFiltrosHistorial("filtrosCompras");
+    const registros = filtrarHistorial(comprasEstado.registros, filtros);
+    compraElemento("resultadoFiltrosCompras").textContent = filtros.desde && filtros.hasta && filtros.desde > filtros.hasta
+        ? "La fecha Desde no puede ser posterior a Hasta."
+        : `${registros.length} de ${comprasEstado.registros.length} compras.`;
+    if (!registros.length) { const li = document.createElement("li"); li.textContent = comprasEstado.registros.length ? "No hay compras que coincidan con los filtros." : "No hay compras registradas."; lista.append(li); }
+    [...registros].sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(compra => {
         const li = document.createElement("li"), boton = document.createElement("button");
         const proveedor = comprasEstado.proveedores.find(p => p.id === compra.proveedorId);
         li.textContent = `${compra.fecha} · ${proveedor?.nombre || compra.proveedorId} · ${dineroCompra(compra.total)} `;
@@ -143,6 +163,13 @@ async function cargarCompras() {
         if (productos.some(p => typeof p.nombre !== "string" || !p.nombre || typeof p.costo !== "number" || !Number.isFinite(p.costo) || p.costo < 0) ||
             proveedores.some(p => typeof p.nombre !== "string" || !p.nombre)) throw new Error("Catálogo o proveedores inválidos.");
         Object.assign(comprasEstado, {registros, productos, proveedores, cargado: true});
+        const filtroProveedor = compraElemento("filtrosCompras-proveedor"), proveedorElegido = filtroProveedor.value;
+        filtroProveedor.replaceChildren(opcionCompra("", "Todos"));
+        const nombres = new Map(proveedores.map(p => [p.id, p.nombre]));
+        for (const compra of registros) if (!nombres.has(compra.proveedorId)) nombres.set(compra.proveedorId, compra.proveedorId);
+        if (proveedorElegido && !nombres.has(proveedorElegido)) nombres.set(proveedorElegido, proveedorElegido);
+        for (const [id, nombre] of nombres) filtroProveedor.append(opcionCompra(id, nombre));
+        filtroProveedor.value = proveedorElegido;
         const selector = compraElemento("compraProveedor"), anterior = selector.value;
         selector.replaceChildren(opcionCompra("", "Selecciona proveedor")); proveedores.forEach(p => selector.append(opcionCompra(p.id, p.nombre))); selector.value = anterior;
         if (comprasEstado.pendiente) {
@@ -154,7 +181,7 @@ async function cargarCompras() {
         }
         renderProductosCompra(); renderListaCompras();
         const incompletas = registros.filter(c => c.detalleHistoricoIncompleto).length;
-        avisarCompra(comprasEstado.pendiente ? "Hay un envío pendiente. Reintenta la misma compra; no crees otra." :
+        avisarCompra(comprasEstado.pendiente ? problemaCompraPendiente() || "Hay un envío pendiente. Reintenta la misma compra; no crees otra." :
             "Datos actualizados desde Google Sheets." + (incompletas ? ` Atención: ${incompletas} compra(s) antigua(s) con detalle incompleto; revisa Ver detalle. No se modificó inventario.` : ""));
     } catch (error) { avisarCompra("No se pudo actualizar: " + error.message + " Se conserva la última carga válida."); }
     finally { bloquearCompra(false); }
@@ -162,6 +189,8 @@ async function cargarCompras() {
 async function guardarCompraFormulario(evento) {
     evento?.preventDefault();
     if (comprasEstado.ocupado || comprasEstado.bloqueado) return;
+    const problemaPendiente = problemaCompraPendiente();
+    if (problemaPendiente) { avisarCompra(problemaPendiente); bloquearCompra(false); return; }
     if (!comprasEstado.pendiente && !comprasEstado.cargado) return;
     bloquearCompra(true);
     let enviado = false;
@@ -218,4 +247,5 @@ compraElemento("agregarCompra").addEventListener("click", () => {
 compraElemento("formCompra").addEventListener("submit", guardarCompraFormulario);
 compraElemento("reintentarCompra").addEventListener("click", () => guardarCompraFormulario());
 compraElemento("recargarCompras").addEventListener("click", cargarCompras);
+prepararFiltrosHistorial("filtrosCompras", renderListaCompras);
 iniciarCompras();

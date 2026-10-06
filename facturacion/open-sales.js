@@ -54,19 +54,33 @@ function bloquearAbiertas(ocupado) {
 function validarAbierta(venta) {
     if (!venta || typeof venta.id !== "string" || !venta.id || venta.estado !== "abierta" ||
         typeof venta.actualizadoEn !== "string" || !Number.isFinite(Date.parse(venta.actualizadoEn)) ||
-        typeof venta.persona !== "string" || typeof venta.clienteId !== "string" ||
+        typeof venta.persona !== "string" || !venta.persona.trim() || typeof venta.clienteId !== "string" ||
+        !["", "Efectivo", "Nequi", "Debe", "Tarjeta débito"].includes(venta.metodoPago) ||
+        (venta.metodoPago === "Debe" && !venta.clienteId.trim()) ||
         !Array.isArray(venta.itemsJson) || !venta.itemsJson.length ||
         typeof venta.total !== "number" || !Number.isFinite(venta.total) || venta.total < 0) {
         throw new Error("La venta abierta recibida no tiene los datos esperados.");
     }
     const ids = new Set();
+    let subtotal = 0;
     venta.itemsJson.forEach(item => {
         if (!item || typeof item.id !== "string" || !item.id || ids.has(item.id) ||
             !Number.isSafeInteger(item.cantidad) || item.cantidad <= 0 ||
-            typeof item.nombre !== "string" || typeof item.precio !== "number" ||
+            typeof item.nombre !== "string" || !item.nombre.trim() || typeof item.precio !== "number" ||
             !Number.isFinite(item.precio) || item.precio < 0) throw new Error("Detalle de venta inválido.");
+        const importe = item.precio * item.cantidad;
+        if (!Number.isFinite(importe) || item.subtotal !== importe) {
+            throw new Error("El subtotal de un producto de la venta abierta no coincide con su detalle.");
+        }
+        subtotal += importe;
         ids.add(item.id);
     });
+    // Mismo cálculo que guardarVentaAbierta en Apps Script; no modifica la respuesta.
+    const iva = subtotal * 0.19;
+    if (!Number.isFinite(subtotal + iva) || venta.subtotal !== subtotal ||
+        venta.iva !== iva || venta.total !== subtotal + iva) {
+        throw new Error("Los totales de la venta abierta no coinciden con su detalle.");
+    }
     return venta;
 }
 
@@ -86,12 +100,29 @@ function renderVentasAbiertas() {
     });
 }
 
+// Comprueba la identidad de todas las ventas, incluso las cerradas, sin modificarlas.
+function validarIdsVentas(ventas) {
+    if (!Array.isArray(ventas)) throw new Error("La lista de ventas recibida no es válida.");
+    const ids = new Set();
+    for (const venta of ventas) {
+        if (!venta || typeof venta.id !== "string" || !venta.id.trim()) {
+            throw new Error("Hay una venta sin ID válido. Revisa la hoja de ventas.");
+        }
+        if (ids.has(venta.id)) {
+            throw new Error(`El ID de venta ${venta.id} está duplicado. Revisa la hoja antes de continuar.`);
+        }
+        ids.add(venta.id);
+    }
+    return ventas;
+}
+
 async function cargarVentasAbiertas() {
     if (!comprobarDisponibilidadAbiertas()) return;
     bloquearAbiertas(true);
     mensajeAbiertas.textContent = "Consultando ventas abiertas…";
     try {
-        ventasAbiertasEstado.registros = (await api.listar("ventas")).filter(v => v.estado === "abierta").map(validarAbierta);
+        const ventas = validarIdsVentas(await api.listar("ventas"));
+        ventasAbiertasEstado.registros = ventas.filter(v => v.estado === "abierta").map(validarAbierta);
         renderVentasAbiertas();
         mensajeAbiertas.textContent = `${ventasAbiertasEstado.registros.length} venta(s) abierta(s).`;
     } catch (error) { mensajeAbiertas.textContent = "No se pudo consultar: " + error.message; }
@@ -152,7 +183,7 @@ async function retomarVentaAbierta(id) {
         const [ventas, productos, categorias, clientes] = await Promise.all([
             api.listar("ventas"), api.listar("productos"), api.listar("categorias"), api.listar("clientes")
         ]);
-        const venta = validarAbierta(ventas.find(v => v.id === id));
+        const venta = validarAbierta(validarIdsVentas(ventas).find(v => v.id === id));
         const catalogo = normalizarProductos(productos, categorias);
         const contactos = clientes.map(normalizarCliente);
         const faltante = venta.itemsJson.find(item => !catalogo.some(p => p.id === item.id));

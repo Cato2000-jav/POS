@@ -21,6 +21,7 @@ function entorno(borrador) {
             return {...datos, itemsJson: datos.itemsJson.map(i => ({...i, nombre: "Cuaderno", subtotal: i.cantidad * i.costo}))};
         }}
     });
+    vm.runInContext(fs.readFileSync(path.join(__dirname, "../history-filters.js"), "utf8"), ctx);
     vm.runInContext(codigo, ctx);
     return {ctx, e, memoria, ejecutar: s => vm.runInContext(s, ctx), enviados: () => enviados,
         fallar: error => {fallo = error;}, fallarLectura: () => {falloLectura = true;}, esperar: () => {resolver = "esperar";}, resolver: () => resolver()};
@@ -94,6 +95,41 @@ function preparar(t) {
     t.e("listaCompras").children[0].children[0].events.click();
     assert.match(t.e("detalleCompra").children[1].textContent, /No se modificó la hoja/);
     assert.match(t.e("detalleCompra").children[2].textContent, /subtotal calculado/);
+    t.e("filtrosCompras-proveedor").value = "otro";
+    t.ctx.renderListaCompras();
+    assert.match(t.e("listaCompras").children[0].textContent, /coincidan/);
+    assert.equal(t.e("detalleCompra").hidden, true);
+    assert.equal(t.ejecutar("comprasEstado.registros.length"), 1);
+    t.e("filtrosCompras-proveedor").value = "s-1";
+    t.e("filtrosCompras-desde").value = "2026-10-02";
+    t.e("filtrosCompras-hasta").value = "2026-10-02";
+    t.ctx.renderListaCompras();
+    assert.match(t.e("resultadoFiltrosCompras").textContent, /1 de 1/);
+    assert.equal(t.enviados(), 0);
+    // Un borrador antiguo ya registrado no debe recomendar ni permitir otro POST.
+    const borradorAntiguo = {...antigua, itemsJson: JSON.parse(antigua.itemsJson)};
+    t = entorno(JSON.stringify(borradorAntiguo)); await tick();
+    const listarPendiente = t.ctx.api.listar;
+    t.ctx.api.listar = async recurso => recurso === "compras" ? [antigua] : listarPendiente(recurso);
+    await t.ctx.cargarCompras();
+    assert.match(t.e("estadoCompras").textContent, /ya existe en Sheets.*histórico está incompleto/);
+    assert.equal(t.e("reintentarCompra").disabled, true);
+    await t.ctx.guardarCompraFormulario();
+    assert.equal(t.enviados(), 0);
+    assert.equal(t.memoria.get("papelLuna.compraPendiente.v1"), JSON.stringify(borradorAntiguo));
+    // Mismo ID con contenido distinto: tampoco reenviar ni retirar el borrador.
+    t.ctx.api.listar = async recurso => recurso === "compras" ? [{...moderna, total: 80,
+        itemsJson: [{id:"p-1",cantidad:10,costo:8,nombre:"Cuaderno",subtotal:80}]}] : listarPendiente(recurso);
+    await t.ctx.cargarCompras();
+    assert.match(t.e("estadoCompras").textContent, /datos diferentes/);
+    await t.ctx.guardarCompraFormulario(); assert.equal(t.enviados(), 0);
+    assert.equal(t.memoria.size, 1);
+    // Un registro moderno coincidente mantiene el reintento idempotente existente.
+    t.ctx.api.listar = async recurso => recurso === "compras" ? [moderna] : listarPendiente(recurso);
+    await t.ctx.cargarCompras();
+    assert.equal(t.e("reintentarCompra").disabled, false);
+    await t.ctx.guardarCompraFormulario();
+    assert.equal(t.enviados(), 1); assert.equal(t.memoria.size, 0);
     t = entorno("JSON roto"); await tick(); assert.equal(t.ejecutar("comprasEstado.bloqueado"), true);
     await t.ctx.guardarCompraFormulario(); assert.equal(t.enviados(), 0);
     console.log("PASS: compras UI, total, doble envío, confirmación, rechazo, error de red y borrador recuperable.");

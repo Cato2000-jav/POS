@@ -98,4 +98,4 @@ const api = {
     }
 };
 
-api.configurar("https://script.google.com/macros/s/AKfycbxFpETH-tqmMtzpQ4EH13-ElhmRaClSESQI7kCMCvpeI4eCu34vyAY-vo4vwHzPnXAu/exec");
+api.configurar("https://script.google.com/macros/s/AKfycbyMd6jokif6uShRw33KHkabccTaWgCAnf6nbtsZUmx9CFUEbx1NxpPDgY5zab2gciin/exec");

@@ -37,5 +37,14 @@ const dialogo = () => documento.body.children.find(e => e.tag === "dialog");
     const aviso = region.children[2]; assert.equal(aviso.attrs.role,"alert");
     assert.equal(aviso.children[1].textContent,"Mensaje 3");
     aviso.children[2].events.click(); ejecutarTimers(); assert.equal(aviso.isConnected,false);
+    const mensaje = new Elemento("p");
+    mensaje.textContent = "Atención: registros inválidos excluidos; carga completada.";
+    mensaje.dataset.tipoMensaje = "warning";
+    documento.querySelectorAll = () => [mensaje];
+    ctx.prepararMensajesUI(); assert.equal(mensaje.dataset.tipo, "warning");
+    mensaje.dataset.tipoMensaje = "error";
+    ctx.prepararMensajesUI(); assert.equal(mensaje.dataset.tipo, "error");
+    delete mensaje.dataset.tipoMensaje;
+    ctx.prepararMensajesUI(); assert.equal(mensaje.dataset.tipo, "error"); // conserva inferencia anterior
     console.log("PASS: diálogo único, cancelar/Escape, confirmar, foco, detalle, texto seguro y avisos cerrables.");
 })().catch(e => {console.error(e); process.exitCode = 1;});

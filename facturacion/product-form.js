@@ -149,6 +149,15 @@ async function eliminarProductoCatalogo(id) {
     }
     if (!await confirmarAccion(`¿Eliminar del catálogo el producto «${producto.nombre}»? Esta acción no se puede deshacer desde el POS.`, {peligro: true})) return;
     if (productosEditor.ocupado || productosCargando) return;
+    // Revalidar después del diálogo: el catálogo o el carrito pudieron cambiar.
+    if (!formProducto.hidden || !estado.productosDisponibles.some(p => p.id === id)) {
+        mensaje.textContent = "El catálogo o el formulario cambió. Revisa el producto antes de eliminarlo.";
+        return;
+    }
+    if (estado.facturaActual.some(item => item.id === id)) {
+        mensaje.textContent = "No puedes eliminar el producto: está en la venta actual.";
+        return;
+    }
     bloquearProducto(true);
     // También impide que una recarga concurrente vuelva a incorporar el producto.
     document.querySelector("#recargarProductos").disabled = true;
@@ -162,7 +171,7 @@ async function eliminarProductoCatalogo(id) {
         renderProductos();
         mensaje.textContent = "Producto eliminado de Google Sheets.";
     } catch (error) {
-        mensaje.textContent = "No se confirmó la eliminación: " + error.message;
+        mensaje.textContent = "No se confirmó la eliminación: " + error.message + " Actualiza el catálogo antes de volver a intentar.";
     } finally {
         bloquearProducto(false);
         document.querySelector("#recargarProductos").disabled = false;

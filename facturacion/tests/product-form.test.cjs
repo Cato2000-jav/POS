@@ -76,6 +76,14 @@ const evento = {preventDefault() {}};
     await contexto.eliminarProductoCatalogo("prod-1");
     assert.equal(enviados.length, llamadasAntes); // producto en la venta actual
     assert.match(obtener("#estadoProductos").textContent, /venta actual/);
+    // Si el carrito cambia durante la confirmación, no se debe enviar DELETE.
+    contexto.confirmarAccion = async () => {estado.facturaActual.push({id:"nuevo-id",cantidad:1}); return true;};
+    await contexto.eliminarProductoCatalogo("nuevo-id");
+    assert.equal(enviados.length, llamadasAntes);
+    assert.equal(estado.productosDisponibles.length, 2);
+    assert.match(obtener("#estadoProductos").textContent, /venta actual/);
+    estado.facturaActual = estado.facturaActual.filter(i => i.id !== "nuevo-id");
+    contexto.confirmarAccion = async () => true;
     contexto.api.guardar = async () => {throw new Error("Tiene una venta abierta");};
     await contexto.eliminarProductoCatalogo("nuevo-id");
     assert.equal(estado.productosDisponibles.length, 2);

@@ -1,0 +1,18 @@
+.historial-filtros { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; padding: 20px; align-items: end; }
+.historial-filtros label { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.historial-filtros input, .historial-filtros select { width: 100%; min-width: 0; box-sizing: border-box; padding: 11px 12px; border: 1px solid var(--ui-borde, #e3deef); border-radius: 11px; background: white; color: var(--ui-tinta, #302c3e); }
+.historial-filtros input:focus-visible { outline: 3px solid #bba9f5; outline-offset: 3px; }
+.historial-filtros input, .historial-filtros select { min-height: 44px; }
+.historial-filtros button[type="reset"] {
+    min-height: 44px; padding: 11px 16px; border: 1px solid var(--ui-borde, #e3deef);
+    border-radius: 11px; background: #f6f3ff; color: #4d319f; font-weight: 650;
+    cursor: pointer; white-space: normal;
+}
+.historial-filtros button[type="reset"]:hover:not(:disabled) { background: #ece5ff; }
+.historial-filtros button[type="reset"]:focus-visible { outline: 3px solid #bba9f5; outline-offset: 3px; }
+.historial-filtros p { grid-column: 1 / -1; margin: 0; }
+#incidenciasHistorial { border-left: 4px solid #b38429; background: #fff8e9; }
+#listaIncidenciasHistorial { padding-left: 22px; margin: 12px 0 0; }
+#listaIncidenciasHistorial li { padding-block: 6px; line-height: 1.5; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .historial-filtros { grid-template-columns: 1fr; padding: 12px; } }
+@media print { .historial-filtros { display: none; } }

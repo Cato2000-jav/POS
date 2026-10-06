@@ -148,7 +148,11 @@ async function guardarCategoriaFormulario(evento) {
 async function eliminarCategoria(categoria) {
     if (categoriasEstado.cargando || !categoriasEstado.cargadas) return;
     if (!await confirmarAccion('¿Eliminar la categoría "' + categoria.nombre + '"? No se eliminará si tiene productos asociados.', {peligro: true})) return;
-    if (categoriasEstado.cargando) return;
+    if (categoriasEstado.cargando || !categoriasEstado.cargadas) return;
+    if (!categoriasEstado.registros.some(registro => String(registro.id) === String(categoria.id))) {
+        mensajeCategorias.textContent = "La categoría ya no está en la lista. Actualiza antes de eliminar.";
+        return;
+    }
     bloquearCategorias(true);
     mensajeCategorias.classList.remove("categorias-error");
     mensajeCategorias.textContent = "Eliminando categoría…";
@@ -166,7 +170,7 @@ async function eliminarCategoria(categoria) {
         mensajeCategorias.textContent = "Categoría eliminada correctamente.";
     } catch (error) {
         mensajeCategorias.classList.add("categorias-error");
-        mensajeCategorias.textContent = "No se confirmó la eliminación. " + error.message;
+        mensajeCategorias.textContent = "No se confirmó la eliminación. " + error.message + " Actualiza la lista antes de volver a intentar.";
     } finally {
         bloquearCategorias(false);
     }

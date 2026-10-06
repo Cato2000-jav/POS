@@ -3,7 +3,7 @@
 <html lang="es">
 
 <head>
-    <script src="ui-feedback.js?v=1"></script>
+    <script src="ui-feedback.js?v=2"></script>
 
     <meta charset="UTF-8">
 
@@ -28,18 +28,20 @@
     >
 
     <script src="utils.js?v=mvp2-ventas-2" defer></script>
-    <script src="api.js?v=mvp2-importacion-1" defer></script>
-    <script src="sales-data.js?v=mvp2-ventas-2" defer></script>
-    <script src="remote-history.js?v=mvp2-ventas-2" defer></script>
+    <script src="api.js?v=mvp2-servicio-20261006" defer></script>
+    <script src="history-filters.js?v=1" defer></script>
+    <script src="sales-data.js?v=filtros-2" defer></script>
+    <script src="remote-history.js?v=filtros-3" defer></script>
 
     <script
-        src="Historial_de_ventas.js?v=mvp2-ui-1"
+        src="Historial_de_ventas.js?v=filtros-1"
         defer
     ></script>
     <script src="migration-preview.js?v=2" defer></script>
     <script src="migration-import.js?v=mvp2-ui-1" defer></script>
 
     <link rel="stylesheet" href="ui-theme.css?v=1">
+    <link rel="stylesheet" href="history-filters.css?v=2">
 </head>
 
 
@@ -129,7 +131,7 @@
             <div class="table-header">
 
                 <h2 id="sales-title">
-                    Facturas generadas
+                    Ventas registradas
                 </h2>
 
                 <span
@@ -145,11 +147,25 @@
             <div class="table-wrapper">
                 <label for="fuenteHistorial">Consultar:</label>
                 <select id="fuenteHistorial">
-                    <option value="sheets">Ventas cerradas de Google Sheets</option>
+                    <option value="sheets">Ventas de Google Sheets</option>
                     <option value="anterior">Historial anterior de este navegador (solo lectura)</option>
                 </select>
                 <button id="recargarHistorial" type="button">Actualizar historial</button>
                 <p id="estadoHistorial" role="status" aria-live="polite"></p>
+                <details id="incidenciasHistorial" hidden>
+                    <summary>Registros por revisar</summary>
+                    <p>Estos registros siguen guardados en Sheets, pero no se incluyen en la tabla ni en sus filtros. No se inventaron datos ni se modificó inventario.</p>
+                    <ul id="listaIncidenciasHistorial"></ul>
+                </details>
+                <form id="filtrosVentas" class="historial-filtros" aria-label="Filtrar ventas">
+                    <label>Desde<input type="date" id="filtrosVentas-desde"></label>
+                    <label>Hasta<input type="date" id="filtrosVentas-hasta"></label>
+                    <label>Tipo de pago<select id="filtrosVentas-pago"><option value="">Todos</option><option>Efectivo</option><option>Nequi</option><option>Debe</option><option>Tarjeta débito</option></select></label>
+                    <label>Cliente<input type="search" id="filtrosVentas-cliente" placeholder="Nombre guardado o ID"></label>
+                    <label>Estado<select id="filtrosVentas-estado"><option value="">Todos</option><option value="abierta">Abierta</option><option value="cerrada" selected>Cerrada</option></select></label>
+                    <button type="reset">Limpiar filtros</button>
+                    <p id="resultadoFiltrosVentas" role="status" aria-live="polite"></p>
+                </form>
                 <p>Para guardar una factura como PDF, pulsa Imprimir y elige Guardar como PDF en el diálogo de impresión.</p>
                 <details>
                     <summary>Revisar historial anterior antes de migrarlo</summary>
