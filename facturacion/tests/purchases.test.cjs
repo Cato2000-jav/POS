@@ -1,6 +1,6 @@
 const fs = require("node:fs"), vm = require("node:vm"), path = require("node:path"), assert = require("node:assert/strict");
 class Elemento {
-    constructor() {this.value = ""; this.children = []; this.disabled = false; this.hidden = false; this.textContent = ""; this.events = {};}
+    constructor() {this.value = ""; this.children = []; this.disabled = false; this.hidden = false; this.textContent = ""; this.events = {}; this.dataset = {};}
     append(...n) {this.children.push(...n);} replaceChildren(...n) {this.children = n;}
     setAttribute() {} addEventListener(nombre, f) {this.events[nombre] = f;}
 }
@@ -63,6 +63,37 @@ function preparar(t) {
     assert.equal(t.e("compraProducto").children.length, 0);
     t.e("itemsCompra").children[0].children[4].children[0].events.click();
     assert.equal(t.ejecutar("comprasEstado.items.length"), 0);
+    // GET antiguo: texto JSON y sin snapshot. No escribir ni consultar nombres actuales para rellenarlo.
+    t = entorno(); await tick();
+    const antigua = {id: "antigua-1", fecha: "2026-10-02", proveedorId: "s-1", total: 72,
+        itemsJson: JSON.stringify([{id: "p-1", cantidad: 9, costo: 8}])};
+    const original = JSON.stringify(antigua);
+    const normalizada = t.ctx.normalizarCompraHistorica(antigua);
+    assert.equal(normalizada.itemsJson[0].subtotal, 72);
+    assert.equal(normalizada.itemsJson[0].subtotalCalculado, true);
+    assert.match(normalizada.itemsJson[0].nombre, /nombre histórico no registrado/);
+    assert.equal(JSON.stringify(antigua), original);
+    assert.equal(t.ctx.normalizarCompraHistorica({...antigua, itemsJson: JSON.parse(antigua.itemsJson)}).total, 72);
+    assert.throws(() => t.ctx.validarCompraRecibida(antigua)); // POST no se flexibiliza
+    assert.throws(() => t.ctx.validarCompraRecibida({...antigua, itemsJson: JSON.parse(antigua.itemsJson)}));
+    for (const itemsJson of ["JSON roto", "[]", "null", "{}", [], [{id:"p-1",cantidad:9,costo:8,subtotal:1}], [{id:"p-1",cantidad:-9,costo:8}]]) {
+        assert.throws(() => t.ctx.normalizarCompraHistorica({...antigua, itemsJson}), /Compra antigua-1:/);
+    }
+    assert.throws(() => t.ctx.normalizarCompraHistorica({...antigua, total: 71}), /Compra antigua-1:/);
+    const moderna = {...antigua, itemsJson: [{id:"p-1", cantidad:9, costo:8, nombre:"Nombre al comprar", subtotal:72}]};
+    assert.equal(t.ctx.normalizarCompraHistorica(moderna).detalleHistoricoIncompleto, false);
+    assert.equal(t.ctx.normalizarCompraHistorica(moderna).itemsJson[0].nombre, "Nombre al comprar");
+    const listarOriginal = t.ctx.api.listar;
+    t.ctx.api.listar = async recurso => recurso === "compras" ? [antigua] : listarOriginal(recurso);
+    await t.ctx.cargarCompras();
+    assert.equal(t.ejecutar("comprasEstado.cargado"), true);
+    assert.equal(t.e("compraProducto").children.length, 1);
+    assert.equal(t.e("compraProveedor").children.length, 2);
+    assert.equal(t.e("camposCompra").disabled, false);
+    assert.equal(t.enviados(), 0);
+    t.e("listaCompras").children[0].children[0].events.click();
+    assert.match(t.e("detalleCompra").children[1].textContent, /No se modificó la hoja/);
+    assert.match(t.e("detalleCompra").children[2].textContent, /subtotal calculado/);
     t = entorno("JSON roto"); await tick(); assert.equal(t.ejecutar("comprasEstado.bloqueado"), true);
     await t.ctx.guardarCompraFormulario(); assert.equal(t.enviados(), 0);
     console.log("PASS: compras UI, total, doble envío, confirmación, rechazo, error de red y borrador recuperable.");

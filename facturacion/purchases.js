@@ -38,6 +38,39 @@ function validarCompraRecibida(compra) {
     }
     return compra;
 }
+
+// Compatibilidad SOLO para GET. No confirma compras nuevas ni modifica la hoja.
+function normalizarCompraHistorica(compra) {
+    const referencia = compra && typeof compra.id === "string" && compra.id ? compra.id : "sin ID";
+    try {
+        if (!compra || typeof compra !== "object" || Array.isArray(compra)) throw new Error("Registro inválido.");
+        let items = compra.itemsJson;
+        if (typeof items === "string") {
+            try { items = JSON.parse(items); }
+            catch { throw new Error("itemsJson no contiene JSON válido."); }
+        }
+        if (!Array.isArray(items) || !items.length) throw new Error("itemsJson debe contener al menos un producto guardado.");
+        // Valida IDs/cantidades/costos antes de calcular valores para la presentación.
+        totalItemsCompra(items);
+        let incompleta = false;
+        const detalle = items.map(item => {
+            const nombreFaltante = item.nombre === undefined || item.nombre === null || item.nombre === "";
+            const subtotalFaltante = item.subtotal === undefined || item.subtotal === null || item.subtotal === "";
+            incompleta = incompleta || nombreFaltante || subtotalFaltante;
+            return {...item,
+                nombre: nombreFaltante ? `Producto ${item.id} (nombre histórico no registrado)` : item.nombre,
+                subtotal: subtotalFaltante ? item.cantidad * item.costo : item.subtotal,
+                subtotalCalculado: subtotalFaltante
+            };
+        });
+        const normalizada = {...compra, itemsJson: detalle, detalleHistoricoIncompleto: incompleta};
+        // Un subtotal existente incorrecto o un total distinto no se corrigen silenciosamente.
+        validarCompraRecibida(normalizada);
+        return normalizada;
+    } catch (error) {
+        throw new Error(`Compra ${referencia}: ${error.message}`);
+    }
+}
 function mismaCompra(compra, intento) {
     return compra.id === intento.id && compra.fecha === intento.fecha && compra.proveedorId === intento.proveedorId &&
         compra.total === intento.total && JSON.stringify(compra.itemsJson.map(({id, cantidad, costo}) => ({id, cantidad, costo}))) === JSON.stringify(intento.itemsJson);
@@ -88,7 +121,12 @@ function renderListaCompras() {
         boton.addEventListener("click", () => {
             const detalle = compraElemento("detalleCompra"); detalle.replaceChildren(); detalle.hidden = false;
             const titulo = document.createElement("h3"); titulo.textContent = "Compra " + compra.id; detalle.append(titulo);
-            for (const item of compra.itemsJson) { const p = document.createElement("p"); p.textContent = `${item.nombre}: ${item.cantidad} × ${dineroCompra(item.costo)} = ${dineroCompra(item.subtotal)}`; detalle.append(p); }
+            if (compra.detalleHistoricoIncompleto) {
+                const aviso = document.createElement("p"); aviso.className = "ui-estado"; aviso.dataset.tipo = "warning";
+                aviso.textContent = "Registro antiguo con detalle incompleto. Los nombres faltantes se muestran por ID y los subtotales faltantes se calculan para consultar. No se modificó la hoja ni se comprobó si el inventario se actualizó originalmente; no vuelvas a registrar esta compra.";
+                detalle.append(aviso);
+            }
+            for (const item of compra.itemsJson) { const p = document.createElement("p"); p.textContent = `${item.nombre}: ${item.cantidad} × ${dineroCompra(item.costo)} = ${dineroCompra(item.subtotal)}${item.subtotalCalculado ? " (subtotal calculado)" : ""}`; detalle.append(p); }
         });
         li.append(boton); lista.append(li);
     });
@@ -97,8 +135,8 @@ async function cargarCompras() {
     if (comprasEstado.ocupado) return;
     bloquearCompra(true); avisarCompra("Cargando compras, productos y proveedores…");
     try {
-        const [registros, productos, proveedores] = await Promise.all([api.listar("compras"), api.listar("productos"), api.listar("proveedores")]);
-        registros.forEach(validarCompraRecibida);
+        const [comprasRemotas, productos, proveedores] = await Promise.all([api.listar("compras"), api.listar("productos"), api.listar("proveedores")]);
+        const registros = comprasRemotas.map(normalizarCompraHistorica);
         for (const lista of [registros, productos, proveedores]) {
             if (lista.some(r => !r || typeof r.id !== "string" || !r.id) || new Set(lista.map(r => r.id)).size !== lista.length) throw new Error("Hay IDs ausentes o duplicados.");
         }
@@ -115,7 +153,9 @@ async function cargarCompras() {
             renderItemsCompra();
         }
         renderProductosCompra(); renderListaCompras();
-        avisarCompra(comprasEstado.pendiente ? "Hay un envío pendiente. Reintenta la misma compra; no crees otra." : "Datos actualizados desde Google Sheets.");
+        const incompletas = registros.filter(c => c.detalleHistoricoIncompleto).length;
+        avisarCompra(comprasEstado.pendiente ? "Hay un envío pendiente. Reintenta la misma compra; no crees otra." :
+            "Datos actualizados desde Google Sheets." + (incompletas ? ` Atención: ${incompletas} compra(s) antigua(s) con detalle incompleto; revisa Ver detalle. No se modificó inventario.` : ""));
     } catch (error) { avisarCompra("No se pudo actualizar: " + error.message + " Se conserva la última carga válida."); }
     finally { bloquearCompra(false); }
 }
