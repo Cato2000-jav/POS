@@ -138,70 +138,67 @@
 
             </div>
 
+          <!-- Reemplazar el contenedor dentro de .table-wrapper en Historial_de_ventas.html -->
+    <div class="table-wrapper">
+    
+    <!-- Barra de Filtros (RF-41) -->
+            <div class="history-filters-bar">
+              <div class="filter-group">
+                  <label for="filter-cliente">Cliente:</label>
+                  <input type="text" id="filter-cliente" placeholder="Buscar por cliente...">
+              </div>
 
-            <div class="table-wrapper">
-                <label for="fuenteHistorial">Consultar:</label>
-                <select id="fuenteHistorial">
-                    <option value="sheets">Ventas cerradas de Google Sheets</option>
-                    <option value="anterior">Historial anterior de este navegador (solo lectura)</option>
-                </select>
-                <button id="recargarHistorial" type="button">Actualizar historial</button>
-                <p id="estadoHistorial" role="status" aria-live="polite"></p>
-                <p>Para guardar una factura como PDF, pulsa Imprimir y elige Guardar como PDF en el diálogo de impresión.</p>
-                <details>
-                    <summary>Revisar historial anterior antes de migrarlo</summary>
-                    <p>Esta revisión no importa, borra ni modifica inventario. Consulta el archivo del navegador y compara con Google Sheets.</p>
-                    <p>Abre esta página de la misma forma y en el mismo navegador donde usabas el MVP 1: los datos de file:// pueden ser distintos de los de localhost.</p>
-                    <button id="revisarMigracion" type="button">Preparar vista previa</button>
-                    <p>Importar requiere confirmar cada registro y que Code.gs tenga publicada la operación import. Se interpreta fecha/hora antigua como día/mes/año y hora de Bogotá. El archivo original se conserva.</p>
-                    <button id="reintentarImportacion" type="button" hidden>Reintentar importación pendiente</button>
-                    <p id="estadoImportacion" role="status" aria-live="polite"></p>
-                    <p id="estadoMigracion" role="status" aria-live="polite"></p>
-                    <ul id="listaMigracion"></ul>
-                </details>
+              <div class="filter-group">
+                  <label for="filter-metodo">Método de pago:</label>
+                  <select id="filter-metodo">
+                      <option value="">Todos</option>
+                      <option value="Efectivo">Efectivo</option>
+                      <option value="Nequi">Nequi</option>
+                      <option value="Debe">Debe</option>
+                  </select>
+              </div>
 
-                <table class="sales-table">
+              <div class="filter-group">
+                  <label for="filter-estado">Estado:</label>
+                  <select id="filter-estado">
+                      <option value="">Todos</option>
+                      <option value="cerrada">Cerrada</option>
+                      <option value="abierta">Abierta</option>
+                  </select>
+              </div>
 
-                    <thead>
+              <div class="filter-group">
+                  <label for="filter-fecha-inicio">Desde:</label>
+                  <input type="date" id="filter-fecha-inicio">
+              </div>
 
-                        <tr>
+              <div class="filter-group">
+                  <label for="filter-fecha-fin">Hasta:</label>
+                  <input type="date" id="filter-fecha-fin">
+              </div>
 
-                            <th scope="col">
-                                Fecha y hora
-                            </th>
+              <button id="btn-limpiar-filtros" type="button" class="btn-secondary-filter">Limpiar filtros</button>
+          </div>
 
-                            <th scope="col">
-                                Responsable
-                            </th>
-
-                            <th scope="col">
-                                Método de pago
-                            </th>
-
-                            <th scope="col">
-                                Total
-                            </th>
-
-                            <th scope="col">
-                                Artículos
-                            </th>
-
-                            <th scope="col">
-                                Acciones
-                            </th>
-
-                        </tr>
-
-                    </thead>
+    <!-- Tabla con 7 columnas -->
+          <table class="sales-table">
+              <thead>
+                  <tr>
+                      <th scope="col">Fecha y hora</th>
+                      <th scope="col">Cliente</th>
+                      <th scope="col">Estado</th>
+                      <th scope="col">Método de pago</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Artículos</th>
+                      <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="sales-table-body"></tbody>
+        </table>
+    </div>
 
 
-                    <tbody
-                        id="sales-table-body"
-                    ></tbody>
 
-                </table>
-
-            </div>
 
         </section>
 
