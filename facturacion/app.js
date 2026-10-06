@@ -176,34 +176,7 @@ NOTIFICACIONES
 =========================================================
 */
 
-let temporizadorToast;
-
-const mostrarToast = (
-    mensaje,
-    tipo = "success"
-) => {
-
-    clearTimeout(
-        temporizadorToast
-    );
-
-    toast.textContent =
-        mensaje;
-
-    toast.className =
-        `toast visible ${tipo}`;
-
-    temporizadorToast =
-        setTimeout(
-            () => {
-
-                toast.className =
-                    "toast";
-
-            },
-            2200
-        );
-};
+const mostrarToast = (mensaje, tipo = "success") => notificarUI(mensaje, tipo);
 
 
 /*
@@ -1429,7 +1402,7 @@ INICIAR NUEVA FACTURA
 =========================================================
 */
 
-const iniciarFactura = () => {
+const iniciarFactura = async () => {
     if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
 
     if (
@@ -1439,7 +1412,7 @@ const iniciarFactura = () => {
     ) {
 
         const confirmar =
-            window.confirm(
+            await confirmarAccion(
                 "Hay una factura en curso. ¿Deseas iniciar una nueva?"
             );
 
@@ -1499,7 +1472,7 @@ CANCELAR FACTURA
 =========================================================
 */
 
-const cancelarFactura = () => {
+const cancelarFactura = async () => {
     if (ventasAbiertasEstado.ocupado || ventasAbiertasEstado.cierrePendiente || ventasAbiertasEstado.recuperacionBloqueada) return;
 
     if (
@@ -1518,7 +1491,7 @@ const cancelarFactura = () => {
 
 
     const confirmar =
-        window.confirm(
+        await confirmarAccion(
             "¿Descartar los cambios de la factura actual? Si está guardada en Sheets, seguirá abierta allí."
         );
 

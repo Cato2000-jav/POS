@@ -19,7 +19,7 @@ function obtener(selector) {
 let llamadas = [], resolver, confirmar = true;
 const ctx = vm.createContext({
     document: {querySelector: obtener, createElement: () => nodo()},
-    crypto: {randomUUID: () => "p-1"}, window: {confirm: () => confirmar},
+    crypto: {randomUUID: () => "p-1"}, window: {confirm: () => confirmar}, confirmarAccion: async () => confirmar,
     api: {listar: async () => [], guardar: async (recurso, accion, datos) => {
         llamadas.push({recurso, accion, datos}); return datos;
     }}

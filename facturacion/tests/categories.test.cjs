@@ -37,7 +37,7 @@ function preparar() {
             createElement: elemento
         },
         crypto: { randomUUID: () => "id-prueba" },
-        window: { confirm: () => true },
+        window: { confirm: () => true }, confirmarAccion: async () => contexto.window.confirm(),
         api: {
             listar: (...args) => servicio.listar(...args),
             guardar: (...args) => { llamadas.push(args); return servicio.guardar(...args); }

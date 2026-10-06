@@ -15,7 +15,7 @@ let llamadas = [], resolver, aceptar = true;
 const ctx = vm.createContext({estado, document: {querySelector: obtener, createElement: nodo},
     api: {listar: async recurso => recurso === "ventas" ? [venta] : recurso === "productos" ? [producto] : [],
         guardar: async (r, accion, datos) => {llamadas.push({accion, datos}); return {...venta, id: datos.id};}},
-    crypto: {randomUUID: () => "v-1"}, window: {confirm: () => aceptar},
+    crypto: {randomUUID: () => "v-1"}, window: {confirm: () => aceptar}, confirmarAccion: async () => aceptar,
     productosCargando: false, productosEditor: {ocupado: false}, formProducto: nodo(),
     clientesVentaEstado: {cargando: false}, clientesEstado: {ocupado: false},
     proveedoresEstado: {ocupado: false}, categoriasEstado: {cargando: false},

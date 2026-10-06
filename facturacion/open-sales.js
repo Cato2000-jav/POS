@@ -144,7 +144,8 @@ async function guardarVentaAbiertaFormulario() {
 
 async function retomarVentaAbierta(id) {
     if (!comprobarDisponibilidadAbiertas()) return;
-    if (estado.facturaActual.length && !window.confirm("¿Reemplazar los cambios de la venta actual por la venta guardada?")) return;
+    if (estado.facturaActual.length && !await confirmarAccion("¿Reemplazar los cambios de la venta actual por la venta guardada?")) return;
+    if (!comprobarDisponibilidadAbiertas()) return;
     bloquearAbiertas(true);
     mensajeAbiertas.textContent = "Recuperando venta y catálogo actual…";
     try {

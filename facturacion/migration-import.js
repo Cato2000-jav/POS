@@ -91,7 +91,8 @@ async function importarVentaAnterior(datos) {
         if (!datos) return;
         const v = datos.venta;
         const fecha = new Date(v.fecha).toLocaleString("es-CO", {timeZone: "America/Bogota"});
-        if (!window.confirm(`¿Importar la venta antigua ${datos.origenId}?\nFecha/hora Bogotá: ${fecha}\nTrabajador: ${v.persona}\nMétodo: ${v.metodoPago}\nTotal: ${v.total}\nNo modifica inventario. Conserva el archivo original.`)) return;
+        if (!await confirmarAccion(`¿Importar la venta antigua ${datos.origenId}?\nFecha/hora Bogotá: ${fecha}\nTrabajador: ${v.persona}\nMétodo: ${v.metodoPago}\nTotal: ${v.total}\nNo modifica inventario. Conserva el archivo original.`)) return;
+        if (importacionEstado.ocupado || importacionEstado.pendiente) return;
         try {
             if (localStorage.getItem(claveImportacionPendiente)) {recuperarImportacionPendiente(); return;}
             localStorage.setItem(claveImportacionPendiente, JSON.stringify(datos));

@@ -1,0 +1,71 @@
+/* Complementos compartidos; conserva la paleta, las tablas y el catálogo existentes. */
+:root { --ui-morado: #6847c7; --ui-tinta: #2d2838; --ui-borde: #e3dfea; --ui-rojo: #a52243; }
+button, select, input { font: inherit; }
+button { transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+button:focus-visible, summary:focus-visible, select:focus-visible { outline: 3px solid #bba9f5; outline-offset: 3px; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+.categorias-panel, .producto-form, .compras section { box-shadow: 0 5px 22px #2d283808; }
+.categorias-panel h2, .compras h2 { letter-spacing: -.025em; }
+.categorias-form { display: grid; gap: 9px; }
+.categorias-form input, .producto-form input:not([type=checkbox]), .producto-form select,
+.compra-campos input, .compra-campos select { border: 1px solid var(--ui-borde); border-radius: 11px; padding: 11px 12px; background: #fff; color: var(--ui-tinta); }
+.categorias-form input:focus, .producto-form input:focus, .compra-campos input:focus { border-color: #a78fe5; box-shadow: 0 0 0 3px #6847c710; }
+.categorias-acciones button, .producto-form button, .compras button, #recargarHistorial,
+#revisarMigracion, #reintentarImportacion, .importar-historica {
+    min-height: 42px; padding: 10px 16px; border: 1px solid var(--ui-borde); border-radius: 11px;
+    background: #f6f3ff; color: #4d319f; font-weight: 650;
+}
+.categorias-acciones button:hover:not(:disabled), .compras button:hover:not(:disabled),
+#recargarHistorial:hover:not(:disabled), .importar-historica:hover:not(:disabled) { background: #ece5ff; }
+.categorias-form button[type=submit], .producto-form button[type=submit], .compras button[type=submit] {
+    background: var(--ui-morado); color: #fff; border-color: transparent; box-shadow: 0 4px 12px #6847c726;
+}
+.categorias-form button[type=submit]:hover:not(:disabled), .compras button[type=submit]:hover:not(:disabled) { background: #4d319f; }
+.categorias-acciones button[aria-label^="Eliminar"], .btn-eliminar-producto { color: var(--ui-rojo); background: #fff0f3; border-color: #f3d6de; }
+.categorias-panel li:last-child { border-bottom: 0; }
+.header__content > a:not(.brand) { color: #4d319f; background: #f6f3ff; padding: 10px 13px; border-radius: 10px; text-decoration: none; font-weight: 650; }
+.compras { gap: 24px; }
+.compras > #recargarCompras { justify-self: start; }
+.compras caption { padding: 14px 0; text-align: left; color: #746f80; font-size: 13px; }
+.compras th { background: #f8f6fc; color: #625b70; font-size: 12px; }
+.compras output { font-size: 22px; font-weight: 750; color: #4d319f; }
+.compras li { list-style: none; border-bottom: 1px solid var(--ui-borde); }
+.compras ul { padding: 0; }
+.table-wrapper > details { margin: 16px; padding: 16px; background: #fbfaff; border: 1px solid var(--ui-borde); border-radius: 13px; }
+.table-wrapper summary { cursor: pointer; color: #4d319f; font-weight: 700; }
+.table-wrapper details p { margin-block: 12px; line-height: 1.6; }
+.table-wrapper > label, .table-wrapper > button, .table-wrapper > select { margin: 12px 0 8px 16px; }
+.table-wrapper > p { margin: 12px 16px; line-height: 1.6; }
+#fuenteHistorial { max-width: calc(100% - 32px); padding: 11px; border: 1px solid var(--ui-borde); border-radius: 10px; background: white; color: var(--ui-tinta); }
+.ui-estado { padding: 12px 15px; border: 1px solid #e4ddf7; border-left: 4px solid #8b6ed2; border-radius: 10px; background: #f6f3ff; color: #4d319f; line-height: 1.55; overflow-wrap: anywhere; animation: ui-entrar .2s ease-out; }
+.ui-estado:empty { display: none; }
+.ui-estado[data-tipo=success] { color: #176040; background: #edf8f1; border-color: #cce9d9; border-left-color: #29825a; }
+.ui-estado[data-tipo=error] { color: #95233d; background: #fff1f4; border-color: #f2d3db; border-left-color: #b52b4b; }
+.ui-estado[data-tipo=warning] { color: #795114; background: #fff8e9; border-color: #efdfbb; border-left-color: #b38429; }
+.ui-estado[data-tipo=loading]::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 9px; border: 2px solid #d6c9f1; border-top-color: #6847c7; border-radius: 50%; animation: ui-girar .8s linear infinite; }
+.ui-avisos { position: fixed; right: 22px; bottom: 22px; z-index: 10000; width: min(420px, calc(100vw - 32px)); display: grid; gap: 10px; pointer-events: none; }
+.ui-aviso { display: flex; align-items: start; gap: 12px; padding: 16px; background: #fff; color: var(--ui-tinta); border: 1px solid var(--ui-borde); border-radius: 16px; box-shadow: 0 12px 40px #2d283826; pointer-events: auto; animation: ui-entrar .24s ease-out; }
+.ui-aviso > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; line-height: 1.5; }
+.ui-aviso-icono { flex: 0 0 28px; height: 28px; display: grid; place-items: center; background: #edf8f1; color: #18724c; border-radius: 50%; font-weight: 800; }
+.ui-aviso[data-tipo=error] .ui-aviso-icono { background: #fff0f3; color: var(--ui-rojo); }
+.ui-aviso[data-tipo=warning] .ui-aviso-icono { background: #fff3d8; color: #795114; }
+.ui-aviso button { border: 0; padding: 0 5px; background: transparent; color: #746f80; font-size: 24px; }
+.ui-dialogo { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 28px; border: 1px solid var(--ui-borde); border-radius: 22px; background: #fff; color: var(--ui-tinta); box-shadow: 0 24px 80px #23133440; animation: ui-entrar .2s ease-out; }
+.ui-dialogo::backdrop { background: #231b3c80; backdrop-filter: blur(4px); }
+.ui-dialogo-marca { width: 46px; height: 46px; display: grid; place-items: center; margin-bottom: 18px; border-radius: 15px; background: #f0ebff; color: #6847c7; font-size: 27px; }
+.ui-dialogo h2 { margin: 0 0 12px; font-size: 23px; letter-spacing: -.025em; }
+.ui-dialogo p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; color: #625b70; margin: 0; }
+.ui-dialogo-acciones { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+.ui-dialogo button { min-height: 44px; padding: 11px 18px; border: 1px solid var(--ui-borde); border-radius: 11px; font-weight: 700; cursor: pointer; }
+.ui-secundario { background: #f6f3ff; color: #4d319f; }
+.ui-aceptar { background: #6847c7; color: #fff; }
+.ui-dialogo[data-peligro=true] .ui-dialogo-marca { background: #fff0f3; color: #a52243; }
+.ui-dialogo[data-peligro=true] .ui-aceptar { background: #a52243; }
+.ui-saliendo { animation: ui-salir .16s ease-in forwards; pointer-events: none; }
+.ui-dialogo [hidden] { display: none !important; }
+@keyframes ui-entrar { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes ui-salir { to { opacity: 0; transform: translateY(8px); } }
+@keyframes ui-girar { to { transform: rotate(360deg); } }
+@media (max-width: 600px) { .ui-avisos { right: 16px; bottom: 16px; } .ui-dialogo { padding: 22px; } .ui-dialogo-acciones button { flex: 1; } .categorias-acciones { width: 100%; } .categorias-acciones button { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { .ui-aviso, .ui-dialogo, .ui-saliendo, .ui-estado, .ui-estado::before { animation: none !important; } button { transition: none; } }
+@media print { .ui-avisos, .ui-dialogo, .ui-dialogo::backdrop { display: none !important; } }

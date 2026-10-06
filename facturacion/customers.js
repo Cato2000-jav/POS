@@ -119,7 +119,8 @@ async function guardarClienteFormulario(evento) {
 
 async function eliminarCliente(cliente) {
     if (clientesEstado.ocupado || !clientesEstado.cargados) return;
-    if (!window.confirm(`¿Eliminar el cliente «${cliente.nombre}»?`)) return;
+    if (!await confirmarAccion(`¿Eliminar el cliente «${cliente.nombre}»? No se eliminará si tiene ventas asociadas.`, {peligro: true})) return;
+    if (clientesEstado.ocupado) return;
     bloquearClientes(true);
     mensajeClientes.textContent = "Eliminando cliente…";
     try {

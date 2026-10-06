@@ -18,7 +18,7 @@ const estado = {productosDisponibles: [{...producto}], facturaActual: [{id: "pro
 let enviados = [];
 let resolver;
 const contexto = vm.createContext({estado, crypto: {randomUUID: () => "nuevo-id"},
-    window: {confirm: () => true}, document: {querySelector: obtener, createElement: nodo},
+    window: {confirm: () => true}, confirmarAccion: async () => true, document: {querySelector: obtener, createElement: nodo},
     buscador: nodo(), botonIniciarFactura: nodo(), catalogoProductos: nodo(), panelFactura: nodo(),
     renderProductos() {}, renderFactura() {},
     api: {listar: async () => [categoria], guardar: async (recurso, accion, datos) => {

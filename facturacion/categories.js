@@ -147,7 +147,8 @@ async function guardarCategoriaFormulario(evento) {
 
 async function eliminarCategoria(categoria) {
     if (categoriasEstado.cargando || !categoriasEstado.cargadas) return;
-    if (!window.confirm('¿Eliminar la categoría "' + categoria.nombre + '"?')) return;
+    if (!await confirmarAccion('¿Eliminar la categoría "' + categoria.nombre + '"? No se eliminará si tiene productos asociados.', {peligro: true})) return;
+    if (categoriasEstado.cargando) return;
     bloquearCategorias(true);
     mensajeCategorias.classList.remove("categorias-error");
     mensajeCategorias.textContent = "Eliminando categoría…";

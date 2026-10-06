@@ -5,7 +5,7 @@ function preparar(memoria = new Map()) {
     const nodos = new Map(); let llamadas = 0, aceptar = true, respuesta;
     const nodo = id => {if (!nodos.has(id)) nodos.set(id, {textContent: "", disabled: false, hidden: false, addEventListener() {}, replaceChildren() {}}); return nodos.get(id);};
     const ctx = vm.createContext({Date, document: {querySelector: nodo, querySelectorAll: () => []},
-        window: {confirm: () => aceptar}, localStorage: {getItem: k => memoria.get(k) ?? null, setItem: (k,v) => memoria.set(k,v), removeItem: k => memoria.delete(k)},
+        window: {confirm: () => aceptar}, confirmarAccion: async () => aceptar, localStorage: {getItem: k => memoria.get(k) ?? null, setItem: (k,v) => memoria.set(k,v), removeItem: k => memoria.delete(k)},
         api: {guardar: async (recurso, accion, d) => {llamadas++; assert.equal(recurso, "ventas"); assert.equal(accion, "importar");
             if (respuesta) return respuesta(d);
             return {...d.venta, id: "mvp1-" + encodeURIComponent(d.origenId), estado: "cerrada"};}}

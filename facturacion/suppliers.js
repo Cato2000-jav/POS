@@ -118,7 +118,8 @@ async function guardarProveedorFormulario(evento) {
 
 async function eliminarProveedor(proveedor) {
     if (proveedoresEstado.ocupado || !proveedoresEstado.cargados) return;
-    if (!window.confirm(`¿Eliminar el proveedor «${proveedor.nombre}»?`)) return;
+    if (!await confirmarAccion(`¿Eliminar el proveedor «${proveedor.nombre}»? No se eliminará si tiene compras asociadas.`, {peligro: true})) return;
+    if (proveedoresEstado.ocupado) return;
     bloquearProveedores(true);
     mensajeProveedores.textContent = "Eliminando proveedor…";
     try {

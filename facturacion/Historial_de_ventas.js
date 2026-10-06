@@ -533,7 +533,7 @@ const verDetalleVenta = (
     }
 
 
-    window.alert(
+    confirmarAccion(
         `FACTURA #${venta.id}
 
 Fecha: ${venta.fecha}
@@ -547,7 +547,7 @@ ${productosTexto}
 
 Subtotal: ${formatearMoneda(venta.subtotal)}
 IVA 19%: ${formatearMoneda(venta.iva)}
-TOTAL: ${formatearMoneda(venta.total)}`
+TOTAL: ${formatearMoneda(venta.total)}`, {titulo: "Detalle de la factura", aceptar: "Cerrar", soloLectura: true}
     );
 };
 
@@ -903,63 +903,7 @@ NOTIFICACIÓN
 =========================================================
 */
 
-const mostrarNotificacion = (
-    mensaje
-) => {
-
-    const anterior =
-        document.querySelector(
-            ".notification"
-        );
-
-
-    if (anterior) {
-
-        anterior.remove();
-
-    }
-
-
-    const notificacion =
-        document.createElement(
-            "div"
-        );
-
-
-    notificacion.className =
-        "notification";
-
-
-    notificacion.textContent =
-        mensaje;
-
-
-    document.body.appendChild(
-        notificacion
-    );
-
-
-    window.setTimeout(
-        () => {
-
-            notificacion.classList.add(
-                "notification-hide"
-            );
-
-
-            window.setTimeout(
-                () => {
-
-                    notificacion.remove();
-
-                },
-                200
-            );
-
-        },
-        1800
-    );
-};
+const mostrarNotificacion = mensaje => notificarUI(mensaje, "info");
 
 
 /*

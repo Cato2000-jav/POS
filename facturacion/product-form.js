@@ -21,7 +21,7 @@ function bloquearProducto(ocupado) {
 
 async function abrirProducto(id = null) {
     if (productosEditor.ocupado || productosCargando) return;
-    if (!formProducto.hidden && !window.confirm("¿Descartar el formulario actual?")) return;
+    if (!formProducto.hidden && !await confirmarAccion("¿Descartar el formulario actual?")) return;
     const producto = id === null ? null : estado.productosDisponibles.find(p => p.id === id);
     if (id !== null && !producto) return;
     productosEditor.id = id;
@@ -147,7 +147,8 @@ async function eliminarProductoCatalogo(id) {
         mensaje.textContent = "No puedes eliminar el producto: está en la venta actual.";
         return;
     }
-    if (!window.confirm(`¿Eliminar del catálogo el producto «${producto.nombre}»?`)) return;
+    if (!await confirmarAccion(`¿Eliminar del catálogo el producto «${producto.nombre}»? Esta acción no se puede deshacer desde el POS.`, {peligro: true})) return;
+    if (productosEditor.ocupado || productosCargando) return;
     bloquearProducto(true);
     // También impide que una recarga concurrente vuelva a incorporar el producto.
     document.querySelector("#recargarProductos").disabled = true;
