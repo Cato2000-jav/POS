@@ -58,47 +58,74 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
 .notification-hide { opacity: 0; transform: translateY(8px); }
 .main-footer { padding: 24px 16px; border-top: 1px solid var(--border); color: var(--text-secondary); text-align: center; font-size: 12px; }
 
-/* Complementos del historial */
+/* =========================================================
+   BARRA DE FILTROS (RF-41)
+========================================================= */
+.history-filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    padding: 16px 20px;
+    background: #fcfbff;
+    border-bottom: 1px solid var(--border);
+}
 
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 140px;
+}
 
-/* La tabla ahora tiene seis columnas */
+.filter-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
 
+.filter-group input,
+.filter-group select {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.btn-secondary-filter {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    height: 35px;
+    cursor: pointer;
+}
+
+.btn-secondary-filter:hover {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+}
+
+/* =========================================================
+   ESTRUTURA DE 7 COLUMNAS EN LA TABLA DE VENTAS
+========================================================= */
 .sales-table {
-    min-width: 900px;
+    min-width: 950px;
 }
 
-.sales-table th:nth-child(1),
-.sales-table td:nth-child(1) {
-    width: 15%;
-}
-
-.sales-table th:nth-child(2),
-.sales-table td:nth-child(2) {
-    width: 18%;
-}
-
-.sales-table th:nth-child(3),
-.sales-table td:nth-child(3) {
-    width: 17%;
-}
-
-.sales-table th:nth-child(4),
-.sales-table td:nth-child(4) {
-    width: 16%;
-}
-
-.sales-table th:nth-child(5),
-.sales-table td:nth-child(5) {
-    width: 13%;
-}
-
-.sales-table th:nth-child(6),
-.sales-table td:nth-child(6) {
-    width: 21%;
-}
-
-
-/* Fecha */
+.sales-table th:nth-child(1), .sales-table td:nth-child(1) { width: 14%; } /* Fecha y hora */
+.sales-table th:nth-child(2), .sales-table td:nth-child(2) { width: 16%; } /* Cliente */
+.sales-table th:nth-child(3), .sales-table td:nth-child(3) { width: 10%; } /* Estado */
+.sales-table th:nth-child(4), .sales-table td:nth-child(4) { width: 13%; } /* Método de pago */
+.sales-table th:nth-child(5), .sales-table td:nth-child(5) { width: 12%; } /* Total */
+.sales-table th:nth-child(6), .sales-table td:nth-child(6) { width: 10%; } /* Artículos */
+.sales-table th:nth-child(7), .sales-table td:nth-child(7) { width: 25%; } /* Acciones */
 
 .date-cell {
     display: block;
@@ -106,9 +133,29 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
     color: var(--text-secondary);
 }
 
+/* Insignias de Estado */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: capitalize;
+}
 
-/* Acciones */
+.status-cerrada {
+    background: #e6f4ea;
+    color: #137333;
+}
 
+.status-abierta {
+    background: #fef7e0;
+    color: #b06000;
+}
+
+/* =========================================================
+   ACCIONES EN FILAS
+========================================================= */
 .acciones-cell {
     white-space: nowrap;
 }
@@ -116,82 +163,40 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
 .btn-ver-detalle,
 .btn-imprimir-historial,
 .btn-eliminar-venta {
-
-    margin:
-        3px
-        4px
-        3px
-        0;
-
-    padding:
-        8px
-        10px;
-
-    border:
-        1px solid transparent;
-
-    border-radius:
-        9px;
-
-    cursor:
-        pointer;
-
-    font:
-        inherit;
-
-    font-size:
-        11px;
-
-    font-weight:
-        700;
-
-    transition:
-        transform var(--transition),
-        background var(--transition);
+    margin: 3px 4px 3px 0;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    transition: transform var(--transition), background var(--transition);
 }
 
 .btn-ver-detalle {
-
-    background:
-        var(--purple-light);
-
-    color:
-        var(--purple-dark);
+    background: var(--purple-light);
+    color: var(--purple-dark);
 }
 
 .btn-imprimir-historial {
-
-    background:
-        var(--pink-light);
-
-    color:
-        #9b486b;
+    background: var(--pink-light);
+    color: #9b486b;
 }
 
 .btn-eliminar-venta {
-
-    background:
-        #fff0f2;
-
-    color:
-        #b12d4d;
+    background: #fff0f2;
+    color: #b12d4d;
 }
 
 .btn-ver-detalle:hover,
 .btn-imprimir-historial:hover,
 .btn-eliminar-venta:hover {
-
-    transform:
-        translateY(-1px);
+    transform: translateY(-1px);
 }
 
-.btn-imprimir-historial:hover {
-    background: #ffe1ec;
-}
-
-.btn-eliminar-venta:hover {
-    background: #ffdfe5;
-}
+.btn-imprimir-historial:hover { background: #ffe1ec; }
+.btn-eliminar-venta:hover { background: #ffdfe5; }
 
 .btn-ver-detalle:focus-visible,
 .btn-imprimir-historial:focus-visible,
@@ -200,35 +205,32 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
     outline-offset: 2px;
 }
 
+.btn-eliminar-venta[hidden], #clear-history-button[hidden] {
+    display: none !important;
+}
 
-/* Móvil */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 768px) {
+    .history-filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-group {
+        width: 100%;
+    }
+}
 
 @media (max-width: 480px) {
-
     .acciones-cell {
         white-space: normal;
     }
-
     .btn-ver-detalle,
     .btn-imprimir-historial,
     .btn-eliminar-venta {
-
-        display:
-            block;
-
-        width:
-            100%;
-
-        margin:
-            4px
-            0;
+        display: block;
+        width: 100%;
+        margin: 4px 0;
     }
-
 }
-/* Controles de fuente del historial; no alteran la tabla existente. */
-#fuenteHistorial, #recargarHistorial {
-    max-width: 100%; box-sizing: border-box; padding: 10px; margin: 8px 0;
-}
-#estadoHistorial { overflow-wrap: anywhere; margin: 12px 0; }
-.btn-eliminar-venta[hidden], #clear-history-button[hidden] { display: none !important; }
-#listaMigracion li { overflow-wrap: anywhere; margin-block: 12px; }
