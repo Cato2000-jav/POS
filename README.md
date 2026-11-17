@@ -26,8 +26,8 @@ registros existentes. Detén el servidor con Control+C.
 
 | Usuario | Contraseña | Rol |
 |---|---|---|
-| admin | LunaDemo-Admin-2026! | Administrador |
-| cajero | LunaDemo-Cajero-2026! | Cajero |
+| admin | Colombia2026| Administrador |
+| cajero | Colombia2027 | Cajero |
 
 Estas credenciales son para pruebas académicas locales. Para un despliegue,
 crea los usuarios con contraseñas propias mediante las variables indicadas en
