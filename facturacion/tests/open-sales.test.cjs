@@ -39,7 +39,7 @@ const remoto = () => vm.runInContext("ventasAbiertasEstado", ctx);
         assert.throws(() => ctx.validarAbierta({...venta, itemsJson: [{...venta.itemsJson[0], ...cambio}]}));
     }
     assert.equal(ctx.validarAbierta({...venta, metodoPago: "Debe", clienteId: "c-1"}).clienteId, "c-1");
-    const decimal = 0.1 * 3, impuesto = decimal * 0.19;
+    const decimal = 0.1 * 3, impuesto = Math.round(decimal * 0.19);
     ctx.validarAbierta({...venta, subtotal: decimal, iva: impuesto, total: decimal + impuesto,
         itemsJson: [{id:"p-1",nombre:"Cuaderno",cantidad:3,precio:0.1,subtotal:decimal}]});
     await ctx.guardarVentaAbiertaFormulario();

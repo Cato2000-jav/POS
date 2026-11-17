@@ -1,101 +1,75 @@
-/* Transporte compartido. No cambia el carrito, el inventario ni localStorage.
-   El contrato del servicio se describe en API_GOOGLE_SHEETS.md. */
+/* Único transporte REST del POS. Cookies de sesión y CSRF del mismo origen. */
 const api = {
-    url: "",
-
+    url: '/api/', usuario: null, token: '',
     configurar(url) {
-        const destino = new URL(url);
-        if (destino.protocol !== "https:" || destino.hostname !== "script.google.com" ||
-            !/^\/macros\/s\/[^/]+\/exec$/.test(destino.pathname) ||
-            destino.search || destino.hash || destino.username || destino.password) {
-            throw new Error("Usa la URL HTTPS de la implementación de Google Apps Script terminada en /exec.");
-        }
-        this.url = destino.href;
+        const destino = new URL(url, location.origin);
+        if (destino.origin !== location.origin || destino.pathname !== '/api/') throw new Error('Usa /api/ del mismo servidor.');
+        this.url = destino.pathname;
     },
-
-    async solicitar(recurso, accion, datos = null) {
-        const recursos = ["productos", "ventas", "compras", "categorias", "proveedores", "clientes"];
-        const acciones = ["listar", "crear", "actualizar", "eliminar", "cerrar", "importar"];
-        if (!this.url) {
-            throw new Error("Falta configurar la URL del servicio de Google Sheets.");
-        }
-        if (!recursos.includes(recurso) || !acciones.includes(accion)) {
-            throw new Error("Recurso u operación no reconocidos.");
-        }
-
-        const esLectura = accion === "listar";
-        if (accion === "cerrar" && recurso !== "ventas") {
-            throw new Error("Solo se pueden cerrar ventas.");
-        }
-        if (accion === "importar" && recurso !== "ventas") throw new Error("Solo se importan ventas históricas.");
-        if (!esLectura && (!datos || typeof datos !== "object" || Array.isArray(datos))) {
-            throw new Error("La escritura necesita un objeto con los datos del registro.");
-        }
-
-        const destino = new URL(this.url);
-        destino.searchParams.set("resource", recurso);
-        const opciones = { method: esLectura ? "GET" : "POST", redirect: "follow" };
-        if (!esLectura) {
-            const accionesServicio = { crear: "create", actualizar: "update", eliminar: "delete", cerrar: "close", importar: "import" };
-            // El cuerpo sigue siendo JSON; Apps Script lo lee con e.postData.contents.
-            opciones.headers = { "Content-Type": "text/plain;charset=UTF-8" };
-            opciones.body = JSON.stringify({ action: accionesServicio[accion], data: datos });
-        }
-
-        // Limita también la espera del cuerpo JSON. Un POST cancelado puede haber sido aplicado.
+    async peticion(ruta, metodo='GET', datos=null, clave=null) {
         const controlador = new AbortController();
-        opciones.signal = controlador.signal;
         const temporizador = setTimeout(() => controlador.abort(), 30000);
         try {
-            let respuesta;
-            try {
-                respuesta = await fetch(destino.href, opciones);
-            } catch (error) {
-                throw new Error(esLectura
-                    ? "No se pudo conectar con Google Sheets. Revisa la conexión y el acceso al servicio."
-                    : "No se pudo confirmar el guardado. Consulta el estado antes de reintentar para evitar duplicados.",
-                { cause: error });
+            const headers = {'Accept':'application/json'};
+            if (metodo !== 'GET') {
+                headers['Content-Type'] = 'application/json';
+                headers['X-CSRFToken'] = this.token;
             }
-
-            if (!respuesta.ok) {
-                throw new Error(`El servicio respondió con HTTP ${respuesta.status}. No se confirmó la operación.`);
-            }
-
+            if (clave) headers['Idempotency-Key'] = clave;
+            const respuesta = await fetch(this.url + ruta, {method:metodo, credentials:'same-origin', headers,
+                body: datos === null ? undefined : JSON.stringify(datos), signal:controlador.signal});
             let resultado;
-            try {
-                resultado = await respuesta.json();
-            } catch (error) {
-                throw new Error("El servicio no devolvió JSON válido. No se confirmó la operación.", { cause: error });
-            }
-
-            if (!resultado || typeof resultado.success !== "boolean") {
-                throw new Error("Respuesta del servicio no reconocida. No se confirmó la operación.");
-            }
-            if (!resultado.success) {
-                const error = new Error(typeof resultado.message === "string"
-                    ? resultado.message : "El servicio rechazó la operación.");
-                error.codigo = resultado.codigo;
+            try { resultado = await respuesta.json(); }
+            catch { throw new Error(`Respuesta no válida (HTTP ${respuesta.status}). Actualiza la sesión.`); }
+            if (!respuesta.ok) {
+                const mensaje = resultado.detail || Object.entries(resultado).map(([k,v]) => `${k}: ${v}`).join('; ');
+                const error = new Error(mensaje || `Error HTTP ${respuesta.status}`);
+                error.status = respuesta.status;
+                if ([400,403,404,409].includes(respuesta.status)) error.codigo = "RECHAZADO";
                 throw error;
             }
-            if (!Object.hasOwn(resultado, "data") || (esLectura && !Array.isArray(resultado.data))) {
-                throw new Error("La respuesta del servicio no contiene los datos esperados.");
-            }
-            return resultado.data;
-        } finally {
-            clearTimeout(temporizador);
-        }
+            return resultado;
+        } catch (error) {
+            if (error.name === 'AbortError' || error instanceof TypeError) throw new Error('No se confirmó la operación. Reintenta con el mismo identificador y datos.');
+            throw error;
+        } finally { clearTimeout(temporizador); }
     },
-
-    listar(recurso) {
-        return this.solicitar(recurso, "listar");
+    async sesion() {
+        this.token = (await this.peticion('auth/csrf/')).csrfToken;
+        this.usuario = (await this.peticion('auth/sesion/')).usuario;
+        return this.usuario;
     },
-
-    guardar(recurso, accion, datos) {
-        if (accion === "listar") {
-            return Promise.reject(new Error("Para consultar datos utiliza api.listar()."));
+    async solicitar(recurso, accion, datos=null) {
+        await this.lista;
+        const recursos=['productos','categorias','clientes','proveedores','ventas','compras','descuentos','faltantes','reembolsos'];
+        if (!recursos.includes(recurso)) throw new Error('Recurso no reconocido.');
+        if (accion==='listar') return this.peticion(`${recurso}/`);
+        if (accion==='importar') throw new Error('La migración se realiza con el comando del backend, sin repetir movimientos de inventario.');
+        const metodos={crear:'POST',actualizar:'PATCH',eliminar:'DELETE',cerrar:'POST',corregir:'POST'};
+        if (!metodos[accion] || !datos || typeof datos!=='object') throw new Error('Operación no válida.');
+        let ruta=`${recurso}/`;
+        if (accion!=='crear') ruta+=`${encodeURIComponent(datos.id)}/`;
+        if (accion==='cerrar' || accion==='corregir') ruta+=`${accion}/`;
+        let cuerpo={...datos};
+        // La edición dentro de la venta usa la ruta restringida para ambos roles.
+        if (recurso==='productos' && accion==='actualizar' && typeof productosEditor!=='undefined' && !Object.hasOwn(datos,'stock')) {
+            ruta+='desde-venta/';
+            cuerpo=Object.fromEntries(['nombre','categoriaId','precio','costo'].map(k=>[k,datos[k]]));
         }
-        return this.solicitar(recurso, accion, datos);
-    }
+        let clave=null;
+        if (['ventas','compras','reembolsos'].includes(recurso)) {
+            // Huella estable: un reintento del mismo borrador conserva la clave.
+            const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(cuerpo)));
+            clave=Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');
+        }
+        return this.peticion(ruta,metodos[accion],accion==='eliminar'?null:cuerpo,clave);
+    },
+    listar(recurso) { return this.solicitar(recurso,'listar'); },
+    guardar(recurso,accion,datos) { return this.solicitar(recurso,accion,datos); }
 };
-
-api.configurar("https://script.google.com/macros/s/AKfycbyMd6jokif6uShRw33KHkabccTaWgCAnf6nbtsZUmx9CFUEbx1NxpPDgY5zab2gciin/exec");
+api.lista = api.sesion().catch(error => {
+    if (error.status===403) location.replace('login.html');
+    throw error;
+});
+// Evita rechazos sin manejar si una página solo contiene enlaces.
+api.lista.catch(()=>{});

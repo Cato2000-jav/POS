@@ -1,0 +1,34 @@
+# Ejecutar desde la raíz: el backend también sirve la carpeta facturacion.
+databases:
+  - name: papel-luna-db
+    plan: free
+    databaseName: papel_luna
+    user: papel_luna
+
+services:
+  - type: web
+    name: papel-luna-pos
+    runtime: python
+    plan: free
+    buildCommand: bash backend/build.sh
+    startCommand: cd backend && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /authors
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: papel-luna-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: HTTPS_ONLY
+        value: "true"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: POS_ADMIN_PASSWORD
+        sync: false
+      - key: POS_CAJERO_PASSWORD
+        sync: false

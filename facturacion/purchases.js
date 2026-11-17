@@ -11,10 +11,10 @@ function problemaCompraPendiente() {
     const registrada = comprasEstado.registros.find(compra => compra.id === pendiente.id);
     if (!registrada) return "";
     if (!mismaCompra(registrada, pendiente)) {
-        return `La compra ${pendiente.id} ya existe en Sheets con datos diferentes. Se conserva el borrador; revisa el registro antes de continuar. No se reenviará.`;
+        return `La compra ${pendiente.id} ya existe en el servidor con datos diferentes. Se conserva el borrador; revisa el registro antes de continuar. No se reenviará.`;
     }
     if (registrada.detalleHistoricoIncompleto) {
-        return `La compra ${pendiente.id} ya existe en Sheets, pero su detalle histórico está incompleto. Se conserva el borrador para revisión; no se reenviará ni se ajustará inventario. Consulta Ver detalle.`;
+        return `La compra ${pendiente.id} ya existe en el servidor, pero su detalle histórico está incompleto. Se conserva el borrador para revisión; no se reenviará ni se ajustará inventario. Consulta Ver detalle.`;
     }
     return "";
 }
@@ -182,7 +182,7 @@ async function cargarCompras() {
         renderProductosCompra(); renderListaCompras();
         const incompletas = registros.filter(c => c.detalleHistoricoIncompleto).length;
         avisarCompra(comprasEstado.pendiente ? problemaCompraPendiente() || "Hay un envío pendiente. Reintenta la misma compra; no crees otra." :
-            "Datos actualizados desde Google Sheets." + (incompletas ? ` Atención: ${incompletas} compra(s) antigua(s) con detalle incompleto; revisa Ver detalle. No se modificó inventario.` : ""));
+            "Datos actualizados desde el servidor." + (incompletas ? ` Atención: ${incompletas} compra(s) antigua(s) con detalle incompleto; revisa Ver detalle. No se modificó inventario.` : ""));
     } catch (error) { avisarCompra("No se pudo actualizar: " + error.message + " Se conserva la última carga válida."); }
     finally { bloquearCompra(false); }
 }
@@ -205,7 +205,7 @@ async function guardarCompraFormulario(evento) {
             localStorage.setItem(claveCompraPendiente, JSON.stringify(intento));
             comprasEstado.pendiente = intento;
         }
-        avisarCompra("Guardando compra en Google Sheets…");
+        avisarCompra("Guardando compra en el servidor…");
         enviado = true;
         const compra = validarCompraRecibida(await api.guardar("compras", "crear", comprasEstado.pendiente));
         if (!mismaCompra(compra, comprasEstado.pendiente)) throw new Error("La confirmación no corresponde al envío pendiente.");
@@ -214,7 +214,7 @@ async function guardarCompraFormulario(evento) {
         comprasEstado.pendiente = null; comprasEstado.items = [];
         comprasEstado.registros = comprasEstado.registros.filter(c => c.id !== compra.id).concat(compra);
         renderItemsCompra(); renderListaCompras();
-        avisarCompra("Compra confirmada. Stock y costos actualizados en Sheets. Actualiza los datos antes de preparar otra compra.");
+        avisarCompra("Compra confirmada. Stock y costos actualizados en el servidor. Actualiza los datos antes de preparar otra compra.");
         comprasEstado.cargado = false;
     } catch (error) {
         if (enviado && error.codigo === "RECHAZADO") {

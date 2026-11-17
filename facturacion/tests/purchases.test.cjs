@@ -112,7 +112,7 @@ function preparar(t) {
     const listarPendiente = t.ctx.api.listar;
     t.ctx.api.listar = async recurso => recurso === "compras" ? [antigua] : listarPendiente(recurso);
     await t.ctx.cargarCompras();
-    assert.match(t.e("estadoCompras").textContent, /ya existe en Sheets.*histórico está incompleto/);
+    assert.match(t.e("estadoCompras").textContent, /ya existe en el servidor.*histórico está incompleto/);
     assert.equal(t.e("reintentarCompra").disabled, true);
     await t.ctx.guardarCompraFormulario();
     assert.equal(t.enviados(), 0);

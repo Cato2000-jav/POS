@@ -11,6 +11,7 @@ function bloquearProducto(ocupado) {
         control.disabled = ocupado;
     });
     // No enviar existencias antiguas ni cambiar el seguimiento al editar.
+    campoProducto("Codigo").disabled = ocupado || productosEditor.id !== null;
     campoProducto("Stock").disabled = ocupado || productosEditor.id !== null;
     campoProducto("Seguimiento").disabled = ocupado || productosEditor.id !== null;
     catalogoProductos.inert = ocupado;
@@ -114,7 +115,7 @@ async function guardarProductoFormulario(evento) {
         if (estado.facturaActual.length) renderFactura();
         formProducto.hidden = true;
         productosEditor.nuevoId = null;
-        document.querySelector("#estadoProductos").textContent = "Producto guardado en Google Sheets.";
+        document.querySelector("#estadoProductos").textContent = "Producto guardado en el servidor.";
     } catch (error) {
         if (provisional) {
             estado.productosDisponibles = estado.productosDisponibles.map(p => p.id === anterior.id ? anterior : p);
@@ -169,7 +170,7 @@ async function eliminarProductoCatalogo(id) {
         }
         estado.productosDisponibles = estado.productosDisponibles.filter(p => p.id !== id);
         renderProductos();
-        mensaje.textContent = "Producto eliminado de Google Sheets.";
+        mensaje.textContent = "Producto eliminado de el servidor.";
     } catch (error) {
         mensaje.textContent = "No se confirmó la eliminación: " + error.message + " Actualiza el catálogo antes de volver a intentar.";
     } finally {

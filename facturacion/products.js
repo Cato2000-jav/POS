@@ -1,4 +1,4 @@
-// Copia temporal en memoria; la fuente del catálogo es Google Sheets.
+// Copia temporal en memoria; la fuente del catálogo es el servidor.
 let productosCargando = false;
 
 function normalizarProductos(productosRemotos, categoriasRemotas) {
@@ -72,7 +72,7 @@ async function cargarProductos() {
         estado.productosDisponibles = productosValidados;
         renderProductos();
         mensaje.textContent = productosValidados.length
-            ? `${productosValidados.length} productos cargados desde Google Sheets.`
+            ? `${productosValidados.length} productos cargados desde el servidor.`
             : "La hoja productos está vacía. No se utilizan productos de ejemplo.";
     } catch (error) {
         mensaje.textContent = `No se pudo actualizar el catálogo: ${error.message}. ` +

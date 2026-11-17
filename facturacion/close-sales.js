@@ -35,7 +35,7 @@ function recuperarCierrePendiente() {
 
 // El efectivo puede cambiar después de guardar el borrador; el resto debe coincidir.
 function firmaVentaActual() {
-    return JSON.stringify({persona: trabajador.value.trim(), clienteId: clienteVenta.value,
+    return JSON.stringify({descuentoId: document.querySelector("#descuentoVenta")?.value || "", persona: trabajador.value.trim(), clienteId: clienteVenta.value,
         metodoPago: metodoPago.value, items: estado.facturaActual.map(item => {
             const producto = estado.productosDisponibles.find(p => p.id === item.id);
             return {id: item.id, cantidad: item.cantidad, nombre: producto?.nombre,
@@ -72,7 +72,7 @@ async function cerrarVentaRemota() {
         }
     }
     bloquearAbiertas(true);
-    mensajeAbiertas.textContent = "Confirmando cierre e inventario en Google Sheets…";
+    mensajeAbiertas.textContent = "Confirmando cierre e inventario en el servidor…";
     let confirmado = false;
     try {
         const resultado = await api.guardar("ventas", "cerrar", {...ventasAbiertasEstado.cierrePendiente});
@@ -85,13 +85,13 @@ async function cerrarVentaRemota() {
         limpiarReferenciaAbierta();
         renderVentasAbiertas();
         mostrarFacturaConfirmada(comprobante);
-        mensajeAbiertas.textContent = "Venta cerrada en Sheets. Actualizando existencias del catálogo…";
+        mensajeAbiertas.textContent = "Venta cerrada en el servidor. Actualizando existencias del catálogo…";
         // No se resta stock en el navegador: se consulta el valor confirmado del servicio.
         try {
             const [productos, categorias] = await Promise.all([api.listar("productos"), api.listar("categorias")]);
             estado.productosDisponibles = normalizarProductos(productos, categorias);
             renderProductos();
-            mensajeAbiertas.textContent = "Venta cerrada e inventario actualizado desde Sheets. El comprobante está disponible para imprimir.";
+            mensajeAbiertas.textContent = "Venta cerrada e inventario actualizado desde el servidor. El comprobante está disponible para imprimir.";
         } catch (error) {
             mensajeAbiertas.textContent = "La venta SÍ quedó cerrada. No se pudo actualizar el catálogo: " + error.message + ". Pulsa Actualizar catálogo; no repitas la venta.";
         }
@@ -103,6 +103,7 @@ async function cerrarVentaRemota() {
                 return;
             }
             ventasAbiertasEstado.cierrePendiente = null;
+            ventasAbiertasEstado.firmaGuardada = null;
             mensajeAbiertas.textContent = "El servicio rechazó este intento: " + error.message +
                 ". Si recargaste la página, consulta y retoma la venta abierta antes de corregirla.";
         } else {

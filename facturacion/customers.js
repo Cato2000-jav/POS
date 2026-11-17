@@ -110,7 +110,7 @@ async function guardarClienteFormulario(evento) {
         buscarClientes.value = "";
         limpiarCliente();
         renderClientes();
-        mensajeClientes.textContent = "Cliente guardado en Google Sheets.";
+        mensajeClientes.textContent = "Cliente guardado en el servidor.";
         if (typeof invalidarClientesVenta === "function") invalidarClientesVenta();
     } catch (error) {
         mensajeClientes.textContent = "No se confirmó el guardado: " + error.message;

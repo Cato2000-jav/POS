@@ -48,7 +48,7 @@ function bloquearAbiertas(ocupado) {
     reintentar.hidden = !ventasAbiertasEstado.cierrePendiente;
     reintentar.disabled = ocupado;
     botonGenerarFactura.disabled = bloqueado || Boolean(ventasAbiertasEstado.nuevoId);
-    botonGenerarFactura.textContent = ventasAbiertasEstado.id ? "Cerrar venta en Sheets" : "Generar factura";
+    botonGenerarFactura.textContent = ventasAbiertasEstado.id ? "Cerrar venta en el servidor" : "Generar factura";
 }
 
 function validarAbierta(venta) {
@@ -76,9 +76,9 @@ function validarAbierta(venta) {
         ids.add(item.id);
     });
     // Mismo cálculo que guardarVentaAbierta en Apps Script; no modifica la respuesta.
-    const iva = subtotal * 0.19;
+    const iva = Math.round(subtotal * 0.19);
     if (!Number.isFinite(subtotal + iva) || venta.subtotal !== subtotal ||
-        venta.iva !== iva || venta.total !== subtotal + iva) {
+        venta.iva !== iva || venta.total !== Math.max(0, subtotal + iva - (venta.descuentoMonto || 0))) {
         throw new Error("Los totales de la venta abierta no coinciden con su detalle.");
     }
     return venta;
@@ -140,6 +140,7 @@ async function guardarVentaAbiertaFormulario() {
         if (!ventasAbiertasEstado.id && !ventasAbiertasEstado.nuevoId) ventasAbiertasEstado.nuevoId = crypto.randomUUID();
         const datos = {
             id: ventasAbiertasEstado.id || ventasAbiertasEstado.nuevoId, estado: "abierta",
+            descuentoId: document.querySelector("#descuentoVenta")?.value || "",
             persona: trabajador.value.trim(), clienteId: cliente.clienteId, metodoPago: metodo,
             itemsJson: estado.facturaActual.map(item => ({id: item.id, cantidad: item.cantidad}))
         };
@@ -147,7 +148,7 @@ async function guardarVentaAbiertaFormulario() {
         mensajeAbiertas.textContent = "Guardando venta abierta…";
         const venta = validarAbierta(await api.guardar("ventas", ventasAbiertasEstado.id ? "actualizar" : "crear", datos));
         if (venta.id !== datos.id) throw new Error("El servicio devolvió otra venta.");
-        if (venta.clienteId !== datos.clienteId || venta.persona !== datos.persona ||
+        if (venta.clienteId !== datos.clienteId ||
             venta.metodoPago !== datos.metodoPago || venta.itemsJson.length !== datos.itemsJson.length ||
             datos.itemsJson.some(item => !venta.itemsJson.some(i => i.id === item.id && i.cantidad === item.cantidad))) {
             throw new Error("La respuesta no confirma el detalle enviado.");
@@ -166,7 +167,7 @@ async function guardarVentaAbiertaFormulario() {
         renderProductos();
         renderFactura();
         ventasAbiertasEstado.firmaGuardada = firmaVentaActual();
-        mensajeAbiertas.textContent = "Venta guardada abierta en Sheets. No se descontó inventario. Puedes cerrarla con Generar factura.";
+        mensajeAbiertas.textContent = "Venta guardada abierta en el servidor. No se descontó inventario. Puedes cerrarla con Generar factura.";
         return venta;
     } catch (error) {
         mensajeAbiertas.textContent = "No se confirmó el guardado: " + error.message + " Si el resultado es incierto, consulta la lista y retoma la venta antes de reintentar.";
@@ -205,7 +206,8 @@ async function retomarVentaAbierta(id) {
         estado.facturaActual = venta.itemsJson.map(item => ({id: item.id, cantidad: item.cantidad}));
         estado.facturaIniciada = true;
         estado.ultimaVenta = null;
-        trabajador.value = venta.persona;
+        trabajador.value = api.usuario?.username || venta.persona;
+        if (document.querySelector("#descuentoVenta")) document.querySelector("#descuentoVenta").value = venta.descuentoId || "";
         metodoPago.value = metodos[venta.metodoPago];
         dineroRecibido.value = "";
         ventasAbiertasEstado.id = venta.id;

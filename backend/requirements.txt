@@ -1,0 +1,15 @@
+# Dependencias iniciales del backend de Papel y Luna.
+# Instalar dentro de un entorno virtual: python -m pip install -r backend/requirements.txt
+
+# Django: servidor, modelos, migraciones y autenticación de usuarios.
+# Mantener la serie 5.2 LTS, permitiendo sus actualizaciones correctivas.
+Django>=5.2.8,<5.3
+
+# Django REST Framework: validación de datos, respuestas JSON y permisos de la API.
+djangorestframework>=3.16.1,<3.17
+
+# Servidor WSGI y controlador para PostgreSQL en despliegue.
+gunicorn>=23,<24
+psycopg[binary]>=3.2,<4
+dj-database-url>=3,<4
+whitenoise>=6.8,<7

@@ -110,7 +110,7 @@ async function guardarProveedorFormulario(evento) {
         buscarProveedores.value = "";
         limpiarProveedor();
         renderProveedores();
-        mensajeProveedores.textContent = "Proveedor guardado en Google Sheets.";
+        mensajeProveedores.textContent = "Proveedor guardado en el servidor.";
     } catch (error) {
         mensajeProveedores.textContent = "No se confirmó el guardado: " + error.message;
     } finally { bloquearProveedores(false); }

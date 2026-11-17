@@ -151,7 +151,7 @@ REGISTRAR VENTA
 
 // Se conserva el nombre por compatibilidad, pero ya no registra ventas locales.
 const registrarVenta = () => {
-    mostrarNotificacion("Las ventas se registran desde facturación mediante Google Sheets.");
+    mostrarNotificacion("Las ventas se registran desde facturación mediante el servidor.");
     return null;
 };
 
@@ -188,7 +188,7 @@ const renderHistorial = () => {
         const celda = document.createElement("td");
         celda.colSpan = 6;
         celda.className = "empty-state";
-        celda.textContent = historialConsulta.cargando ? "Cargando ventas desde Google Sheets…"
+        celda.textContent = historialConsulta.cargando ? "Cargando ventas desde el servidor…"
             : "No se pudo leer el historial. Los datos guardados no se han modificado.";
         fila.appendChild(celda);
         tableBody.appendChild(fila);
@@ -280,6 +280,7 @@ const crearFilaVenta = (
 
         <td class="person-cell">
             ${escaparHTML(venta.persona)}
+${window.marcaVentaHTML ? window.marcaVentaHTML(venta) : ""}
             <small class="date-cell">Cliente: ${escaparHTML(venta.clienteNombre || venta.clienteId || "Sin cliente registrado")}</small>
             <small class="date-cell">${venta.estado === "abierta" ? "Abierta · sin factura definitiva" : "Cerrada"}</small>
         </td>
@@ -808,6 +809,7 @@ const imprimirVentaHistorica = (
             <p>
                 Trabajador:
                 ${escaparHTML(venta.persona)}
+${window.marcaVentaHTML ? window.marcaVentaHTML(venta) : ""}
             </p>
             <p>Cliente: ${escaparHTML(venta.clienteNombre || "Sin cliente")}</p>
 

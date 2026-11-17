@@ -725,15 +725,11 @@ const calcularTotales = () => {
 
 
     const iva =
-        subtotalGeneral
-        *
-        0.19;
+        Math.round(subtotalGeneral * 0.19);
 
 
     const total =
-        subtotalGeneral
-        +
-        iva;
+        Math.max(0, subtotalGeneral + iva - (window.descuentoActualMonto ? window.descuentoActualMonto(subtotalGeneral + iva) : 0));
 
 
     return {
@@ -742,18 +738,14 @@ const calcularTotales = () => {
         total
     };
 };
-<<<<<<< HEAD
 
 
-=======
->>>>>>> origin/sex
 /*
 =========================================================
 RENDERIZAR TOTALES
 =========================================================
 */
 const renderTotales = () => {
-<<<<<<< HEAD
 
     const {
         subtotalGeneral,
@@ -765,12 +757,6 @@ const renderTotales = () => {
 
     totalesFactura.innerHTML = `
 
-=======
-    const {
-        subtotalGeneral, iva, total
-    } = calcularTotales();
-    totalesFactura.innerHTML = `
->>>>>>> origin/sex
         <div class="total-linea">
             <span>
                 Subtotal
@@ -808,7 +794,6 @@ const renderTotales = () => {
                         )
                 }
             </strong>
-<<<<<<< HEAD
 
         </div>
     `;
@@ -818,11 +803,6 @@ const renderTotales = () => {
 };
 
 
-=======
-        </div> `;
-
-};
->>>>>>> origin/sex
 /*
 =========================================================
 RENDERIZAR FACTURA
@@ -834,20 +814,15 @@ const renderFactura = () => {
         "";
 
     contadorFactura.textContent =
-<<<<<<< HEAD
         estado
             .facturaActual
             .length;
 
 
-=======
-        estado.facturaActual.length;
->>>>>>> origin/sex
     /*
     FACTURA VACÍA
     */
     if (
-<<<<<<< HEAD
         estado
             .facturaActual
             .length
@@ -855,10 +830,6 @@ const renderFactura = () => {
         0
     ) {
 
-=======
-        estado.facturaActual.length === 0
-    ) {
->>>>>>> origin/sex
         const emptyState =
             document.createElement(
                 "div"
@@ -866,7 +837,6 @@ const renderFactura = () => {
 
         emptyState.className =
             "empty-state";
-<<<<<<< HEAD
 
         emptyState.innerHTML = `
 
@@ -876,26 +846,15 @@ const renderFactura = () => {
                     🧾
                 </div>
 
-=======
-        emptyState.innerHTML = `
-            <div>
-                <div class="empty-icon">
-                    🧾
-                </div>
->>>>>>> origin/sex
                 <h3>
                     No hay productos
                     en la factura
                 </h3>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/sex
                 <p>
                     Selecciona un producto
                     del catálogo para comenzar.
                 </p>
-<<<<<<< HEAD
 
             </div>
         `;
@@ -903,23 +862,14 @@ const renderFactura = () => {
 
         facturaItems
             .appendChild(
-=======
-            </div>`;
-        facturaItems.appendChild(
->>>>>>> origin/sex
                 emptyState
             );
         renderTotales();
-<<<<<<< HEAD
 
         return;
     }
 
 
-=======
-        return;
-    }
->>>>>>> origin/sex
     /*
     CREAR DETALLE
     */
@@ -928,16 +878,12 @@ const renderFactura = () => {
             .facturaActual
             .map(
                 (item) => {
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/sex
                     const producto =
                         estado
                             .productosDisponibles
                             .find(
                                 (producto) =>
-<<<<<<< HEAD
                                     producto.id
                                     ===
                                     item.id
@@ -951,13 +897,8 @@ const renderFactura = () => {
                     }
 
 
-=======
-                                    producto.id === item.id
-                            );
->>>>>>> origin/sex
                     return {
                         ...producto,
-<<<<<<< HEAD
 
                         cantidad:
                             item.cantidad,
@@ -966,10 +907,6 @@ const renderFactura = () => {
                             producto.precio
                             *
                             item.cantidad
-=======
-                        cantidad: item.cantidad,
-                        subtotal: producto.precio * item.cantidad
->>>>>>> origin/sex
                     };
                 }
             )
@@ -1022,20 +959,12 @@ const renderFactura = () => {
                     class="cantidad-factura"
                     min="1"
                     step="1"
-<<<<<<< HEAD
                     value="${escaparHTML(cantidad)}"
                     data-id="${escaparHTML(id)}"
                 >
 
 
                 <span class="subtotal-producto">
-=======
-                    value="${cantidad}"
-                    data-id="${id}" >
-
-                <span
-                    class="subtotal-producto">
->>>>>>> origin/sex
 
                     ${
                         formatoMoneda
@@ -1046,7 +975,6 @@ const renderFactura = () => {
 
                 </span>
 
-<<<<<<< HEAD
 
                 <button
                     class="btn-eliminar"
@@ -1063,19 +991,10 @@ const renderFactura = () => {
                 .appendChild(
                     fila
                 );
-=======
-                <button class=" btn-eliminar "data-id="${id}"title=" Eliminar producto "> × </button> `;
-
-            facturaItems.appendChild(fila);
-
->>>>>>> origin/sex
         }
     );
-<<<<<<< HEAD
 
 
-=======
->>>>>>> origin/sex
     /*
     EVENTOS CAMBIO DE CANTIDAD
     */
@@ -1084,33 +1003,22 @@ const renderFactura = () => {
             ".cantidad-factura"
         );
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/sex
     inputsCantidad.forEach(
         (input) => {
             input.addEventListener(
                 "change",
                 (evento) => {
-<<<<<<< HEAD
 
                     const idProducto =
                         String(
-=======
-                    const idProducto =
-                        Number(
->>>>>>> origin/sex
                             evento
                                 .currentTarget
                                 .dataset
                                 .id
                         );
-<<<<<<< HEAD
 
 
-=======
->>>>>>> origin/sex
                     actualizarCantidad(
                         idProducto,
                         evento
@@ -1122,11 +1030,8 @@ const renderFactura = () => {
 
         }
     );
-<<<<<<< HEAD
 
 
-=======
->>>>>>> origin/sex
     /*
     EVENTOS ELIMINAR
     */
@@ -1135,23 +1040,15 @@ const renderFactura = () => {
             ".btn-eliminar"
         );
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/sex
     botonesEliminar.forEach(
         (boton) => {
             boton.addEventListener(
                 "click",
                 (evento) => {
-<<<<<<< HEAD
 
                     const idProducto =
                         String(
-=======
-                    const idProducto =
-                        Number(
->>>>>>> origin/sex
                             evento
                                 .currentTarget
                                 .dataset
@@ -1166,17 +1063,12 @@ const renderFactura = () => {
 
         }
     );
-<<<<<<< HEAD
 
 
     renderTotales();
 };
 
 
-=======
-    renderTotales();
-};
->>>>>>> origin/sex
 /*
 =========================================================
 BUSCAR PRODUCTOS
@@ -1185,7 +1077,6 @@ BUSCAR PRODUCTOS
 const buscarProductos = (
     texto
 ) => {
-<<<<<<< HEAD
 
     estado.terminoBusqueda =
         texto;
@@ -1194,17 +1085,6 @@ const buscarProductos = (
 };
 
 
-=======
-    /*
-    Primero actualizamos el estado.
-    */
-    estado.terminoBusqueda = texto;
-    /*
-    Después actualizamos el DOM.
-    */
-    renderProductos();
-};
->>>>>>> origin/sex
 /*
 =========================================================
 DETALLE COMPLETO DE PRODUCTOS
@@ -1213,7 +1093,6 @@ Se utiliza al cerrar la venta para que
 el historial conserve exactamente lo vendido.
 =========================================================
 */
-<<<<<<< HEAD
 
 const obtenerDetalleFactura = () => {
 
@@ -1318,14 +1197,6 @@ const calcularCambio = () => {
     ) {
 
         return;
-=======
-buscador.addEventListener(
-    "input",
-    (evento) => {
-        buscarProductos(
-            evento.target.value
-        );
->>>>>>> origin/sex
 
     }
 
@@ -1452,8 +1323,8 @@ LIMPIAR FORMULARIO
 const limpiarFormularioFactura =
     () => {
 
-        trabajador.value =
-            "";
+        trabajador.value = api.usuario?.username || "";
+        if (document.querySelector("#descuentoVenta")) document.querySelector("#descuentoVenta").value = "";
         clienteVenta.value = "";
 
         metodoPago.value =
@@ -1587,7 +1458,7 @@ const cancelarFactura = async () => {
 
     const confirmar =
         await confirmarAccion(
-            "¿Descartar los cambios de la factura actual? Si está guardada en Sheets, seguirá abierta allí."
+            "¿Descartar los cambios de la factura actual? Si está guardada en el servidor, seguirá abierta allí."
         );
 
 
@@ -1870,7 +1741,7 @@ const mostrarFacturaConfirmada = (nuevaVenta) => {
 
 
     mostrarToast(
-        nuevaVenta.estado === "cerrada" ? "Venta cerrada y guardada en Google Sheets." : "Factura generada y venta guardada en el historial local.",
+        nuevaVenta.estado === "cerrada" ? "Venta cerrada y guardada en el servidor." : "Factura generada y venta guardada en el historial local.",
         "success"
     );
 };
@@ -2185,6 +2056,7 @@ const imprimirFactura = () => {
                     </strong>
 
                     ${escaparHTML(venta.persona)}
+${window.marcaVentaHTML ? window.marcaVentaHTML(venta) : ""}
                 </p>
                 <p><strong>Cliente:</strong> ${escaparHTML(venta.clienteNombre || "Sin cliente")}</p>
 
@@ -2338,7 +2210,6 @@ buscador.addEventListener(
 
     }
 );
-<<<<<<< HEAD
 
 
 /*
@@ -2422,8 +2293,6 @@ botonHistorial.addEventListener(
 );
 
 
-=======
->>>>>>> origin/sex
 /*
 =========================================================
 RENDER INICIAL

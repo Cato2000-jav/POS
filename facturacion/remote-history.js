@@ -52,7 +52,7 @@ async function cargarHistorialRemoto() {
     boton.disabled = true;
     selector.disabled = true;
     mensaje.dataset.tipoMensaje = "loading";
-    mensaje.textContent = "Cargando ventas desde Google Sheets…";
+    mensaje.textContent = "Cargando ventas desde el servidor…";
     renderHistorial(); // Al cambiar de fuente no dejar filas del archivo local bajo el título de Sheets.
     try {
         const ventas = await api.listar("ventas");

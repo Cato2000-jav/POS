@@ -24,6 +24,7 @@
         href="styles.css?v=mvp2-ventas-2"
     >
     <link rel="stylesheet" href="ui-theme.css?v=1">
+<link rel="stylesheet" href="mvp3.css">
 </head>
 
 
@@ -178,7 +179,7 @@
             <button id="recargarVentasAbiertas" type="button">Consultar ventas abiertas</button>
             <button id="reintentarCierre" type="button" hidden>Reintentar cierre pendiente</button>
         </div>
-        <p id="estadoVentasAbiertas" role="status" aria-live="polite">Consulta las ventas guardadas en Google Sheets.</p>
+        <p id="estadoVentasAbiertas" role="status" aria-live="polite">Consulta las ventas guardadas en el servidor.</p>
         <ul id="listaVentasAbiertas"></ul>
     </section>
 
@@ -410,10 +411,6 @@
                         <option value="nequi">
                             Nequi
                         </option>
-
-                        <option value="debito">
-                            Tarjeta débito
-                        </option>
                         <option value="debe">Debe</option>
 
                     </select>
@@ -545,6 +542,7 @@
 
     <script src="app.js?v=mvp2-confirmacion-2"></script>
 
+<script src="session-ui.js" defer></script>
 </body>
 
 </html>

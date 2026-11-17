@@ -42,6 +42,7 @@
 
     <link rel="stylesheet" href="ui-theme.css?v=1">
     <link rel="stylesheet" href="history-filters.css?v=2">
+<link rel="stylesheet" href="mvp3.css">
 </head>
 
 
@@ -147,14 +148,14 @@
             <div class="table-wrapper">
                 <label for="fuenteHistorial">Consultar:</label>
                 <select id="fuenteHistorial">
-                    <option value="sheets">Ventas de Google Sheets</option>
+                    <option value="sheets">Ventas de el servidor</option>
                     <option value="anterior">Historial anterior de este navegador (solo lectura)</option>
                 </select>
                 <button id="recargarHistorial" type="button">Actualizar historial</button>
                 <p id="estadoHistorial" role="status" aria-live="polite"></p>
                 <details id="incidenciasHistorial" hidden>
                     <summary>Registros por revisar</summary>
-                    <p>Estos registros siguen guardados en Sheets, pero no se incluyen en la tabla ni en sus filtros. No se inventaron datos ni se modificó inventario.</p>
+                    <p>Estos registros siguen guardados en el servidor, pero no se incluyen en la tabla ni en sus filtros. No se inventaron datos ni se modificó inventario.</p>
                     <ul id="listaIncidenciasHistorial"></ul>
                 </details>
                 <form id="filtrosVentas" class="historial-filtros" aria-label="Filtrar ventas">
@@ -169,7 +170,7 @@
                 <p>Para guardar una factura como PDF, pulsa Imprimir y elige Guardar como PDF en el diálogo de impresión.</p>
                 <details>
                     <summary>Revisar historial anterior antes de migrarlo</summary>
-                    <p>Esta revisión no importa, borra ni modifica inventario. Consulta el archivo del navegador y compara con Google Sheets.</p>
+                    <p>Esta revisión no importa, borra ni modifica inventario. Consulta el archivo del navegador y compara con el servidor.</p>
                     <p>Abre esta página de la misma forma y en el mismo navegador donde usabas el MVP 1: los datos de file:// pueden ser distintos de los de localhost.</p>
                     <button id="revisarMigracion" type="button">Preparar vista previa</button>
                     <p>Importar requiere confirmar cada registro y que Code.gs tenga publicada la operación import. Se interpreta fecha/hora antigua como día/mes/año y hora de Bogotá. El archivo original se conserva.</p>
@@ -256,6 +257,7 @@
 
     </footer>
 
+<script src="session-ui.js" defer></script>
 </body>
 
 </html>
