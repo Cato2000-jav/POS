@@ -232,3 +232,8 @@ h1 { font-size: clamp(27px, 4vw, 36px); }
 #estadoHistorial { overflow-wrap: anywhere; margin: 12px 0; }
 .btn-eliminar-venta[hidden], #clear-history-button[hidden] { display: none !important; }
 #listaMigracion li { overflow-wrap: anywhere; margin-block: 12px; }
+
+/* Insignias aportadas por la rama remota; se conserva la tabla actual de seis columnas. */
+.status-badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; text-transform: capitalize; }
+.status-cerrada { background: #e6f4ea; color: #137333; }
+.status-abierta { background: #fef7e0; color: #b06000; }
